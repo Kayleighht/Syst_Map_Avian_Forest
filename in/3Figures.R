@@ -28,6 +28,8 @@ theme_legend2<- theme(
   legend.position = c(0.70, 0.80),
   legend.box.background =  element_rect(colour = "black"), legend.box.margin = margin(5,5,5,5))
 
+forestcol<- ("#31a354")
+birdcol<- ("#c51b8a")
 
 ################################ FIGURE 1 ##################################################################
 ########################## PUBLICATIONS BY YEAR ###########################################
@@ -381,7 +383,7 @@ rec.meta<- rec.meta[!grepl("N/A", rec.meta$Rec1),]
 
 #create new column with TOTAL percent
 sum(rec.meta$n)
-rec.meta$totalpercent<- (rec.meta$n/325)*100
+rec.meta$totalpercent<- (rec.meta$n/332)*100
 
 #### PLOTTING ##############
 
@@ -504,7 +506,7 @@ journal.recall<- ggarrange(bird.journalrec, forest.journal,
 journal.recall
 
 ################################### FIGURE _ #############################################################
-##############################BIRD COMPONENT ################################################
+############################## BIRD COMPONENT ################################################
 birdcomponent<- read.csv("bird.component.csv")
 
 birdcomponentplot<- ggplot(birdcomponent, aes(x= reorder(birdomain, -total), y= total)) +
@@ -564,13 +566,14 @@ Compmeta$comp[Compmeta$comp=="N"]<-"Yes"
 Compmeta$comp[Compmeta$comp=="Y"]<-"No"
 
 #create column for percentage for plotting
+birdpalette2<- c("#fa9fb5","#c51b8a")
 
 comparator.plot<- ggplot(Compmeta, aes(fill = comp, x= reorder(value, -comparator), y= comparator)) +
                   geom_bar(stat= 'identity') + theme(axis.text.y = element_text(size= 13, angle = 15), 
                                                      axis.text.x = element_text(size = 13))+
                   theme_hc() + labs(x= "", y= "Percent of Studies") + scale_y_continuous(limits = c(0,100), 
                                                                    breaks = c(0, 20, 40, 60, 80, 100)) +
-                  scale_fill_brewer(palette = "Set2", labels= c("Yes", "No")) + coord_flip()
+                  scale_fill_manual(labels= c("Yes", "No"), values = birdpalette2) + coord_flip()
   
 bird.comparatorplot<- comparator.plot + alltheme + theme_legend + labs(fill= "Comparator 
 used?")

@@ -84,6 +84,55 @@ comp.counts <-av.meta %>%
 #PUSH OUT CSV
 write.csv(comp.counts, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Comp.count.csv", row.names = FALSE)
 
+#format for yes/100 to 100% bar graph
+Comp<- comp.counts
+
+#remove n/a's created from empty rows
+Comp <-Comp[!grepl('N/A', Comp$Comparator),]
+Comp <-Comp[!grepl('N/A', Comp$value),]
+Comp <- Comp %>% drop_na(Comparator)
+Comp <- Comp %>% drop_na(value)
+
+#sort alphabetically to create percentages
+Comp <- Comp[order(Comp[,2]), ]
+Comp2<- Comp
+sum(Comp$n)
+
+#spread rows so that we can create percent bars that reach 100%
+Comp<- Comp %>% spread(Comparator, n)
+
+#replace NA with 0
+Comp[is.na(Comp)] <- 0
+#create column of totals
+Comp$total <- Comp$Y + Comp$N
+#create percent yes column
+Comp$yespercent <- (Comp$Y/Comp$total)*100
+Comp$nopercent <- (Comp$N/Comp$total)*100
+sum(Comp$total)
+
+compyes<- subset(Comp, select = c(value, yespercent, Y))
+colnames(compyes)[2] = "comparator"
+colnames(compyes)[3] = "yes/no"
+compno<- subset(Comp, select = c(value, nopercent, N))
+colnames(compno)[2] = "comparator"
+colnames(compno)[3] = "yes/no"
+
+Compmeta<- rbind(compyes, compno)
+#sort
+Compmeta <- Compmeta[order(Compmeta[,1]), ]
+Comp2[nrow(Comp2) + 1,] <- c("N", "Foraging", 0)
+#resort
+Comp2 <- Comp2[order(Comp2[,2], Comp2[,3]), ]
+Compmeta$comp <- Comp2$Comparator
+
+#swap Y/N because not sorted properly
+Compmeta$comp[Compmeta$comp=="N"]<-"Yes"
+Compmeta$comp[Compmeta$comp=="Y"]<-"No"
+
+#PUSH OUT CSV
+write.csv(Compmeta, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Comp.meta.csv", row.names = FALSE)
+
+
 ########################################### DATA SUBSETTING AND ORGANIZING ##################################################
 
 #subset data for STUDY DURATION 
