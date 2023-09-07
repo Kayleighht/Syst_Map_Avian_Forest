@@ -1,6 +1,7 @@
-#packagesneeded
-Packages <- c("tidyverse", "ggplot2", "maps", "ggthemes", "cartography", "sf", "ggpubr", "plotly", "data.table")
+#packages needed
+Packages <- c("tidyverse", "ggplot2", "maps", "ggthemes", "cartography", "sf", "ggpubr", "plotly", "data.table", "cowplot")
 lapply(Packages, library,character.only= TRUE)
+
 
 getwd()
 setwd("C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out")
@@ -50,13 +51,13 @@ byyear_av<- ggplot(year.count, aes(x= Year, y=Year_count))  +
                                    colour = "black")) + 
   scale_x_continuous(breaks = c(1980, 1985, 1990, 1995,2000, 2005, 2010, 2015, 2020), limits = c(1979, 2021)) +
   scale_y_continuous(breaks = c(5,10,15,20,25), 
-                     limits = c(0,25))
-byyear_av<- byyear_av + geom_area(fill = "#c51b8a")
+                     limits = c(0,25)) + geom_area(fill = "#c51b8a")
 
 publication.years<- byyear_av + alltheme +
-                    geom_line(data= fyear.count, aes(x=Year, y = Year_count), size= 0.7, colour = "#31a354")
+                    geom_line(data= fyear.count, aes(x=Year, y = Year_count), size= 0.7, colour = "#31a354") +
+                    geom_area(data= fyear.count, aes(x=Year, y = Year_count), fill= "#31a354")
 
-publication.years + geom_area(data= fyear.count, aes(x=Year, y = Year_count), fill= "#31a354")
+publication.years 
 
 ########################## FIGURE _ ###################################################
 ################### Study Country Heat Map ##################################
@@ -236,12 +237,17 @@ sum(Duration$n)
 
 #create column for percentage for plotting
 Duration$percent <- ((Duration$n/255)*100)
-sum(Duration$percent)
+sum(Duration$percent)   #confirm the percentage adds to 100
 
-duration.plot <- ggplot(Duration, aes(x= reorder(duration_bin, percent) , y= percent)) +
-                 geom_bar(stat= 'identity', position = 'dodge', fill = "violetred3") + theme_hc() + labs(x= "Study Duration", y= "Percent of Studies") +
+#PLOT 
+
+duration.plot <- ggplot(Duration, aes(x= reorder(duration_bin, -percent) , y= percent)) +
+                 geom_bar(stat= 'identity', fill = "#c51b8a", width = 0.6) + 
+                 theme_hc() + labs(x= "Time-scale considered", y= "Percent of Studies") +
+                 
                  theme(axis.text.x = element_text(size = 11, angle = -20), axis.ticks.x = element_blank()) + 
-                 scale_x_discrete(labels = c("[10-100 years]", "[5-10 years]", "[1-5 years]", "[0-1 years]" )) +
+                 
+                 scale_x_discrete(labels = c("[0-1 years]", "[1-5 years]", "[5-10 years]", "[10-100 years]")) +
                  scale_y_continuous(breaks = c(0, 10, 20, 30, 40, 50), limits = c(0,55))
                                                                                
 
@@ -256,21 +262,84 @@ sum(Duration2$n)
 #create column for percentage for plotting
 Duration2$percent <- ((Duration2$n/112)*100)
 
-duration.plot <- ggplot(Duration2, aes(x= reorder(duration_bin, percent) , y= percent)) +
-  geom_bar(stat= 'identity', position = 'dodge', fill= "violetred4") + theme_hc() + labs(x= "Study Duration", y= "Percent of Studies") +
+duration.plot <- ggplot(Duration2, aes(x= reorder(duration_bin, -percent) , y= percent)) +
+  geom_bar(stat= 'identity', position = 'dodge', fill= "#31a354", width = 0.6) + theme_hc() + labs(x= "Time-scale considered", y= "Percent of Studies") +
+  
   theme(axis.text.x = element_text(size = 11, angle = -20), axis.ticks.x = element_blank()) + 
-  scale_x_discrete(labels = c("[10-100 years]", "[5-10 years]", "[1-5 years]", "[0-1 years]" )) + 
+  
+  scale_x_discrete(labels = c("[0-1 years]", "[1-5 years]", "[5-10 years]", "[10-100 years]")) + 
   scale_y_continuous(breaks = c(0, 10, 20, 30, 40, 50), limits = c(0,55))
 
 forest.durationplot<- duration.plot + alltheme 
 forest.durationplot
 
+#COMBINE
 durationall<- ggarrange(bird.durationplot, forest.durationplot,
                         labels = c("A", "B"),
                         ncol = 2, nrow = 1,
-                        hjust = -1)
+                        hjust = -1,
+                        common.legend = TRUE)
 durationall
 
+
+#################################### FIGURE __ ######################################################
+############################ TOPICS ONLY ###########################################################
+
+#AVIAN
+birdtopics<- read.csv("bird.component.csv")
+
+#create new column with percent of studies
+sum(birdtopics$total)
+birdtopics$percent <- (birdtopics$total/348)*100
+
+#PLOT
+birdpalette6 <- c("#fa9fb5","#7a0177" ,"#c51b8a", "#f768a1", "#feebe2", "#fcc5c0")
+  
+  
+ 
+birdtopic.plot <- ggplot(birdtopics, aes(x= reorder(birdomain, -percent) , y= percent)) +
+                  geom_bar(stat= 'identity', position = 'dodge', fill= birdpalette6, width = 0.8) + 
+                  
+                  theme(axis.text.x = element_text(size= 12), 
+                  axis.text.y = (element_text(size = 13, face = "bold", angle = 15))) + theme_hc() + 
+                  labs(x= "", y= "Percent of Studies") + 
+                  scale_y_continuous(limits = c(0,55), breaks = c(10, 20, 30, 40, 50)) +
+                  coord_flip()
+
+birdtopic.plot<- birdtopic.plot + alltheme
+birdtopic.plot
+
+#FOREST 
+#AVIAN
+foresttopics<- read.csv("forest.component.csv")
+
+#create new column with percent of studies
+sum(foresttopics$total)
+foresttopics$percent <- (foresttopics$total/267)*100
+
+#PLOT
+forestpalette8 <- c("#005a32","#f7fcb9","#ffffe5","#d9f0a3","#78c679","#41ab5d", "#238443","#addd8e")
+  
+  
+foresttopic.plot <- ggplot(foresttopics, aes(x= reorder(forestcomp, -percent) , y= percent)) +
+  geom_bar(stat= 'identity', position = 'dodge', fill= forestpalette8, width = 0.8) + 
+  
+  theme(axis.text.x = element_text(size= 12), 
+        axis.text.y = (element_text(size = 13, face = "bold", angle = 15))) + theme_hc() + 
+  labs(x= "", y= "Percent of Studies") + 
+  scale_y_continuous(limits = c(0,55), breaks = c(10, 20, 30, 40, 50)) +
+  coord_flip()
+
+foresttopic.plot<- foresttopic.plot + alltheme
+foresttopic.plot
+
+#COMBINEPLOT
+componentall<- ggarrange(birdtopic.plot, foresttopic.plot,
+                        labels = c("A", "B"),
+                        ncol = 1, nrow = 2,
+                        hjust = -1)
+
+componentall
 
 ################################### FIGURE 4 ###########################################################
 ###################### RECOMMENDATION TYPE (USED + TYPE) ############################################
@@ -296,7 +365,7 @@ rec.plot<- ggplot(rec.meta, aes(fill = Rec.1 , x= reorder(value,-totalpercent),
 
 
 bird.recplot<- rec.plot + alltheme + theme_legend2 + labs(fill = "Recommendation Type") + coord_flip()
-bird.recplot
+bird.recplot 
 
 ###################### RECOMMENDATION TYPE (USED + TYPE) ############################################
 
@@ -635,6 +704,7 @@ all.scaleplot
 
 ############################# FIGURE 7 ####################################################################
 ####################### PERCENT PUBLICATIONS ACCORDING TO ONE/MANY INDICATORS ##########################
+birdpalette3 <- c("#ae017e","#f768a1","#fbb4b9","#feebe2")
 
 Indicator.ct<- read.csv("Allind.count.csv")
 sum(Indicator.ct$number_publications)
@@ -642,11 +712,12 @@ sum(Indicator.ct$number_publications)
 Indicator.ct$percent<- (Indicator.ct$number_publications/347)*100
   
 indicator.plot <- ggplot(Indicator.ct, aes(x= reorder(number_topics, -percent), y= percent)) +
-                  geom_bar(stat= 'identity', fill= "purple") + theme(axis.text.x = element_text(size= 10))+
+                  geom_bar(stat= 'identity', fill= birdpalette3) + theme(axis.text.x = element_text(size= 10))+
                   theme_hc() + labs(x = "", y=" Percent of Studies") + coord_flip()
 bird.indicatorplot<- indicator.plot + alltheme
 
 #FOREST#
+forestpalette5 <- c("#006837","#31a354", "#78c679", "#c2e699","#ffffcc")
 
 Indicator.ct<- read.csv("FAllind.count.csv")
 sum(Indicator.ct$number_publications)
@@ -654,7 +725,7 @@ sum(Indicator.ct$number_publications)
 Indicator.ct$percent<- (Indicator.ct$number_publications/278)*100
 
 indicator.plot <- ggplot(Indicator.ct, aes(x= reorder(number_topics, -percent), y= percent)) +
-  geom_bar(stat= 'identity', fill= "purple") + theme(axis.text.x = element_text(size= 10)) +
+  geom_bar(stat= 'identity', fill= forestpalette5) + theme(axis.text.x = element_text(size= 10)) +
   theme_hc() + labs(x = "", y=" Percent of Studies") + scale_y_continuous(limits = c(0,80))
 forest.indicatorplot<- indicator.plot + alltheme +coord_flip()
 
@@ -664,15 +735,6 @@ all.indicatorplot<- ggarrange(bird.indicatorplot, forest.indicatorplot,
                               ncol = 2, nrow = 1)
 all.indicatorplot
 
-      #############################################################################################
-      #############################################################################################
-      #################################### FOREST COMPONENT ####################################### 
-      #############################################################################################
-      #############################################################################################
-      #############################################################################################
-
-########################## FIGURE 7 ###################################################
-################### Study Country Heat Map ##################################
 
 
 
