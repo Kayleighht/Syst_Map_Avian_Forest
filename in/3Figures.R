@@ -28,6 +28,13 @@ theme_legend2<- theme(
   legend.position = c(0.70, 0.80),
   legend.box.background =  element_rect(colour = "black"), legend.box.margin = margin(5,5,5,5))
 
+#LEGEND 3 THEME
+theme_legend3<- theme(
+  legend.title = element_text(colour = "black", size = 12, face= "bold"),
+  legend.position = c("right"),
+  legend.box.background =  element_rect(colour = "black"), legend.box.margin = margin(5,5,5,5))
+
+
 forestcol<- ("#31a354")
 birdcol<- ("#c51b8a")
 
@@ -573,10 +580,11 @@ comparator.plot<- ggplot(Compmeta, aes(fill = comp, x= reorder(value, -comparato
                                                      axis.text.x = element_text(size = 13))+
                   theme_hc() + labs(x= "", y= "Percent of Studies") + scale_y_continuous(limits = c(0,100), 
                                                                    breaks = c(0, 20, 40, 60, 80, 100)) +
-                  scale_fill_manual(labels= c("Yes", "No"), values = birdpalette2) + coord_flip()
+                  scale_fill_manual(labels= c("No", "Yes"), values = birdpalette2) + coord_flip() 
   
-bird.comparatorplot<- comparator.plot + alltheme + theme_legend + labs(fill= "Comparator 
+bird.comparatorplot<- comparator.plot + alltheme + theme_legend3 + labs(fill= "Comparator 
 used?")
+bird.comparatorplot
 
 #FOREST#
 Comp<- read.csv("FComp.count.csv")
@@ -621,14 +629,16 @@ Compmeta$comp[Compmeta$comp=="N"]<-"Yes"
 Compmeta$comp[Compmeta$comp=="Y"]<-"No"
 
 #PLOTTING
+forestpalette2<- c("#addd8e", "#31a354")
+
 comparator.plot<- ggplot(Compmeta, aes(fill = comp, x= reorder(value, -comparator), y= comparator)) +
   geom_bar(stat= 'identity') + theme(axis.text.y = element_text(size= 13, angle = 15), 
                                      axis.text.x = element_text(size = 13))+
   theme_hc() + labs(x= "", y= "Percent of Studies") + scale_y_continuous(limits = c(0,110), 
                                                                          breaks = c(0, 20, 40, 60, 80, 100)) +
-  scale_fill_brewer(palette = "Set2", labels= c("Yes", "No")) + coord_flip()
+  scale_fill_manual(values= forestpalette2, labels= c("No", "Yes")) + coord_flip()
 
-forest.comparatorplot<-comparator.plot + alltheme + theme_legend + labs(fill= "Comparator
+forest.comparatorplot<-comparator.plot + alltheme + theme_legend3 + labs(fill= "Comparator
 used?")
 
 all.comparatorplot<- ggarrange(bird.comparatorplot, forest.comparatorplot,
@@ -654,26 +664,19 @@ sapply(Urban, class)
 Urban$`Multi-patch` = as.numeric(as.character(Urban$`Multi-patch`)) 
 Urban$total <- rowSums(Urban[ , c(2:5)], na.rm=TRUE)
 
-
 #pivot table
 Urban <- Urban %>% pivot_longer(., cols = c(`Multi-city`, `Multi-patch`, Patch, Region))
+#create columns of percent
+Urban$Multicityper <- (Urban$`Multi-city`/Urban$total)*100
+Urban$Multipatchper<- (Urban$`Multi-patch`/Urban$total)*100
+Urban$patchper<- (Urban$Patch/Urban$total)*100
+Urban$regionper<- (Urban$Region/Urban$total)*100
 
-#create column of totals
-Journal.rec <- Journal.recalpha
-Journal.rec$total <- Journal.rec$Y + Journal.rec$N
-#create percent yes column
-Journal.rec$yespercent <- (Journal.rec$Y/Journal.rec$total)*100
-Journal.rec$nopercent <- (Journal.rec$N/Journal.rec$total)*100
+#transpose the dataframe
+Urban<- as.data.frame(t(Urban))
 
-Journal.rec <- Journal.rec[order(-Journal.rec[,4], Journal.rec[,1]), ]
-Journal.rec <- Journal.rec[1:10,]
-
-Journal.rec <- Journal.rec %>% pivot_longer(., cols = c(yespercent, nopercent))
-
-
-sum(Urban$n)
 #create column for percentage for plotting
-Urban$percent <- ((Urban$n/352)*100)
+Urban$percent <- ((Urban$total/352)*100)
 
 scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= reorder(value, -percent), y= percent)) +
               geom_bar(stat= 'identity') + theme_hc() + labs(x= "", y= "Percent of Studies") +
