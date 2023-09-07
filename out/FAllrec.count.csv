@@ -1,0 +1,42 @@
+"Rec1","value","n","percent"
+"Conservation","Composition",10,3.48432055749129
+"Conservation","Connectivity",1,0.348432055749129
+"Conservation","Diversity metric",1,0.348432055749129
+"Conservation","Exotic/invasive species",1,0.348432055749129
+"Conservation","Forested area",2,0.696864111498258
+"Conservation","Individual tree management",2,0.696864111498258
+"Conservation","Land use type",11,3.83275261324042
+"Conservation","Native species",2,0.696864111498258
+"Management","Composition",74,25.7839721254355
+"Management","Connectivity",2,0.696864111498258
+"Management","Diversity metric",2,0.696864111498258
+"Management","Exotic/invasive species",5,1.74216027874564
+"Management","Forested area",20,6.96864111498258
+"Management","Fragmentation",1,0.348432055749129
+"Management","Individual tree management",17,5.92334494773519
+"Management","Land use type",63,21.9512195121951
+"Management","Native species",10,3.48432055749129
+"Restoration","Composition",3,1.04529616724739
+"Restoration","Diversity metric",1,0.348432055749129
+"Restoration","Exotic/invasive species",1,0.348432055749129
+"Restoration","Land use type",2,0.696864111498258
+"Restoration","Native species",2,0.696864111498258
+"Conservation","Composition",3,1.04529616724739
+"Conservation","Forested area",1,0.348432055749129
+"Conservation","Land use type",4,1.39372822299652
+"Management","Composition",9,3.13588850174216
+"Management","Exotic/invasive species",1,0.348432055749129
+"Management","Forested area",2,0.696864111498258
+"Management","Individual tree management",1,0.348432055749129
+"Management","Land use type",8,2.78745644599303
+"Management","Native species",3,1.04529616724739
+"Restoration","Composition",5,1.74216027874564
+"Restoration","Connectivity",2,0.696864111498258
+"Restoration","Forested area",2,0.696864111498258
+"Restoration","Individual tree management",1,0.348432055749129
+"Restoration","Land use type",5,1.74216027874564
+"Management","Composition",2,0.696864111498258
+"Management","Connectivity",1,0.348432055749129
+"Management","Diversity metric",1,0.348432055749129
+"Management","Land use type",2,0.696864111498258
+"Management","Native species",1,0.348432055749129

@@ -1,0 +1,34 @@
+"Urb.scale","value","n"
+"Multi-City","Composition",6
+"Multi-City","Forested area",1
+"Multi-City","Individual tree management",1
+"Multi-City","Land use type",6
+"Multi-City","N/A",31
+"Multi-Patch","Composition",58
+"Multi-Patch","Connectivity",1
+"Multi-Patch","Diversity metric",2
+"Multi-Patch","Exotic/invasive species",5
+"Multi-Patch","Forested area",20
+"Multi-Patch","Fragmentation",1
+"Multi-Patch","Individual tree management",9
+"Multi-Patch","Land use type",70
+"Multi-Patch","N/A",269
+"Multi-Patch","Native species",5
+"Patch","Composition",44
+"Patch","Connectivity",2
+"Patch","Diversity metric",1
+"Patch","Exotic/invasive species",4
+"Patch","Forested area",6
+"Patch","Individual tree management",15
+"Patch","Land use type",15
+"Patch","N/A",184
+"Patch","Native species",9
+"Region","Composition",11
+"Region","Diversity metric",1
+"Region","Exotic/invasive species",1
+"Region","Forested area",2
+"Region","Fragmentation",1
+"Region","Individual tree management",1
+"Region","Land use type",10
+"Region","N/A",56
+"Region","Native species",2
