@@ -1,0 +1,39 @@
+"Year","Journal","COUNTRY","Urb.scale","Start.year","End.year","Comparator","birddomain1","birddomain2","birddomain3","birddomain4","Rec.","Rec.1","Rec.2","Rec.3","Year_count"
+2017,"Wildlife Society Bulletin","USA","Multi-patch","2012","2013","N","Survival",NA,NA,NA,"Yes","Management",NA,NA,16
+1993,"Environmental Pollution","Canada","Patch","1988","1988","Y","Breeding",NA,NA,NA,"Yes","Management",NA,NA,2
+2003,"Landscape and Urban Planning","USA","Multi-patch","1998","1999","N","Biodiversity",NA,NA,NA,"Yes","Management","Conservation",NA,3
+2013,"PLoS One","Australia","Multi-patch","2009","2010","N","Resources",NA,NA,NA,"Yes","Conservation",NA,NA,22
+2002,"Acta Ornithologica","Bulgaria ","Multi-patch","1999","2000","N","Breeding",NA,NA,NA,"No","N/A",NA,NA,6
+1986,"Symposium on Remote Sensing for Resources Development and Environmental Management ","United Kingdom","Region","1981","1984","N","Demographics/Patterns",NA,NA,NA,"No","N/A",NA,NA,3
+2005,"Northwest Science","USA","Multi-patch","1996","2002","Y","Breeding","Demographics/Patterns",NA,NA,"No","N/A",NA,NA,10
+2014,"Biological Conservation","USA","Region","2000","2050","N","Demographics/Patterns",NA,NA,NA,"Yes","Management","Conservation",NA,16
+2016,"Plant Ecology","Japan","Patch","2010","2014","N","Biodiversity",NA,NA,NA,"No","N/A",NA,NA,15
+2015,"Urban Ecosystems","Canada","Multi-patch","N/A","N/A","Y","Demographics/Patterns",NA,NA,NA,"Yes","Conservation",NA,NA,16
+2006,"Biological Conservation","USA","Multi-patch","2003","2005","Y","Demographics/Patterns","Breeding","Survival",NA,"Yes","Conservation",NA,NA,8
+2012,"Avian Biology","Canada","Multi-patch","2007","2007","Y","Behaviour",NA,NA,NA,"No","N/A",NA,NA,8
+2011,"Ecology","USA","Multi-patch","2006","2008","Y","Breeding",NA,NA,NA,"No","N/A",NA,NA,14
+2008,"Landscape Ecology","USA","Region","1999","2005","N","Biodiversity",NA,NA,NA,"Yes","Management","Conservation",NA,10
+1995,"Environmental Management","Canada","Patch","1991","1991","N","Biodiversity","Demographics/Patterns",NA,NA,"Yes","Management","Restoration",NA,1
+2009,"Ecosystems","Japan","Region","2005","2006","Y","Biodiversity",NA,NA,NA,"No","N/A",NA,NA,12
+2007,"Journal of Great Lakes Research","USA","Multi-city","N/A","N/A","Y","Biodiversity",NA,NA,NA,"No","N/A",NA,NA,9
+2018,"Environmental Research","Portugal","Patch","2015","2015","Y","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,22
+2021,"Land","Australia","Patch","N/A","N/A","N/A","Demographics/Patterns",NA,NA,NA,"Yes","Restoration",NA,NA,19
+2019,"Waterbirds","India","Region","2017","2017","Y","Breeding",NA,NA,NA,"Yes","Conservation",NA,NA,9
+2001,"Environmental Conservation","Spain","Multi-patch","1998","1998","N","Behaviour",NA,NA,NA,"Yes","Management",NA,NA,3
+2004,"Acta Ornithologica","Poland","Multi-patch","1997","2003","Y","Breeding","Survival",NA,NA,"No","N/A",NA,NA,5
+2010,"Urban Ecosystems","United Kingdom","Region","1978","2006","Y","Demographics/Patterns",NA,NA,NA,"Yes","Management",NA,NA,11
+2022,"Urban Ecosystems","India","Multi-patch","2018","2019","Y","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,6
+2020,"Emu-Austral Ornithology","New Zealand","Multi-patch","2016","2016","Y","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,14
+1997,"The Condor","Spain","Multi-patch","1992","1994","N","Biodiversity","Breeding",NA,NA,"No","N/A",NA,NA,2
+1987,"The Wilson Bulletin","USA","Multi-patch","1953","1985","Y","Biodiversity",NA,NA,NA,"Yes","Conservation",NA,NA,1
+1991,"Landscape and Urban Planning","USA","Multi-patch","1976","1980","Y","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,1
+1996,"Acta Ornithologica","Poland","Multi-patch","1991","1993","Y","Biodiversity",NA,NA,NA,"No","N/A",NA,NA,1
+1999,"Ecography","Australia","Patch","N/A","N/A","Y","Survival",NA,NA,NA,"No","N/A",NA,NA,2
+1980,"Environmental Management","USA","Multi-patch","1976","1976","Y","Demographics/Patterns",NA,NA,NA,"No","N/A",NA,NA,1
+1992,"Ornis Fennica","Poland","Patch","1980","1986","N","Biodiversity",NA,NA,NA,"No","N/A",NA,NA,1
+1979,"Canadian Journal of Zoology","Canada","Multi-patch","N/A","N/A","Y","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,1
+2000,"Landscape and Urban Planning","South Korea","Multi-patch","1992","1993","N","Biodiversity",NA,NA,NA,"Yes","Conservation","Management","Restoration",3
+1994,"Journal of Zoology","Italy","Multi-patch","1986","1992","Y","Behaviour",NA,NA,NA,"No","N/A",NA,NA,1
+1981,"Urban Ecology","USA","Multi-patch","1972","1972","Y","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,1
+1989,"Australian Journal of Ecology","Australia","Multi-patch","1982","1983","N","Biodiversity",NA,NA,NA,"No","N/A",NA,NA,1
+1982,"The Condor","United States","Patch","1976","1976","Y","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,1
