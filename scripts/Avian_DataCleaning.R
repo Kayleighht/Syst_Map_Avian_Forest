@@ -14,7 +14,7 @@ av.data <- read.csv("Meta_Avian_Data_Extraction - Master_Data.csv")
 av.meta <- av.data[,c("Year", "Journal", "Study.country", "Urb.scale", 
                       "Start.year", "End.year", "Comparator", "birddomain1", 
                       "birddomain2", "birddomain3", "birddomain4", "Rec.",
-                      "Rec.1", "Rec.2", "Rec.3")]
+                      "Rec.1", "Rec.2", "Rec.3","Forest.comp")]
 
 #rename column in av.meta to match shape files with countries
 names(av.meta)[names(av.meta) == "Study.country"] <- "COUNTRY"
