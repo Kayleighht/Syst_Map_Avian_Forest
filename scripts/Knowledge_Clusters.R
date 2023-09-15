@@ -160,3 +160,53 @@ carb.counts <-forest.carb %>%
   pivot_longer(cols = c(forest1:forest5)) %>%
   dplyr::count(carbon1:carbon4 ,value)
 urb.countsf <- as.data.frame(urb.countsf)
+
+#################################################################################################################################
+##############################################################################################################################
+       #     BIRD COMPONENT BY FOREST COMPONENT #
+#############################################################################################################################
+##########################################################################################################################
+
+birdforest1 <- as.data.frame(av.meta %>%
+                           pivot_longer(birddomain1:birddomain4))
+
+birdforest1 <- birdforest1[,c("forest1", "forest2", "forest3", "forest4", "name", "value")]
+#forest 5 is empty!!!!! don't need
+
+
+#COUNT TABLE
+#create count table including all bird domain columns grouped by Indicator TYPE (first only)
+# FIRST INDICATOR
+birdforest <- birdforest1 %>% count(forest1, value, sort = TRUE)
+#clean duplicates and NAs
+birdforest[birdforest == ""] <- NA
+birdforest<- birdforest %>% drop_na()
+colnames(birdforest)[1] = "forest"
+
+birdforest2 <- birdforest1 %>% count(forest2, value, sort = TRUE)
+#clean duplicates and NAs
+birdforest2[birdforest2 == ""] <- NA 
+birdforest2<- birdforest2 %>% drop_na()
+colnames(forest2)[1] = "forest"
+
+
+birdforest3<- birdforest1 %>% count(forest3, value, sort=TRUE)
+#clean duplicates and NAs
+birdforest3[birdforest3 == ""] <- NA
+birdforest3[birdforest3 == " "] <- NA
+birdforest3<- birdforest3 %>% drop_na(value)
+birdforest3<- birdforest3 %>% drop_na(forest3)
+colnames(forest3)[1] = "forest"
+
+
+birdforest4<- birdforest1 %>% count(forest4, value, sort=TRUE)
+#clean duplicates and NAs
+birdforest4[birdforest4 == ""] <- NA 
+birdforest4<- birdforest4 %>% drop_na(value)
+birdforest4<- birdforest4 %>% drop_na(forest4)
+birdforest4 <-birdforest4[!grepl('N/A', birdforest4$value),]
+colnames(forest4)[1] = "forest"
+
+
+birdforestmerged<- rbind(birdforest, birdforest2, birdforest3, birdforest4)
+
