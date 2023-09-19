@@ -181,32 +181,109 @@ birdforest <- birdforest1 %>% count(forest1, value, sort = TRUE)
 #clean duplicates and NAs
 birdforest[birdforest == ""] <- NA
 birdforest<- birdforest %>% drop_na()
+birdforest <-birdforest[!grepl('N/A', birdforest$value),]
 colnames(birdforest)[1] = "forest"
 
 birdforest2 <- birdforest1 %>% count(forest2, value, sort = TRUE)
 #clean duplicates and NAs
 birdforest2[birdforest2 == ""] <- NA 
 birdforest2<- birdforest2 %>% drop_na()
-colnames(forest2)[1] = "forest"
+colnames(birdforest2)[1] = "forest"
 
 
 birdforest3<- birdforest1 %>% count(forest3, value, sort=TRUE)
 #clean duplicates and NAs
 birdforest3[birdforest3 == ""] <- NA
 birdforest3[birdforest3 == " "] <- NA
-birdforest3<- birdforest3 %>% drop_na(value)
-birdforest3<- birdforest3 %>% drop_na(forest3)
-colnames(forest3)[1] = "forest"
+birdforest3<- birdforest3 %>% drop_na()
+colnames(birdforest3)[1] = "forest"
 
 
 birdforest4<- birdforest1 %>% count(forest4, value, sort=TRUE)
 #clean duplicates and NAs
 birdforest4[birdforest4 == ""] <- NA 
-birdforest4<- birdforest4 %>% drop_na(value)
-birdforest4<- birdforest4 %>% drop_na(forest4)
+birdforest4<- birdforest4 %>% drop_na()
 birdforest4 <-birdforest4[!grepl('N/A', birdforest4$value),]
-colnames(forest4)[1] = "forest"
+colnames(birdforest4)[1] = "forest"
 
 
 birdforestmerged<- rbind(birdforest, birdforest2, birdforest3, birdforest4)
+
+
+###########################################################################################################################################################
+############################################################################################################################################################
+                                              # BIRD SPECIFIC CATEGORIES BY FOREST COMPONENT #
+################################################################################################################################################################
+################################################################################################################################################################
+
+
+av.data
+
+#separate bird categories(specific) column into new columns based on comma
+av.data1 <-separate(data = av.data, col = Bird.category, into = c("bird1", "bird2", "bird3", "bird4", "bird5"), sep = ",")
+
+#separate forest comp column into new columns based on comma
+av.data1 <-separate(data = av.data1, col = Forest.comp, into = c("forest1", "forest2", "forest3", "forest4"), sep = ",")
+
+#cut down to only necessary columns for figures (so far..)
+av.data1 <- av.data1[,c("forest1", "forest2", "forest3", "forest4", 
+                              "bird1", "bird2", "bird3", "bird4",
+                              "bird5")] 
+
+#make forest components columns 
+av.data1 <- as.data.frame(av.data1 %>%
+                               pivot_longer(forest1:forest4))
+av.data1 <- as.data.frame(av.data1)
+
+#remove NAs in value column (no data)
+av.data1 <- av.data1 %>% drop_na(value)
+
+#SEPARATE BY BIRD CATEGORY COLUMN
+
+#COUNT TABLE
+#create count table including all bird domain columns grouped by Indicator TYPE (first only)
+
+# FIRST CATEGORY
+birdcat1 <- av.data1 %>% count(bird1, value, sort = TRUE)
+#clean duplicates and NAs
+birdcat1[birdcat1 == ""] <- NA
+birdcat1<- birdcat1 %>% drop_na()
+birdcat1 <-birdcat1[!grepl('N/A', birdcat1$birdcategory),]
+colnames(birdcat1)[1] = "birdcategory"
+birdcat1
+
+birdcat2 <- av.data1 %>% count(bird2, value, sort = TRUE)
+#clean duplicates and NAs
+birdcat2[birdcat2 == ""] <- NA 
+birdcat2<- birdcat2 %>% drop_na()
+colnames(birdcat2)[1] = "birdcategory"
+birdcat2
+
+birdcat3 <- av.data1 %>% count(bird3, value, sort=TRUE)
+#clean duplicates and NAs
+birdcat3[birdcat3 == ""] <- NA
+birdcat3[birdcat3 == " "] <- NA
+birdcat3<- birdcat3 %>% drop_na()
+colnames(birdcat3)[1] = "birdcategory"
+birdcat3
+
+birdcat4<- av.data1 %>% count(bird4, value, sort=TRUE)
+#clean duplicates and NAs
+birdcat4[birdforest4 == ""] <- NA 
+birdforest4<- birdcat4 %>% drop_na()
+birdcat4 <-birdcat4[!grepl('N/A', birdcat4),]
+colnames(birdcat4)[1] = "birdcategory"
+birdcat4
+
+birdcat5<- av.data1 %>% count(bird5, value, sort=TRUE)
+#clean duplicates and NAs
+birdcat5[birdcat5 == ""] <- NA 
+birdcat5<- birdcat5 %>% drop_na()
+birdcat5 <-birdcat5[!grepl('N/A', birdcat5),]
+colnames(birdcat5)[1] = "birdcategory"
+birdcat5
+
+
+birdcatmerged <- rbind(birdcat1, birdcat2, birdcat3, birdcat4, birdcat5)
+write.csv(birdcatmerged, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/birdcatmerged.csv", row.names = FALSE)
 
