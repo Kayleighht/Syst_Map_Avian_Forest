@@ -184,6 +184,19 @@ write.csv(duration.counts2, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Fo
 recdf<- av.meta[,c("birddomain1","birddomain2", "birddomain3", "birddomain4", "Rec.",
                    "Rec.1", "Rec.2", "Rec.3")]
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 #COUNT TABLE
 #including all bird domain columns grouped by RECOMMENDATION TYPE 
 

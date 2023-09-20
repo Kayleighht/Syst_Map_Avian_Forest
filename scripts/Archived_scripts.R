@@ -149,3 +149,43 @@ used?")
   #remove total rows that are now not needed
   Urban<- Urban[-c(29:35),]
   
+  ####
+  #inserts rows for totals
+  Urban <- Urban %>% add_row(Urb.scale='Total1', 
+                             name= 'Total1', ##for behaviour
+                             value= 29, 
+                             .before=5)
+  
+  Urban <- Urban %>% add_row(Urb.scale='Total2', 
+                             name= 'Total2',                 ## for biodiversity
+                             value= 189, 
+                             .before=10)
+  
+  Urban <- Urban %>% add_row(Urb.scale='Total3',            ## for breeding
+                             name= 'Total3',
+                             value= 49, 
+                             .before=15)
+  
+  Urban <- Urban %>% add_row(Urb.scale='Total4',           ## for demographics/patterns 
+                             name= 'Total4',
+                             value= 46, 
+                             .before= 20)
+  
+  Urban <- Urban %>% add_row(Urb.scale='Total5',           ## for foraging
+                             name= 'Total5',
+                             value= 1, 
+                             .before= 25)
+  
+  
+  Urban <- Urban %>% add_row(Urb.scale='Total6',           ## for resources
+                             name= 'Total6',
+                             value= 7, 
+                             .before= 30)
+  
+  Urban <- Urban %>% add_row(Urb.scale='Total7',           ## for survival 
+                             name= 'Total7',
+                             value= 28, 
+                             .before= 35)
+  
+  Urban
+  

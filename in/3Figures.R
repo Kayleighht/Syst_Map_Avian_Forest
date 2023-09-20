@@ -542,6 +542,7 @@ all.comparatorplot
 
 ####################################### FIGURE 6 ######################################################################
 ############################ BIRD SUCCESS COMPONENT BY URBAN SCALE ###########################################
+
 Urban <- read.csv("Urb.count.csv")
 #remove n/a's created from empty rows
 Urban <- Urban %>% drop_na(value)
@@ -564,41 +565,69 @@ Urban <- Urban %>% pivot_longer(., cols = c(`Behaviour`, `Biodiversity`, Breedin
 Urban <- as.data.frame(Urban)
 #sort
 Urban <- Urban[order(Urban[,2]), ]
+Totals<- c(29,29,29,29,189,189,189,189,49,49,49,49,46,46,46,46,1,1,1,1,7,7,7,7,28,28,28,28)
 
-Urban2<- Urban %>% spread(Urb.scale, value)
-Urban2 <- as.data.frame(Urban2)
-Urban2$totalcat <- rowSums(Urban2[ ,c(2:5)], na.rm=TRUE)
-Totalcat<- Urban2[,6]
+Urban <-cbind(Urban, Totals)
 
-#make columns with percentage
-#create percent yes column
-Urban2$MCpercent <- (Urban2$`Multi-city`/Urban2$totalcat)*100
-Comp$nopercent <- (Comp$N/Comp$total)*100
+#now add column of percentages 
+Urban$percent <- (Urban$value/Urban$Totals)*100
 
-scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= name , y= percent)) +
+#PLOTTING ####################################################################
+
+birdpalette4 <- c("#feebe2", "#fbb4b9", "#f768a1", "#ae017e")
+
+scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= reorder(name, -percent) , y= percent)) +
               geom_bar(stat= 'identity') + theme_hc() + labs(x= "", y= "Percent of Studies") +
               theme(axis.text.x = element_text(colour= "black", size= 12), axis.text.y = element_text(size = 13, colour= "black", angle = 15)) + 
-              coord_flip() + scale_y_continuous(limits= c(0,110)) + scale_fill_brewer(palette = "Set2")
+              coord_flip() + scale_y_continuous(limits= c(0,100)) + scale_fill_manual(values = birdpalette4)
 
-bird.scaleplot<- scale.plot + alltheme + labs(fill= "Urban Scale") + theme_legend2
+bird.scaleplot<- scale.plot + labs(fill= "Urban Scale") + theme_legend3 + alltheme
 bird.scaleplot
 
 #FOREST#
 
 Urban <- read.csv("FUrb.count.csv")
 #remove n/a's created from empty rows
+Urban <- Urban %>% drop_na(value)
+
+#drop additional N/A
 Urban <-Urban[!grepl('N/A', Urban$value),]
 
+#sort alphabetically to create percentages
+Urban <- Urban[order(Urban[,2]), ]
+#get total for totals
 sum(Urban$n)
-#create column for percentage for plotting
-Urban$percent <- ((Urban$n/310)*100)
 
-scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= reorder(value, -percent), y= percent)) +
+#spread rows so that we can create percent bars that reach 100%
+Urban<- Urban %>% spread(value, n)
+
+#replace NA with 0
+Urban[is.na(Urban)] <- 0
+
+#pivot table
+Urban <- Urban %>% pivot_longer(., cols = c(`Composition`, `Connectivity`, `Diversity metric`, `Exotic/invasive species`, 
+                                            `Forested area`, Fragmentation, `Individual tree management`, `Land use type`, `Native species`))
+Urban <- as.data.frame(Urban)
+#sort
+Urban <- Urban[order(Urban[,2]), ]
+Totals<- c(119,119,119,119,3,3,3,3,4,4,4,4,10,10,10,10,29,29,29,29,2,2,2,2,26,26,26,26,101,101,101,101,16,16,16,16)
+
+Urban <-cbind(Urban, Totals)
+
+#now add column of percentages 
+Urban$percent <- (Urban$value/Urban$Totals)*100
+
+## PLOT #############################################################################################
+
+forestpalette4 <- c("#ffffcc", "#c2e699", "#78c679", "#238443")
+
+scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= reorder(name, -percent), y= percent)) +
   geom_bar(stat= 'identity') + theme_hc() + labs(x= "", y= "Percent of Studies") +
   theme(axis.text.x = element_text(colour= "black", size= 12), axis.text.y = element_text(size = 13, colour= "black", angle = 15)) + 
-  coord_flip() + scale_y_continuous(limits= c(0,60)) + scale_fill_brewer(palette = "Set2")
+  coord_flip() + scale_y_continuous(limits= c(0,100)) + scale_fill_manual(values= forestpalette4)
 
-forest.scaleplot<- scale.plot + alltheme + labs(fill= "Urban Scale") + theme_legend2
+forest.scaleplot<- scale.plot + alltheme + labs(fill= "Urban Scale") + theme_legend3
+forest.scaleplot
 
 all.scaleplot<- ggarrange(bird.scaleplot, forest.scaleplot,
                                labels = c("Bird", "Forest"),
