@@ -635,6 +635,63 @@ all.scaleplot<- ggarrange(bird.scaleplot, forest.scaleplot,
                                ncol = 2, nrow = 1)
 all.scaleplot
 
+
+############################################ FIGURE _ ############################################
+###################################################################################################
+############################# CATEGORY BY RECOMMENDATION TYPE #####################################
+
+recs<- read.csv("Allrecraw.count.csv")
+
+#sort based on bird category
+recs <- recs[order(recs[,2]), ]
+#manually add a column of totals
+totals<- c(31,31,31,31,31,224,224,224,224,224,224,224,224,53,53,53,53,53,53,50,50,50,50,50,50,50,1,7,7,7,29,29,29,29,29)
+#bind
+recs<- cbind(recs, totals)
+
+recs$percent<- (recs$n/recs$totals)*100
+
+##### PLOT
+birdpalette5 <- c("#feebe2", "#fbb4b9", "#f768a1", "#c51b8a", "#7a0177")
+
+rec.plot <- ggplot(recs, aes(fill= Rec.1, x= reorder(value, -percent) , y= percent)) +
+  geom_bar(stat= 'identity') + theme_hc() + labs(x= "", y= "Percent of Studies") +
+  theme(axis.text.x = element_text(colour= "black", size= 12), axis.text.y = element_text(size = 13, colour= "black", angle = 15)) + 
+  coord_flip() + scale_y_continuous(limits= c(0,100)) + scale_fill_manual(values = birdpalette5)
+
+birdrecoplot <- rec.plot + labs(fill= "Recommendation Type") + theme_legend3 + alltheme
+birdrecoplot
+
+##### FOREST
+recs<- read.csv("FAllrec.count.csv")
+
+#manually add a column of totals
+totals<- c(138,138,138,138,138,138,138,138,6,6,6,6,5,5,5,5,11,11,11,11,11,
+           34,34,34,34,34,34,2,2,28,28,28,28,28,120,120,120,120,120,120,120,120,
+           20,20,20,20,20,20)
+#bind
+recs<- cbind(recs, totals)
+
+recs$percent<- (recs$n/recs$totals)*100
+
+##### PLOT
+forestpalette5 <- c("#ffffcc", "#c2e699", "#78c679", "#31a354", "#006837")
+
+rec.plot <- ggplot(recs, aes(fill= Rec1, x= reorder(value, -percent) , y= percent)) +
+  geom_bar(stat= 'identity') + theme_hc() + labs(x= "", y= "Percent of Studies") +
+  theme(axis.text.x = element_text(colour= "black", size= 12), axis.text.y = element_text(size = 13, colour= "black", angle = 15)) + 
+  coord_flip() + scale_y_continuous(limits= c(0,100)) + scale_fill_manual(values = forestpalette5)
+
+forestrecoplot <- rec.plot + labs(fill= "Recommendation Type") + theme_legend3 + alltheme
+forestrecoplot
+
+all.recoplot<- ggarrange(birdrecoplot, forestrecoplot,
+                              labels = c("Bird", "Forest"),
+                              font.label = list(color= "black"),
+                              ncol = 2, nrow = 1)
+all.recoplot
+
+
 ############################# FIGURE 7 ####################################################################
 ####################### PERCENT PUBLICATIONS ACCORDING TO ONE/MANY INDICATORS ##########################
 birdpalette3 <- c("#ae017e","#f768a1","#fbb4b9","#feebe2")

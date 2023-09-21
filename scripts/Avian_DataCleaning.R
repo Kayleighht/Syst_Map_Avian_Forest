@@ -1,5 +1,5 @@
 #packagesneeded
-Packages <- c("tidyverse", "ggplot2", "maps", "bibliometrix", "ggthemes", "cartography", "sf")
+Packages <- c("tidyverse", "ggplot2", "maps", "bibliometrix", "ggthemes", "cartography", "sf", "stringr")
 lapply(Packages, library,character.only= TRUE)
 
 getwd()
@@ -183,19 +183,9 @@ write.csv(duration.counts2, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Fo
 
 recdf<- av.meta[,c("birddomain1","birddomain2", "birddomain3", "birddomain4", "Rec.",
                    "Rec.1", "Rec.2", "Rec.3")]
-
-
-
-
-
-
-
-
-
-
-
-
-
+#replace N/As with not recommendation in Rec1 column to incorporate "NO" recommendations
+recdf <- recdf %>% 
+  mutate(across('Rec.1', str_replace, 'N/A', 'No Recommendations'))
 
 #COUNT TABLE
 #including all bird domain columns grouped by RECOMMENDATION TYPE 
@@ -204,7 +194,11 @@ recdf<- av.meta[,c("birddomain1","birddomain2", "birddomain3", "birddomain4", "R
 rectype.counts <-as.data.frame(recdf %>%
                                  pivot_longer(cols = c(birddomain1:birddomain4)) %>%
                                  dplyr::count(Rec.1,value))
-#clean nd remove N/As
+#clean dataframe of whitespace
+rectype.counts<- rectype.counts %>% 
+  mutate(across(where(is.character), str_remove_all, pattern = fixed(" ")))
+
+#clean and remove N/As
 rectype.counts <- rectype.counts %>% drop_na(value)
 rectype.counts<- rectype.counts[!grepl("N/A", rectype.counts$Rec.1),]
 rectype.counts<- rectype.counts[!grepl("N/A", rectype.counts$value),]
@@ -234,6 +228,13 @@ rectype.all <- bind_rows(rectype.counts, rectype.counts2, rectype.counts3) %>%
   group_by(value, n) %>% 
   distinct(.keep_all = TRUE)
 
+#resort by category
+rectype.all <- as.data.frame(rectype.all)
+rectype.all <- rectype.all[order(rectype.all[,2]), ]
+
+#PUSHOUT
+write.csv(rectype.all, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Allrecraw.count.csv", row.names = FALSE)
+
 #calculate the percent according to topic and recommendation from TOTAL papers
 rectype.all
 sum(rectype.all$n)
@@ -252,8 +253,16 @@ norec<- data.frame(
 norec$percent <- ((99/274)*100)
 norec
 
+norec2<- data.frame(
+  Rec.1 = "None",
+  value= "No Recommendations",
+  n = 99)
+norec2$totals <- (274)
+norec2
+
 #PUSH OUT CSV
 write.csv(norec, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Norec.count.csv", row.names = FALSE)
+write.csv(norec2, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Norec.count2.csv", row.names = FALSE)
 
 #######                                           ############
 ####### SUBSETTING FOR MULTIPLE INDICATORS COUNTS ############

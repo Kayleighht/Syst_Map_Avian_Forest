@@ -131,6 +131,10 @@ write.csv(fduration.counts2, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_F
 frecdf<- forest.meta[,c("Forest_Comp1","Forest_Comp2", "Forest_Comp3", "Forest_Comp4", "Forest_Comp5", "Rec.included",
                    "Rec1", "Rec2", "Rec3")]
 
+#replace N/As with not recommendation in Rec1 column to incorporate "NO" recommendations
+frecdf <- frecdf %>% 
+  mutate(across('Rec1', str_replace, 'N/A', 'No Recommendations'))
+
 #COUNT TABLE
 #create count table including all bird domain columns grouped by RECOMMENDATION TYPE (first only)
 
@@ -169,14 +173,18 @@ frectype.all <- bind_rows(frectype.counts, frectype.counts2, frectype.counts3) %
   group_by(value, n) %>% 
   distinct(.keep_all = TRUE)
 
+#resort by category
+frectype.all <- as.data.frame(frectype.all)
+frectype.all <- frectype.all[order(frectype.all[,2]), ]
+
+#PUSH OUT CSV
+write.csv(frectype.all, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FAllrec.count.csv", row.names = FALSE)
+
 #calculate the percent according to topic and recommendation from TOTAL papers
 frectype.all
 sum(frectype.all$n)
 frectype.all$percent<- ((frectype.all$n/287)*100)
 frectype.all
-
-#PUSH OUT CSV
-write.csv(frectype.all, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FAllrec.count.csv", row.names = FALSE)
 
 #create a table to count the number of "NO" recommendations
 table(frecdf['Rec.included'])
