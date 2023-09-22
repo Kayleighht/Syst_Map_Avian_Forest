@@ -189,3 +189,45 @@ used?")
   
   Urban
   
+###################### RECOMMENDATION TYPE (USED + TYPE) ############################################
+  
+  #read in files
+  rec.type<- read.csv("FAllrec.count.csv")
+  no.rec<- read.csv("FNorec.count.csv")
+  
+  rec.meta<- rbind(rec.type, no.rec)
+  
+  #remove N/As
+  rec.meta<- rec.meta[!grepl("N/A", rec.meta$value),]
+  rec.meta<- rec.meta[!grepl("N/A", rec.meta$Rec1),]
+  
+  #create new column with TOTAL percent
+  sum(rec.meta$n)
+  rec.meta$totalpercent<- (rec.meta$n/332)*100
+  
+  #### PLOTTING ##############
+  
+  rec.plot<- ggplot(rec.meta, aes(fill = Rec1 , x= reorder(value,-totalpercent), 
+                                  y= totalpercent)) +
+    geom_bar(stat= 'identity') + theme(axis.text.x = element_text(size= 12,), axis.text.y = element_text(size= 13, face = "bold"
+                                                                                                         , angle = 15)) +
+    theme_hc() + labs(x= "", y= "Percent of Studies") + 
+    scale_y_continuous(limits = c(0,40), breaks = c(5, 10, 15, 20, 25, 30, 35, 40)) +
+    scale_fill_brewer(palette = "Set2")
+  
+  theme_legend2<- theme(
+    legend.title = element_text(colour = "black", size = 12, face= "bold"),
+    legend.position = c(0.70, 0.80),
+    legend.box.background =  element_rect(colour = "black"), legend.box.margin = margin(5,5,5,5)
+  )
+  
+  forest.recplot<- rec.plot + alltheme + theme_legend2 + labs(fill = "Recommendation Type") + coord_flip()
+  forest.recplot
+  
+  #ALL#
+  all.recplot <- ggarrange(bird.recplot, forest.recplot,
+                           labels = c("A", "B"),
+                           ncol = 2, nrow = 1,
+                           hjust = -1)
+  all.recplot
+  

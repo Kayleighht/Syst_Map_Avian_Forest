@@ -310,7 +310,7 @@ birdtopic.plot <- ggplot(birdtopics, aes(x= reorder(birdomain, -percent) , y= pe
                   geom_bar(stat= 'identity', position = 'dodge', fill= birdpalette6, width = 0.8) + 
                   
                   theme(axis.text.x = element_text(size= 12), 
-                  axis.text.y = (element_text(size = 13, face = "bold", angle = 15))) + theme_hc() + 
+                  axis.text.y = (element_text(size = 13, angle = 15))) + theme_hc() + 
                   labs(x= "", y= "Percent of Studies") + 
                   scale_y_continuous(limits = c(0,55), breaks = c(10, 20, 30, 40, 50)) +
                   coord_flip()
@@ -334,7 +334,7 @@ foresttopic.plot <- ggplot(foresttopics, aes(x= reorder(forestcomp, -percent) , 
   geom_bar(stat= 'identity', position = 'dodge', fill= forestpalette8, width = 0.8) + 
   
   theme(axis.text.x = element_text(size= 12), 
-        axis.text.y = (element_text(size = 13, face = "bold", angle = 15))) + theme_hc() + 
+        axis.text.y = (element_text(size = 13, angle = 15))) + theme_hc() + 
   labs(x= "", y= "Percent of Studies") + 
   scale_y_continuous(limits = c(0,55), breaks = c(10, 20, 30, 40, 50)) +
   coord_flip()
@@ -349,75 +349,6 @@ componentall<- ggarrange(birdtopic.plot, foresttopic.plot,
                         hjust = -1)
 
 componentall
-
-################################### FIGURE 4 ###########################################################
-###################### RECOMMENDATION TYPE (USED + TYPE) ############################################
-
-#read in files
-rec.type<- read.csv("Allrec.count.csv")
-no.rec<- read.csv("Norec.count.csv")
-
-rec.meta<- rbind(rec.type, no.rec)
-sum(rec.meta$n)
-rec.meta$totalpercent <- ((rec.meta$n)/366)*100
-
-#### PLOTTING ##############
-
-rec.plot<- ggplot(rec.meta, aes(fill = Rec.1 , x= reorder(value,-totalpercent), 
-                                            y= totalpercent)) +
-                  geom_bar(stat= 'identity') + theme(axis.text.x = element_text(size= 12), 
-                                                     axis.text.y = (element_text(size = 13, face = "bold",
-                                                                    angle = 15))) +
-                  theme_hc() + labs(x= "", y= "Percent of Studies") + 
-                  scale_y_continuous(limits = c(0,40), breaks = c(5, 10, 15, 20, 25, 30, 35, 40)) +
-                  scale_fill_brewer(palette = "Set2")
-
-
-bird.recplot<- rec.plot + alltheme + theme_legend2 + labs(fill = "Recommendation Type") + coord_flip()
-bird.recplot 
-
-###################### RECOMMENDATION TYPE (USED + TYPE) ############################################
-
-#read in files
-rec.type<- read.csv("FAllrec.count.csv")
-no.rec<- read.csv("FNorec.count.csv")
-
-rec.meta<- rbind(rec.type, no.rec)
-
-#remove N/As
-rec.meta<- rec.meta[!grepl("N/A", rec.meta$value),]
-rec.meta<- rec.meta[!grepl("N/A", rec.meta$Rec1),]
-
-#create new column with TOTAL percent
-sum(rec.meta$n)
-rec.meta$totalpercent<- (rec.meta$n/332)*100
-
-#### PLOTTING ##############
-
-rec.plot<- ggplot(rec.meta, aes(fill = Rec1 , x= reorder(value,-totalpercent), 
-                                y= totalpercent)) +
-  geom_bar(stat= 'identity') + theme(axis.text.x = element_text(size= 12,), axis.text.y = element_text(size= 13, face = "bold"
-                                                                                                       , angle = 15)) +
-  theme_hc() + labs(x= "", y= "Percent of Studies") + 
-  scale_y_continuous(limits = c(0,40), breaks = c(5, 10, 15, 20, 25, 30, 35, 40)) +
-  scale_fill_brewer(palette = "Set2")
-
-theme_legend2<- theme(
-  legend.title = element_text(colour = "black", size = 12, face= "bold"),
-  legend.position = c(0.70, 0.80),
-  legend.box.background =  element_rect(colour = "black"), legend.box.margin = margin(5,5,5,5)
-)
-
-forest.recplot<- rec.plot + alltheme + theme_legend2 + labs(fill = "Recommendation Type") + coord_flip()
-forest.recplot
-
-#ALL#
-all.recplot <- ggarrange(bird.recplot, forest.recplot,
-                         labels = c("A", "B"),
-                         ncol = 2, nrow = 1,
-                         hjust = -1)
-all.recplot
-
 
 ###################################### FIGURE 5 ######################################################################
 ######################### BIRD SUCCESS COMPONENT BY COMPARATOR #################################################
@@ -468,10 +399,10 @@ Compmeta$comp[Compmeta$comp=="Y"]<-"No"
 #create column for percentage for plotting
 birdpalette2<- c("#fa9fb5","#c51b8a")
 
-comparator.plot<- ggplot(Compmeta, aes(fill = comp, x= reorder(value, -comparator), y= comparator)) +
+comparator.plot<- ggplot(Compmeta, aes(fill = comp, x= value, y= comparator)) +
                   geom_bar(stat= 'identity') + theme(axis.text.y = element_text(size= 13, angle = 15), 
                                                      axis.text.x = element_text(size = 13))+
-                  theme_hc() + labs(x= "", y= "Percent of Studies") + scale_y_continuous(limits = c(0,100), 
+                  theme_hc() + labs(x= "", y= "Percent of Studies") + scale_y_continuous(limits = c(0,105), 
                                                                    breaks = c(0, 20, 40, 60, 80, 100)) +
                   scale_fill_manual(labels= c("No", "Yes"), values = birdpalette2) + coord_flip() 
   
@@ -524,10 +455,10 @@ Compmeta$comp[Compmeta$comp=="Y"]<-"No"
 #PLOTTING
 forestpalette2<- c("#addd8e", "#31a354")
 
-comparator.plot<- ggplot(Compmeta, aes(fill = comp, x= reorder(value, -comparator), y= comparator)) +
+comparator.plot<- ggplot(Compmeta, aes(fill = comp, x= value, y= comparator)) +
   geom_bar(stat= 'identity') + theme(axis.text.y = element_text(size= 13, angle = 15), 
                                      axis.text.x = element_text(size = 13))+
-  theme_hc() + labs(x= "", y= "Percent of Studies") + scale_y_continuous(limits = c(0,110), 
+  theme_hc() + labs(x= "", y= "Percent of Studies") + scale_y_continuous(limits = c(0,101), 
                                                                          breaks = c(0, 20, 40, 60, 80, 100)) +
   scale_fill_manual(values= forestpalette2, labels= c("No", "Yes")) + coord_flip()
 
@@ -576,7 +507,7 @@ Urban$percent <- (Urban$value/Urban$Totals)*100
 
 birdpalette4 <- c("#feebe2", "#fbb4b9", "#f768a1", "#ae017e")
 
-scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= reorder(name, -percent) , y= percent)) +
+scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= name , y= percent)) +
               geom_bar(stat= 'identity') + theme_hc() + labs(x= "", y= "Percent of Studies") +
               theme(axis.text.x = element_text(colour= "black", size= 12), axis.text.y = element_text(size = 13, colour= "black", angle = 15)) + 
               coord_flip() + scale_y_continuous(limits= c(0,100)) + scale_fill_manual(values = birdpalette4)
@@ -621,7 +552,7 @@ Urban$percent <- (Urban$value/Urban$Totals)*100
 
 forestpalette4 <- c("#ffffcc", "#c2e699", "#78c679", "#238443")
 
-scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= reorder(name, -percent), y= percent)) +
+scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= name, y= percent)) +
   geom_bar(stat= 'identity') + theme_hc() + labs(x= "", y= "Percent of Studies") +
   theme(axis.text.x = element_text(colour= "black", size= 12), axis.text.y = element_text(size = 13, colour= "black", angle = 15)) + 
   coord_flip() + scale_y_continuous(limits= c(0,100)) + scale_fill_manual(values= forestpalette4)
@@ -654,7 +585,7 @@ recs$percent<- (recs$n/recs$totals)*100
 ##### PLOT
 birdpalette5 <- c("#feebe2", "#fbb4b9", "#f768a1", "#c51b8a", "#7a0177")
 
-rec.plot <- ggplot(recs, aes(fill= Rec.1, x= reorder(value, -percent) , y= percent)) +
+rec.plot <- ggplot(recs, aes(fill= Rec.1, x= reorder(value) , y= percent)) +
   geom_bar(stat= 'identity') + theme_hc() + labs(x= "", y= "Percent of Studies") +
   theme(axis.text.x = element_text(colour= "black", size= 12), axis.text.y = element_text(size = 13, colour= "black", angle = 15)) + 
   coord_flip() + scale_y_continuous(limits= c(0,100)) + scale_fill_manual(values = birdpalette5)
@@ -677,7 +608,7 @@ recs$percent<- (recs$n/recs$totals)*100
 ##### PLOT
 forestpalette5 <- c("#ffffcc", "#c2e699", "#78c679", "#31a354", "#006837")
 
-rec.plot <- ggplot(recs, aes(fill= Rec1, x= reorder(value, -percent) , y= percent)) +
+rec.plot <- ggplot(recs, aes(fill= Rec1, x= value , y= percent)) +
   geom_bar(stat= 'identity') + theme_hc() + labs(x= "", y= "Percent of Studies") +
   theme(axis.text.x = element_text(colour= "black", size= 12), axis.text.y = element_text(size = 13, colour= "black", angle = 15)) + 
   coord_flip() + scale_y_continuous(limits= c(0,100)) + scale_fill_manual(values = forestpalette5)
@@ -691,6 +622,18 @@ all.recoplot<- ggarrange(birdrecoplot, forestrecoplot,
                               ncol = 2, nrow = 1)
 all.recoplot
 
+#################################################### EMBEDDED FIGURE WITH CATEGORY, RECOMMENDATION, COMPARATOR, URBAN SCALE ###################################
+
+
+embeddedfig<- ggarrange(birdtopic.plot, foresttopic.plot,
+                        birdrecoplot, forestrecoplot,
+                        bird.comparatorplot, forest.comparatorplot,
+                        bird.scaleplot, forest.scaleplot,
+                        labels = c("Bird", "Forest"),
+                        font.label = list(color= "black"),
+                        ncol = 2, nrow = 4)
+
+embeddedfig
 
 ############################# FIGURE 7 ####################################################################
 ####################### PERCENT PUBLICATIONS ACCORDING TO ONE/MANY INDICATORS ##########################
