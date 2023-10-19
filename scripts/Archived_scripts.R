@@ -231,3 +231,173 @@ used?")
                            hjust = -1)
   all.recplot
   
+  
+  ########################## FIGURE _ ###################################################
+  ################### Study Country Heat Map ##################################
+  
+  cutoffs <- data.frame(id = 1:1, 
+                        lat_1 = c(23.5, -23.5), 
+                        lon_1 = c(-170.5, -170.5), 
+                        lat_2 = c(23.5, -23.5),
+                        lon_2 = c(170.5, 170.5))
+  
+  ### AVIAN ###
+  av.meta <-read.csv("Heatmap.count.csv")
+  
+  #subsetting columns we need first
+  region.df<- av.meta[,c("COUNTRY","country.count")]
+  
+  #remove duplicates
+  region.df <- region.df[!duplicated(region.df), ]
+  
+  #remove columns with multiple (don't specificy region)
+  #filter rows that contain the string 'Multiple' in the country column
+  region.df <- region.df %>% filter(!grepl('Multiple', COUNTRY))
+  
+  #load shape file with global map including all countries
+  mapdata<- st_read("World_Countries_Generalized.shp")
+  mapdata$COUNTRY[mapdata$COUNTRY=="United States"]<-"USA"
+  
+  #merge data with studies countries location from systematic map
+  mapdata2<- merge(mapdata, region.df, by="COUNTRY")
+  
+  #upload layer of simple coordinates of global map for bubblemaps 
+  coordmap<- read.csv("countries.csv")
+  coordmap$COUNTRY[coordmap$COUNTRY=="United States"]<-"USA"
+  
+  #merge with country count data
+  coordmap<- merge(mapdata2, coordmap, by="COUNTRY")
+  
+  #PLOTTING     
+  #####WITH MID range 
+  heatmap<- ggplot(data= mapdata) + geom_sf(color= "white", fill= "lightgrey") +
+    geom_sf(data= mapdata2, aes(fill= country.count), color= "white") +
+    xlab("Longitude")+ ylab("Latitude") +
+    ggtitle("Studies by Country Avian") +
+    theme(
+      legend.position = "bottom",
+      text = element_text(color = "black"),
+      plot.background = element_rect(fill = "#f5f5f2", color = NA), 
+      panel.background = element_rect(fill = "#f5f5f2", color = NA), 
+      legend.background = element_rect(fill = "#f5f5f2", color = NA),
+      plot.title = element_text(size= 12, hjust=0.1, color = "black", 
+                                margin = margin(b = -0.1, t = 0.4, l = 2, unit = "cm")),) + 
+    guides(
+      fill = guide_legend("# of Publications")) + geom_segment(data = cutoffs, 
+                                                               aes(x = lon_1, y = lat_1, xend = lon_2, yend = lat_2), 
+                                                               color = "black", linewidth = 1.3, lineend = "round") +
+    scale_colour_continuous(palette = "BuGN")
+  
+  heatmap
+  
+  ### FOREST ###
+  forest.meta <-read.csv("FHeatmap.count.csv")
+  
+  #subsetting columns we need first
+  region.df<- forest.meta[,c("COUNTRY","country.count")]
+  
+  #remove duplicates
+  region.df <- region.df[!duplicated(region.df), ]
+  
+  #remove columns with multiple (don't specificy region)
+  #filter rows that contain the string 'Multiple' in the country column
+  region.df <- region.df %>% filter(!grepl('Multiple', COUNTRY))
+  
+  #load shape file with global map including all countries
+  mapdata<- st_read("World_Countries_Generalized.shp")
+  mapdata$COUNTRY[mapdata$COUNTRY=="United States"]<-"USA"
+  
+  #merge data with studies countries location from systematic map
+  mapdata2<- merge(mapdata, region.df, by="COUNTRY")
+  
+  #upload layer of simple coordinates of global map for bubblemaps 
+  coordmap<- read.csv("countries.csv")
+  coordmap$COUNTRY[coordmap$COUNTRY=="United States"]<-"USA"
+  
+  #merge with country count data
+  coordmap<- merge(mapdata2, coordmap, by="COUNTRY")
+  
+  #PLOTTING     
+  #####WITH MID range 
+  
+  heatmap<- ggplot(data= mapdata) + geom_sf(color= "white", fill= "lightgrey") +
+    geom_sf(data= mapdata2, aes(fill= country.count), color= "white") +
+    xlab("Longitude")+ ylab("Latitude") +
+    ggtitle("Studies by Country Forest") +
+    
+    theme(
+      legend.position = "bottom",
+      text = element_text(color = "black"),
+      plot.background = element_rect(fill = "#f5f5f2", color = NA), 
+      panel.background = element_rect(fill = "#f5f5f2", color = NA), 
+      legend.background = element_rect(fill = "#f5f5f2", color = NA),
+      plot.title = element_text(size= 12, hjust=0.1, color = "black", margin = margin(b = -0.1, t = 0.4, l = 2, unit = "cm")),) +
+    guides(
+      fill = guide_legend("# of Publications")) + geom_segment(data = cutoffs, 
+                                                               aes(x = lon_1, y = lat_1, xend = lon_2, yend = lat_2), 
+                                                               color = "black", linewidth = 1.3, lineend = "round") +
+    scale_colour_continuous(palette = "BuGN")
+  
+  
+  heatmap
+  
+  ########################## FIGURE 3 #########################################################
+  ############### # Publication according to Top 10 Journals with Country ###########################################
+  
+  #AVIAN#
+  country.count<- read.csv("Country.count.csv")
+  
+  #subset columns needed
+  journal.df <- country.count[,c("COUNTRY", "Journal", "journal.count")]
+  #sort column descending order
+  journal.df <- arrange(journal.df, -journal.count)
+  #remove duplicates
+  journal.df <- journal.df[!duplicated(journal.df), ]
+  
+  #select only top ten
+  journal.df <- journal.df[1:13,]
+  
+  journal.plot <- ggplot(journal.df, aes(x= reorder(Journal, -journal.count), y= journal.count, fill = COUNTRY)) + 
+    geom_bar(stat = 'identity') + theme(axis.text.x = element_text(size= 10)) +
+    labs(x= "", y= "Number of Publications") + scale_fill_brewer(palette = "Set2") +
+    theme_hc() + theme(axis.text.x = element_text(colour = "black", size= 10.5),
+                       axis.text.y = element_text(colour = "black", size = 12, face= "bold"))
+  
+  
+  journal.plotbird<- journal.plot + alltheme + labs(fill = "Country") + theme_legend + coord_flip()
+  
+  #FOREST#
+  
+  country.count<- read.csv("FCountry.count.csv")
+  
+  #subset columns needed
+  journal.df <- country.count[,c("COUNTRY", "Journal", "journal.count")]
+  #sort column descending order
+  journal.df <- arrange(journal.df, -journal.count)
+  #remove duplicates
+  journal.df <- journal.df[!duplicated(journal.df), ]
+  
+  #select only top ten
+  journal.df <- journal.df[1:14,]
+  
+  journal.plot <- ggplot(journal.df, aes(x= reorder(Journal, -journal.count), y= journal.count, fill = COUNTRY)) + 
+    geom_bar(stat = 'identity')  + labs(x= "", y= "Number of Publications") + scale_fill_brewer(palette = "Set2") +
+    theme_hc() + theme(axis.text.x = element_text(colour = "black", size= 10.5), 
+                       axis.text.y = element_text(colour= "black", size = 12, face = "bold")) + coord_flip() +
+    scale_y_continuous(breaks = c(0,5,10,15), lim = c(0,10))
+  
+  theme_legend<- theme(
+    legend.title = element_text(colour = "black", size = 12, face= "bold"),
+    legend.position = c(0.7, 0.8),
+    legend.box.background =  element_rect(colour = "black"), legend.box.margin = margin(5,5,5,5))
+  
+  journal.plotforest<- journal.plot + alltheme + labs(fill = "Country") + theme_legend 
+  journal.plotforest
+  
+  journal.allplot<- ggarrange(journal.plotbird, journal.plotforest,
+                              labels = c("A", "B"),
+                              ncol = 2, nrow = 1,
+                              hjust = -2.3)
+  journal.allplot
+  
+  

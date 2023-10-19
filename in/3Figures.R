@@ -9,6 +9,10 @@ setwd("C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Fo
 ############################# THEME CREATION ####################################
 
 alltheme <- theme(
+  panel.border = element_blank(), panel.grid.major = element_blank(),
+  panel.background = element_rect(fill = "white", color = NA),
+  plot.background = element_rect(fill = "white", color = NA),
+  panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"),
   text = element_text(family = "serif"),
   axis.title.y = element_text(colour = "black",face = "bold", size = '16'),
   axis.title.x = element_text(colour = "black", face = "bold", size= '16'),
@@ -35,8 +39,8 @@ theme_legend3<- theme(
   legend.box.background =  element_rect(colour = "black"), legend.box.margin = margin(5,5,5,5))
 
 
-forestcol<- ("#31a354")
-birdcol<- ("#c51b8a")
+forestcol<- ("#B8DE29FF")
+birdcol<- ("#481567FF")
 
 ################################ FIGURE 1 ##################################################################
 ########################## PUBLICATIONS BY YEAR ###########################################
@@ -52,7 +56,7 @@ lab<- labs(x= "Year", y= "Number of Publications")
 
 #plotting articles over time
 byyear_av<- ggplot(year.count, aes(x= Year, y=Year_count))  + 
-  geom_line(size= 0.7, colour= "#c51b8a") + lab  +
+  geom_line(size= 0.7, colour= birdcol) + lab  +
   theme(panel.border = element_blank(), panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(), panel.background = element_blank(),
         axis.line = element_line(colour = "black"),
@@ -60,182 +64,23 @@ byyear_av<- ggplot(year.count, aes(x= Year, y=Year_count))  +
                                    colour = "black")) + 
   scale_x_continuous(breaks = c(1980, 1985, 1990, 1995,2000, 2005, 2010, 2015, 2020), limits = c(1979, 2021)) +
   scale_y_continuous(breaks = c(5,10,15,20,25), 
-                     limits = c(0,25)) + geom_area(fill = "#c51b8a")
+                     limits = c(0,25)) + geom_area(fill = birdcol)
 
 publication.years<- byyear_av + alltheme +
-                    geom_line(data= fyear.count, aes(x=Year, y = Year_count), size= 0.7, colour = "#31a354") +
-                    geom_area(data= fyear.count, aes(x=Year, y = Year_count), fill= "#31a354")
+                    geom_line(data= fyear.count, aes(x=Year, y = Year_count), size= 0.7, colour = forestcol) +
+                    geom_area(data= fyear.count, aes(x=Year, y = Year_count), fill= forestcol) 
 
 publication.years 
 
 ########################## FIGURE _ ###################################################
 ################### Study Country Heat Map ##################################
 
-cutoffs <- data.frame(id = 1:1, 
-                      lat_1 = c(23.5, -23.5), 
-                      lon_1 = c(-170.5, -170.5), 
-                      lat_2 = c(23.5, -23.5),
-                      lon_2 = c(170.5, 170.5))
-
-### AVIAN ###
-av.meta <-read.csv("Heatmap.count.csv")
-
-#subsetting columns we need first
-region.df<- av.meta[,c("COUNTRY","country.count")]
-
-#remove duplicates
-region.df <- region.df[!duplicated(region.df), ]
-
-#remove columns with multiple (don't specificy region)
-#filter rows that contain the string 'Multiple' in the country column
-region.df <- region.df %>% filter(!grepl('Multiple', COUNTRY))
-
-#load shape file with global map including all countries
-mapdata<- st_read("World_Countries_Generalized.shp")
-mapdata$COUNTRY[mapdata$COUNTRY=="United States"]<-"USA"
-
-#merge data with studies countries location from systematic map
-mapdata2<- merge(mapdata, region.df, by="COUNTRY")
-
-#upload layer of simple coordinates of global map for bubblemaps 
-coordmap<- read.csv("countries.csv")
-coordmap$COUNTRY[coordmap$COUNTRY=="United States"]<-"USA"
-
-#merge with country count data
-coordmap<- merge(mapdata2, coordmap, by="COUNTRY")
-
-#PLOTTING     
-#####WITH MID range 
-heatmap<- ggplot(data= mapdata) + geom_sf(color= "white", fill= "lightgrey") +
-  geom_sf(data= mapdata2, aes(fill= country.count), color= "white") +
-  xlab("Longitude")+ ylab("Latitude") +
-  ggtitle("Studies by Country Avian") +
-  theme(
-    legend.position = "bottom",
-    text = element_text(color = "black"),
-    plot.background = element_rect(fill = "#f5f5f2", color = NA), 
-    panel.background = element_rect(fill = "#f5f5f2", color = NA), 
-    legend.background = element_rect(fill = "#f5f5f2", color = NA),
-    plot.title = element_text(size= 12, hjust=0.1, color = "black", 
-                              margin = margin(b = -0.1, t = 0.4, l = 2, unit = "cm")),) + 
-  guides(
-    fill = guide_legend("# of Publications")) + geom_segment(data = cutoffs, 
-                                                             aes(x = lon_1, y = lat_1, xend = lon_2, yend = lat_2), 
-                                                             color = "black", linewidth = 1.3, lineend = "round") +
-  scale_colour_continuous(palette = "BuGN")
-
-heatmap
-
-### FOREST ###
-forest.meta <-read.csv("FHeatmap.count.csv")
-
-#subsetting columns we need first
-region.df<- forest.meta[,c("COUNTRY","country.count")]
-
-#remove duplicates
-region.df <- region.df[!duplicated(region.df), ]
-
-#remove columns with multiple (don't specificy region)
-#filter rows that contain the string 'Multiple' in the country column
-region.df <- region.df %>% filter(!grepl('Multiple', COUNTRY))
-
-#load shape file with global map including all countries
-mapdata<- st_read("World_Countries_Generalized.shp")
-mapdata$COUNTRY[mapdata$COUNTRY=="United States"]<-"USA"
-
-#merge data with studies countries location from systematic map
-mapdata2<- merge(mapdata, region.df, by="COUNTRY")
-
-#upload layer of simple coordinates of global map for bubblemaps 
-coordmap<- read.csv("countries.csv")
-coordmap$COUNTRY[coordmap$COUNTRY=="United States"]<-"USA"
-
-#merge with country count data
-coordmap<- merge(mapdata2, coordmap, by="COUNTRY")
-
-#PLOTTING     
-#####WITH MID range 
-
-heatmap<- ggplot(data= mapdata) + geom_sf(color= "white", fill= "lightgrey") +
-  geom_sf(data= mapdata2, aes(fill= country.count), color= "white") +
-  xlab("Longitude")+ ylab("Latitude") +
-  ggtitle("Studies by Country Forest") +
-  
-  theme(
-    legend.position = "bottom",
-    text = element_text(color = "black"),
-    plot.background = element_rect(fill = "#f5f5f2", color = NA), 
-    panel.background = element_rect(fill = "#f5f5f2", color = NA), 
-    legend.background = element_rect(fill = "#f5f5f2", color = NA),
-    plot.title = element_text(size= 12, hjust=0.1, color = "black", margin = margin(b = -0.1, t = 0.4, l = 2, unit = "cm")),) +
-  guides(
-    fill = guide_legend("# of Publications")) + geom_segment(data = cutoffs, 
-                                                             aes(x = lon_1, y = lat_1, xend = lon_2, yend = lat_2), 
-                                                             color = "black", linewidth = 1.3, lineend = "round") +
-  scale_colour_continuous(palette = "BuGN")
-
-
-heatmap
+# will add Riikka's code here
 
 ########################## FIGURE 3 #########################################################
 ############### # Publication according to Top 10 Journals with Country ###########################################
 
-#AVIAN#
-country.count<- read.csv("Country.count.csv")
-
-#subset columns needed
-journal.df <- country.count[,c("COUNTRY", "Journal", "journal.count")]
-#sort column descending order
-journal.df <- arrange(journal.df, -journal.count)
-#remove duplicates
-journal.df <- journal.df[!duplicated(journal.df), ]
-
-#select only top ten
-journal.df <- journal.df[1:13,]
-
-journal.plot <- ggplot(journal.df, aes(x= reorder(Journal, -journal.count), y= journal.count, fill = COUNTRY)) + 
-  geom_bar(stat = 'identity') + theme(axis.text.x = element_text(size= 10)) +
-  labs(x= "", y= "Number of Publications") + scale_fill_brewer(palette = "Set2") +
-  theme_hc() + theme(axis.text.x = element_text(colour = "black", size= 10.5),
-                     axis.text.y = element_text(colour = "black", size = 12, face= "bold"))
-
-
-journal.plotbird<- journal.plot + alltheme + labs(fill = "Country") + theme_legend + coord_flip()
-  
-#FOREST#
-
-country.count<- read.csv("FCountry.count.csv")
-
-#subset columns needed
-journal.df <- country.count[,c("COUNTRY", "Journal", "journal.count")]
-#sort column descending order
-journal.df <- arrange(journal.df, -journal.count)
-#remove duplicates
-journal.df <- journal.df[!duplicated(journal.df), ]
-
-#select only top ten
-journal.df <- journal.df[1:14,]
-
-journal.plot <- ggplot(journal.df, aes(x= reorder(Journal, -journal.count), y= journal.count, fill = COUNTRY)) + 
-  geom_bar(stat = 'identity')  + labs(x= "", y= "Number of Publications") + scale_fill_brewer(palette = "Set2") +
-  theme_hc() + theme(axis.text.x = element_text(colour = "black", size= 10.5), 
-                     axis.text.y = element_text(colour= "black", size = 12, face = "bold")) + coord_flip() +
-  scale_y_continuous(breaks = c(0,5,10,15), lim = c(0,10))
-
-theme_legend<- theme(
-  legend.title = element_text(colour = "black", size = 12, face= "bold"),
-  legend.position = c(0.7, 0.8),
-  legend.box.background =  element_rect(colour = "black"), legend.box.margin = margin(5,5,5,5))
-
-journal.plotforest<- journal.plot + alltheme + labs(fill = "Country") + theme_legend 
-journal.plotforest
-
-journal.allplot<- ggarrange(journal.plotbird, journal.plotforest,
-                            labels = c("A", "B"),
-                            ncol = 2, nrow = 1,
-                            hjust = -2.3)
-journal.allplot
-
+#will add Riikka's code here
 
 ################################## FIGURE __ #########################################################
 ####################### NUMBER OF PUBLICATIONS ACCORDING TO STUDY DURATION ###############################################
@@ -251,7 +96,7 @@ sum(Duration$percent)   #confirm the percentage adds to 100
 #PLOT 
 
 duration.plot <- ggplot(Duration, aes(x= reorder(duration_bin, -percent) , y= percent)) +
-                 geom_bar(stat= 'identity', fill = "#c51b8a", width = 0.6) + 
+                 geom_bar(stat= 'identity', fill = birdcol, width = 0.6) + 
                  theme_hc() + labs(x= "Time-scale considered", y= "Percent of Studies") +
                  
                  theme(axis.text.x = element_text(size = 11, angle = -20), axis.ticks.x = element_blank()) + 
@@ -272,7 +117,7 @@ sum(Duration2$n)
 Duration2$percent <- ((Duration2$n/112)*100)
 
 duration.plot <- ggplot(Duration2, aes(x= reorder(duration_bin, -percent) , y= percent)) +
-  geom_bar(stat= 'identity', position = 'dodge', fill= "#31a354", width = 0.6) + theme_hc() + labs(x= "Time-scale considered", y= "Percent of Studies") +
+  geom_bar(stat= 'identity', position = 'dodge', fill= forestcol, width = 0.6) + theme_hc() + labs(x= "Time-scale considered", y= "Percent of Studies") +
   
   theme(axis.text.x = element_text(size = 11, angle = -20), axis.ticks.x = element_blank()) + 
   
@@ -290,6 +135,25 @@ durationall<- ggarrange(bird.durationplot, forest.durationplot,
                         common.legend = TRUE)
 durationall
 
+## COMBINE IN ONE STACKED BAR CHART
+durationall<- rbind(Duration2, Duration)
+durationall$component <- c("Forest", "Forest", "Forest", "Forest", "Avian", "Avian", "Avian", "Avian")
+durationall$duration_binclean <- c("0-1", "1-5", "5-10", "10-100", "0-1", "1-5", "5-10", "10-100")
+
+#order dataframe for plotting
+durationsorted <- within(durationall, 
+                   duration_binclean <- factor(duration_binclean, 
+                                      levels=names(sort(table(duration_binclean), 
+                                                        decreasing=TRUE))))
+
+duration.plotall <- ggplot(durationsorted, aes(x= duration_binclean, y=percent, fill=component)) +
+                    geom_bar(stat='identity', position='dodge', width= 0.8) +
+                    labs(x= "Time-scale considered (years)", y= "Percent of Studies") +
+                    
+                    scale_y_continuous(breaks = c(0, 10, 20, 30, 40, 50), limits = c(0,55)) +
+                    scale_fill_manual(values=c(birdcol, forestcol)) + alltheme + theme_legend +
+                    labs(fill = "Topic")
+duration.plotall
 
 #################################### FIGURE __ ######################################################
 ############################ TOPICS ONLY ###########################################################
@@ -301,16 +165,11 @@ birdtopics<- read.csv("bird.component.csv")
 sum(birdtopics$total)
 birdtopics$percent <- (birdtopics$total/348)*100
 
-#PLOT
-birdpalette6 <- c("#fa9fb5","#7a0177" ,"#c51b8a", "#f768a1", "#feebe2", "#fcc5c0")
-  
-  
- 
 birdtopic.plot <- ggplot(birdtopics, aes(x= reorder(birdomain, -percent) , y= percent)) +
-                  geom_bar(stat= 'identity', position = 'dodge', fill= birdpalette6, width = 0.8) + 
+                  geom_bar(stat= 'identity', position = 'dodge', fill= birdcol, width = 0.8) + 
                   
                   theme(axis.text.x = element_text(size= 12), 
-                  axis.text.y = (element_text(size = 13, angle = 15))) + theme_hc() + 
+                  axis.text.y = (element_text(size = 13, angle = 15))) + alltheme + 
                   labs(x= "", y= "Percent of Studies") + 
                   scale_y_continuous(limits = c(0,55), breaks = c(10, 20, 30, 40, 50)) +
                   coord_flip()
@@ -325,16 +184,12 @@ foresttopics<- read.csv("forest.component.csv")
 #create new column with percent of studies
 sum(foresttopics$total)
 foresttopics$percent <- (foresttopics$total/267)*100
-
-#PLOT
-forestpalette8 <- c("#005a32","#f7fcb9","#ffffe5","#d9f0a3","#78c679","#41ab5d", "#238443","#addd8e")
-  
   
 foresttopic.plot <- ggplot(foresttopics, aes(x= reorder(forestcomp, -percent) , y= percent)) +
-  geom_bar(stat= 'identity', position = 'dodge', fill= forestpalette8, width = 0.8) + 
+  geom_bar(stat= 'identity', position = 'dodge', fill= forestcol, width = 0.8) + 
   
   theme(axis.text.x = element_text(size= 12), 
-        axis.text.y = (element_text(size = 13, angle = 15))) + theme_hc() + 
+        axis.text.y = (element_text(size = 13, angle = 15)))  + alltheme + 
   labs(x= "", y= "Percent of Studies") + 
   scale_y_continuous(limits = c(0,55), breaks = c(10, 20, 30, 40, 50)) +
   coord_flip()
@@ -344,13 +199,12 @@ foresttopic.plot
 
 #COMBINEPLOT
 componentall<- ggarrange(birdtopic.plot, foresttopic.plot,
-                        labels = c("A", "B"),
                         ncol = 1, nrow = 2,
                         hjust = -1)
 
 componentall
 
-###################################### FIGURE 5 ######################################################################
+######################################    ######################################################################
 ######################### BIRD SUCCESS COMPONENT BY COMPARATOR #################################################
 
 Comp<- read.csv("Comp.count.csv")
@@ -397,12 +251,12 @@ Compmeta$comp[Compmeta$comp=="N"]<-"Yes"
 Compmeta$comp[Compmeta$comp=="Y"]<-"No"
 
 #create column for percentage for plotting
-birdpalette2<- c("#fa9fb5","#c51b8a")
+birdpalette2<- c("#481567FF","#404788FF")
 
 comparator.plot<- ggplot(Compmeta, aes(fill = comp, x= value, y= comparator)) +
                   geom_bar(stat= 'identity') + theme(axis.text.y = element_text(size= 13, angle = 15), 
                                                      axis.text.x = element_text(size = 13))+
-                  theme_hc() + labs(x= "", y= "Percent of Studies") + scale_y_continuous(limits = c(0,105), 
+                  alltheme + labs(x= "", y= "Percent of Studies") + scale_y_continuous(limits = c(0,105), 
                                                                    breaks = c(0, 20, 40, 60, 80, 100)) +
                   scale_fill_manual(labels= c("No", "Yes"), values = birdpalette2) + coord_flip() 
   
@@ -453,12 +307,12 @@ Compmeta$comp[Compmeta$comp=="N"]<-"Yes"
 Compmeta$comp[Compmeta$comp=="Y"]<-"No"
 
 #PLOTTING
-forestpalette2<- c("#addd8e", "#31a354")
+forestpalette2<- c("#B8DE29FF", "#55C667FF")
 
 comparator.plot<- ggplot(Compmeta, aes(fill = comp, x= value, y= comparator)) +
   geom_bar(stat= 'identity') + theme(axis.text.y = element_text(size= 13, angle = 15), 
                                      axis.text.x = element_text(size = 13))+
-  theme_hc() + labs(x= "", y= "Percent of Studies") + scale_y_continuous(limits = c(0,101), 
+  alltheme + labs(x= "", y= "Percent of Studies") + scale_y_continuous(limits = c(0,101), 
                                                                          breaks = c(0, 20, 40, 60, 80, 100)) +
   scale_fill_manual(values= forestpalette2, labels= c("No", "Yes")) + coord_flip()
 
@@ -466,12 +320,11 @@ forest.comparatorplot<-comparator.plot + alltheme + theme_legend3 + labs(fill= "
 used?")
 
 all.comparatorplot<- ggarrange(bird.comparatorplot, forest.comparatorplot,
-                               labels = c("Bird", "Forest"),
                                font.label = list(color= "black"),
                                ncol = 2, nrow = 1)
 all.comparatorplot
 
-####################################### FIGURE 6 ######################################################################
+#######################################      ######################################################################
 ############################ BIRD SUCCESS COMPONENT BY URBAN SCALE ###########################################
 
 Urban <- read.csv("Urb.count.csv")
@@ -505,10 +358,10 @@ Urban$percent <- (Urban$value/Urban$Totals)*100
 
 #PLOTTING ####################################################################
 
-birdpalette4 <- c("#feebe2", "#fbb4b9", "#f768a1", "#ae017e")
+birdpalette4 <- c("#481567FF", "#404788FF", "#33638DFF", "#238A8Dff")
 
 scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= name , y= percent)) +
-              geom_bar(stat= 'identity') + theme_hc() + labs(x= "", y= "Percent of Studies") +
+              geom_bar(stat= 'identity') + alltheme + labs(x= "", y= "Percent of Studies") +
               theme(axis.text.x = element_text(colour= "black", size= 12), axis.text.y = element_text(size = 13, colour= "black", angle = 15)) + 
               coord_flip() + scale_y_continuous(limits= c(0,100)) + scale_fill_manual(values = birdpalette4)
 
@@ -516,7 +369,6 @@ bird.scaleplot<- scale.plot + labs(fill= "Urban Scale") + theme_legend3 + allthe
 bird.scaleplot
 
 #FOREST#
-
 Urban <- read.csv("FUrb.count.csv")
 #remove n/a's created from empty rows
 Urban <- Urban %>% drop_na(value)
@@ -550,16 +402,18 @@ Urban$percent <- (Urban$value/Urban$Totals)*100
 
 ## PLOT #############################################################################################
 
-forestpalette4 <- c("#ffffcc", "#c2e699", "#78c679", "#238443")
+forestpalette4 <- c("#20A387FF", "#55C667FF", "#B8DE29FF", "#FDE725FF")
+
 
 scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= name, y= percent)) +
-  geom_bar(stat= 'identity') + theme_hc() + labs(x= "", y= "Percent of Studies") +
+  geom_bar(stat= 'identity') + alltheme + labs(x= "", y= "Percent of Studies") +
   theme(axis.text.x = element_text(colour= "black", size= 12), axis.text.y = element_text(size = 13, colour= "black", angle = 15)) + 
   coord_flip() + scale_y_continuous(limits= c(0,100)) + scale_fill_manual(values= forestpalette4)
 
 forest.scaleplot<- scale.plot + alltheme + labs(fill= "Urban Scale") + theme_legend3
 forest.scaleplot
 
+#COMBINE ALL
 all.scaleplot<- ggarrange(bird.scaleplot, forest.scaleplot,
                                labels = c("Bird", "Forest"),
                                font.label = list(color= "black"),
@@ -583,14 +437,17 @@ recs<- cbind(recs, totals)
 recs$percent<- (recs$n/recs$totals)*100
 
 ##### PLOT
-birdpalette5 <- c("#feebe2", "#fbb4b9", "#f768a1", "#c51b8a", "#7a0177")
+birdpalette4s <- c("#481567FF", "#404788FF", "#A9A9A9" , "#33638DFF")
 
-rec.plot <- ggplot(recs, aes(fill= Rec.1, x= reorder(value) , y= percent)) +
-  geom_bar(stat= 'identity') + theme_hc() + labs(x= "", y= "Percent of Studies") +
+rec.plot <- ggplot(recs, aes(fill= Rec.1, x= value , y= percent)) +
+  geom_bar(stat= 'identity') + alltheme + labs(x= "", y= "Percent of Studies") +
   theme(axis.text.x = element_text(colour= "black", size= 12), axis.text.y = element_text(size = 13, colour= "black", angle = 15)) + 
-  coord_flip() + scale_y_continuous(limits= c(0,100)) + scale_fill_manual(values = birdpalette5)
+  coord_flip() + scale_y_continuous(limits= c(0,100)) + scale_fill_manual(values = birdpalette4s, name =  "Recommendation 
+Type", 
+                                                                                                  labels = c("Conservation", "Management", 
+                                                                                                            "None", "Restoration")) + theme_legend3
 
-birdrecoplot <- rec.plot + labs(fill= "Recommendation Type") + theme_legend3 + alltheme
+birdrecoplot <- rec.plot
 birdrecoplot
 
 ##### FOREST
@@ -606,18 +463,24 @@ recs<- cbind(recs, totals)
 recs$percent<- (recs$n/recs$totals)*100
 
 ##### PLOT
-forestpalette5 <- c("#ffffcc", "#c2e699", "#78c679", "#31a354", "#006837")
+forestpalette4s <- c("#20A387FF", "#3CBB75FF", "#A9A9A9", "#B8DE29FF")
 
 rec.plot <- ggplot(recs, aes(fill= Rec1, x= value , y= percent)) +
-  geom_bar(stat= 'identity') + theme_hc() + labs(x= "", y= "Percent of Studies") +
+  geom_bar(stat= 'identity') + alltheme + labs(x= "", y= "Percent of Studies") +
   theme(axis.text.x = element_text(colour= "black", size= 12), axis.text.y = element_text(size = 13, colour= "black", angle = 15)) + 
-  coord_flip() + scale_y_continuous(limits= c(0,100)) + scale_fill_manual(values = forestpalette5)
+  coord_flip() + scale_y_continuous(limits= c(0,100)) + scale_fill_manual(values = forestpalette4s, 
+                                                                          name =  "Recommendation 
+Type", 
+                                                                          labels = c("Conservation", "Management", 
+                                                                                     "None", "Restoration"))
 
-forestrecoplot <- rec.plot + labs(fill= "Recommendation Type") + theme_legend3 + alltheme
+forestrecoplot <- rec.plot + theme_legend3 + alltheme 
+                  
 forestrecoplot
 
+#COMBINE IN ONE PLOT
+
 all.recoplot<- ggarrange(birdrecoplot, forestrecoplot,
-                              labels = c("Bird", "Forest"),
                               font.label = list(color= "black"),
                               ncol = 2, nrow = 1)
 all.recoplot
@@ -626,10 +489,9 @@ all.recoplot
 
 
 embeddedfig<- ggarrange(birdtopic.plot, foresttopic.plot,
-                        birdrecoplot, forestrecoplot,
                         bird.comparatorplot, forest.comparatorplot,
                         bird.scaleplot, forest.scaleplot,
-                        labels = c("Bird", "Forest"),
+                        birdrecoplot, forestrecoplot,
                         font.label = list(color= "black"),
                         ncol = 2, nrow = 4)
 
