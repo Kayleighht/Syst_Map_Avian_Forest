@@ -1,24 +1,24 @@
-"Year","Journal","COUNTRY","Urb.scale","Year.start","Year.end","Comparator","Forest_Comp1","Forest_Comp2","Forest_Comp3","Forest_Comp4","Forest_Comp5","Rec.included","Rec1","Rec2","Rec3","Year_count"
-1997,"Environmental Management","Canada","Region","1827","1990","N","Land use type","N/A","N/A","N/A","N/A","Y","Management","N/A","N/A",1
-2017,"Nature Conservation","Cyprus","Patch","N/A","N/A","N","Land use type","Composition","Forested area","N/A","N/A","Y","Management","N/A","N/A",15
-2013,"Environmental Science and Pollution Research","China","Multi-Patch","2016","2016","N","Land use type","Connectivity","N/A","N/A","N/A","Y","Management","Restoration","N/A",14
-2021,"Environmental Research Letters","China ","Patch","2004","2016","N","Connectivity","N/A","N/A","N/A","N/A","Y","Management","N/A","N/A",22
-2019,"Journal of Cleaner Production","China","Region","1990","2015","N","Forested area","Land use type","N/A","N/A","N/A","N","N/A","N/A","N/A",13
-1995,"Tree Physiology","USA","Patch","1995","1995","N","Individual tree management","N/A","N/A","N/A","N/A","N","N/A","N/A","N/A",2
-2016,"Journal of Arid Environments","USA","Multi-Patch","2012","2013","N","Land use type","N/A","N/A","N/A","N/A","Y","Restoration","Conservation","N/A",11
-2020,"Science of The Total Environment","USA","Region","2001","2016","N","Land use type","N/A","N/A","N/A","N/A","Y","Conservation","N/A","N/A",17
-2018,"Landscape and Urban Planning","USA","Multi-Patch","2013","2015","N","Composition","N/A","Land use type","N/A","N/A","Y","Management","N/A","N/A",13
-2022,"Ecological Indicators","China","Region","1989","2019","N","Diversity metric","Land use type","Fragmentation","Composition","N/A","Y","Management","N/A","N/A",8
-2008,"International Journal of Remote Sensing","USA","Multi-Patch","1971","2003","N","Land use type","N/A","N/A","N/A","N/A","N","N/A","N/A","N/A",1
-2002,"Environmental Pollution","Australia","Multi-Patch","1911","1990","N","Forested area","N/A","N/A","N/A","N/A","Y","Management","N/A","N/A",3
-2011,"Global Change Biology","USA","Multi-Patch","2009","2009","N","Composition","Land use type","N/A","N/A","N/A","Y","Management","N/A","N/A",6
-2012,"Journal of Environmental Management","China","Multi-Patch","1972","2006","N","Composition","Land use type","N/A","N/A","N/A","Y","Conservation","Management","N/A",9
-2014,"The International Journalof Life Cycle Assessment","USA","Patch","N/A","N/A","N","Composition","Land use type","N/A","N/A","N/A","Y","Management","N/A","N/A",8
-2001,"Environmental Pollution","USA","Multi-Patch","1992","1992","N","Composition","N/A","N/A","N/A","N/A","N","N/A","N/A","N/A",1
-2015,"Urban Forestry & Urban Greening","Germany","Multi-Patch","N/A","N/A","N","Individual tree management","Composition","N/A","N/A","N/A","N","N/A","N/A","N/A",14
-2005,"Landscape and Urban Planning","Canada","Multi-Patch","2002","2002","Y","Composition","N/A","N/A","N/A","N/A","N","N/A","N/A","N/A",2
-2009,"Australian Geographer","Australia","Multi-Patch","N/A","N/A","N","N/A","Land use type","N/A","N/A","N/A","Y","Management","N/A","N/A",1
-2010,"Environmental Science & Policy","USA","Region","2008","2008","Y","Land use type","Composition","N/A","N/A","N/A","Y","Management","N/A","N/A",5
-2007,"Landscape and Urban Planning","Italy","Multi-Patch","2005","2005","Y","Land use type","Individual tree management","N/A","N/A","N/A","Y","Management","N/A","N/A",2
-2004,"Journal of Aboriculture","United States","Region","1997","2000","N","Composition","N/A","N/A","N/A","N/A","N","N/A","N/A","N/A",1
-1991,"University of California, Berkley","USA","Multi-Patch","1989","1989","N","Land use type","Composition","N/A","N/A","N/A","Y","Management","N/A","N/A",1
+"Year","Journal","Publication.Type.","COUNTRY","Urb.scale","Year.start","Year.end","Comparator","Forest_Comp1","Forest_Comp2","Forest_Comp3","Forest_Comp4","Forest_Comp5","Rec.included","Rec1","Rec2","Rec3","Year_count"
+1997,"Environmental Management","Peer-Reviewed Article","Canada","Region","1827","1990","N","Land use type","N/A","N/A","N/A","N/A","Y","Management","N/A","N/A",1
+2017,"Nature Conservation","Peer-Reviewed Article","Cyprus","Patch","N/A","N/A","N","Land use type","Composition","Forested area","N/A","N/A","Y","Management","N/A","N/A",15
+2013,"Environmental Science and Pollution Research","Peer-Reviewed Article","China","Multi-Patch","2016","2016","N","Land use type","Connectivity","N/A","N/A","N/A","Y","Management","Restoration","N/A",14
+2021,"Environmental Research Letters","Peer-Reviewed Article","China ","Patch","2004","2016","N","Connectivity","N/A","N/A","N/A","N/A","Y","Management","N/A","N/A",22
+2019,"Journal of Cleaner Production","Peer-Reviewed Article","China","Region","1990","2015","N","Forested area","Land use type","N/A","N/A","N/A","N","N/A","N/A","N/A",13
+1995,"Tree Physiology","Peer-Reviewed Article","USA","Patch","1995","1995","N","Individual tree management","N/A","N/A","N/A","N/A","N","N/A","N/A","N/A",2
+2016,"Journal of Arid Environments","Peer-Reviewed Article","USA","Multi-Patch","2012","2013","N","Land use type","N/A","N/A","N/A","N/A","Y","Restoration","Conservation","N/A",11
+2020,"Science of The Total Environment","Peer-Reviewed Article","USA","Region","2001","2016","N","Land use type","N/A","N/A","N/A","N/A","Y","Conservation","N/A","N/A",17
+2018,"Landscape and Urban Planning","Peer-Reviewed Article","USA","Multi-Patch","2013","2015","N","Composition","N/A","Land use type","N/A","N/A","Y","Management","N/A","N/A",13
+2022,"Ecological Indicators","Peer-Reviewed Article","China","Region","1989","2019","N","Diversity metric","Land use type","Fragmentation","Composition","N/A","Y","Management","N/A","N/A",8
+2008,"International Journal of Remote Sensing","Peer-Reviewed Article","USA","Multi-Patch","1971","2003","N","Land use type","N/A","N/A","N/A","N/A","N","N/A","N/A","N/A",1
+2002,"Environmental Pollution","Peer-Reviewed Article","Australia","Multi-Patch","1911","1990","N","Forested area","N/A","N/A","N/A","N/A","Y","Management","N/A","N/A",3
+2011,"Global Change Biology","Peer-Reviewed Article","USA","Multi-Patch","2009","2009","N","Composition","Land use type","N/A","N/A","N/A","Y","Management","N/A","N/A",6
+2012,"Journal of Environmental Management","Peer-Reviewed Article","China","Multi-Patch","1972","2006","N","Composition","Land use type","N/A","N/A","N/A","Y","Conservation","Management","N/A",9
+2014,"The International Journal of Life Cycle Assessment","Peer-Reviewed Article","USA","Patch","N/A","N/A","N","Composition","Land use type","N/A","N/A","N/A","Y","Management","N/A","N/A",8
+2001,"Environmental Pollution","Peer-Reviewed Article","USA","Multi-Patch","1992","1992","N","Composition","N/A","N/A","N/A","N/A","N","N/A","N/A","N/A",1
+2015,"Urban Forestry & Urban Greening","Peer-Reviewed Article","Germany","Multi-Patch","N/A","N/A","N","Individual tree management","Composition","N/A","N/A","N/A","N","N/A","N/A","N/A",14
+2005,"Landscape and Urban Planning","Peer-Reviewed Article","Canada","Multi-Patch","2002","2002","Y","Composition","N/A","N/A","N/A","N/A","N","N/A","N/A","N/A",2
+2009,"Australian Geographer","Peer-Reviewed Article","Australia","Multi-Patch","N/A","N/A","N","N/A","Land use type","N/A","N/A","N/A","Y","Management","N/A","N/A",1
+2010,"Environmental Science & Policy","Peer-Reviewed Article","USA","Region","2008","2008","Y","Land use type","Composition","N/A","N/A","N/A","Y","Management","N/A","N/A",5
+2007,"Landscape and Urban Planning","Peer-Reviewed Article","Italy","Multi-Patch","2005","2005","Y","Land use type","Individual tree management","N/A","N/A","N/A","Y","Management","N/A","N/A",2
+2004,"Journal of Aboriculture","Peer-Reviewed Article","United States","Region","1997","2000","N","Composition","N/A","N/A","N/A","N/A","N","N/A","N/A","N/A",1
+1991,"University of California, Berkley","PhD Thesis","USA","Multi-Patch","1989","1989","N","Land use type","Composition","N/A","N/A","N/A","Y","Management","N/A","N/A",1

@@ -11,7 +11,7 @@ av.data <- read.csv("Meta_Avian_Data_Extraction - Master_Data.csv")
 ########## CLEANING AND ORGANIZING DATA ###################################################################################
 
 #cut down to only necessary columns for figures (so far..)
-av.meta <- av.data[,c("Year", "Journal", "Study.country", "Urb.scale", 
+av.meta <- av.data[,c("Year", "Journal", "Country.Auth", "Study.country", "Urb.scale", 
                       "Start.year", "End.year", "Comparator", "birddomain1", 
                       "birddomain2", "birddomain3", "birddomain4", "Rec.",
                       "Rec.1", "Rec.2", "Rec.3","Forest.comp")]
@@ -26,7 +26,6 @@ print(av.meta)
 #PUSH OUT CSV
 write.csv(av.meta, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/AV.META.csv", row.names = FALSE)
 
-
 ############################### DATA PREPARATION FOR COUNT TABLES ##############################################################
 
 #COUNT TABLE
@@ -36,6 +35,10 @@ year.count <- av.meta %>%
   dplyr::mutate(Year_count= n())
 #remove duplicates
 year.count <- year.count[!duplicated(year.count$Year), ]
+
+#sort years for results section
+yearscolumn <- select(av.meta, "Year")
+yearscolumn <- sort(yearscolumn$Year)
 
 #PUSH OUT CSV
 write.csv(year.count, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Year.count.csv", row.names = FALSE)
@@ -54,14 +57,32 @@ journal.rec<- av.meta %>%
   group_by(Rec., Journal) %>%
   dplyr::mutate(journal.count=n())
 
+#get total count on journals
+journal.count<- journal.rec[,c("Journal", "journal.count")]
+journal.count<- journal.count %>% distinct(Journal, .keep_all = TRUE)
+
 #PUSH OUT CSV
 write.csv(journal.rec, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/journal.rec.csv", row.names = FALSE)
+
+#get total counts on country of first author
+country<- av.meta %>%
+  group_by(Country.Auth) %>%
+  dplyr::mutate(country.count=n())
+
+#get total count on country of first author
+authcountry <- country[,c("Country.Auth", "country.count")]
+authcountry <- authcountry %>% distinct(Country.Auth, .keep_all = TRUE)
 
 #COUNT TABLE
 #count only by COUNTRY
 heatmap.count <- av.meta %>%
   group_by(COUNTRY) %>%
   dplyr::mutate(country.count= n())
+
+#country first author count
+#get total count on journals
+country.count<- heatmap.count[,c("COUNTRY", "country.count")]
+country.count<- country.count %>% distinct(COUNTRY, .keep_all = TRUE)
 
 #PUSH OUT CSV
 write.csv(heatmap.count, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Heatmap.count.csv", row.names = FALSE)
@@ -71,6 +92,10 @@ write.csv(heatmap.count, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Fores
 urb.counts <-av.meta %>%
   pivot_longer(cols = c(birddomain1:birddomain4)) %>%
   dplyr::count(Urb.scale,value)
+
+#non-categorized urban count
+urbanallcount<- av.meta %>%
+  dplyr:: count(Urb.scale)
 
 #PUSH OUT CSV
 write.csv(urb.counts, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Urb.count.csv", row.names = FALSE)

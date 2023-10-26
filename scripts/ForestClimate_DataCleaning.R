@@ -13,7 +13,7 @@ forest.data<- read.csv("META_Forest_Climate_Data_Extraction.csv")
 ###########################################################################################################################################
 
 #cut down to only necessary columns for figures (so far..)
-forest.meta <- forest.data[,c("Year", "Journal", "Study.Country", "Urb.scale", 
+forest.meta <- forest.data[,c("Year", "Journal", "Publication.Type.", "Study.Country", "Urb.scale", 
                       "Year.start", "Year.end", "Comparator", "Forest_Comp1", 
                       "Forest_Comp2", "Forest_Comp3", "Forest_Comp4", "Forest_Comp5", "Rec.included",                    
                       "Rec1", "Rec2", "Rec3")]
@@ -33,6 +33,10 @@ write.csv(forest.meta, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/
 fyear.count <- forest.meta %>%
   group_by(Year) %>%
   dplyr::mutate(Year_count= n())
+
+#sort years for results section
+yearscolumn <- select(forest.meta, "Year")
+yearscolumn <- sort(yearscolumn$Year)
 
 #remove duplicates
 fyear.count <- fyear.count[!duplicated(fyear.count$Year), ]
@@ -55,6 +59,10 @@ fjournal.rec<- forest.meta %>%
   group_by(Rec.included, Journal) %>%
   dplyr::mutate(journal.count=n())
 
+#get total count on journals
+journal.count<- fjournal.rec[,c("Journal", "journal.count", "Publication.Type.")]
+journal.count<- journal.count %>% distinct(Journal, .keep_all = TRUE)
+
 #PUSH OUT CSV
 write.csv(fjournal.rec, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/fjournal.rec.csv", row.names = FALSE)
 
@@ -72,6 +80,10 @@ write.csv(fheatmap.count, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Fore
 furb.counts <-forest.meta %>%
   pivot_longer(cols = c(Forest_Comp1:Forest_Comp5)) %>%
   dplyr::count(Urb.scale,value)
+
+#non-categorized urban count
+urbanallcount<- forest.meta %>%
+  dplyr:: count(Urb.scale)
 
 #PUSH OUT CSV
 write.csv(furb.counts, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FUrb.count.csv", row.names = FALSE)

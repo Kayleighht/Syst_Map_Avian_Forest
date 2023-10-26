@@ -29,7 +29,8 @@ byyear_av + alltheme + geom_point(data= fyear.count, aes(x=Year, y = Year_count)
   Journal.rec<- Journal.rec[,c("Journal","Rec.", "journal.count")]
   #remove duplicates
   Journal.rec <- Journal.rec[!duplicated(Journal.rec), ]
-  
+
+
   #reorder ascending
   Journal.rec <- Journal.rec[order(Journal.rec$journal.count , decreasing = TRUE),]
   sum(Journal.rec$journal.count)
