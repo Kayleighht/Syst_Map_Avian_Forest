@@ -39,8 +39,8 @@ theme_legend3<- theme(
   legend.box.background =  element_rect(colour = "black"), legend.box.margin = margin(5,5,5,5))
 
 
-forestcol<- ("#B8DE29FF")
-birdcol<- ("#481567FF")
+forestcol<- ("#DCE319FF")
+birdcol<- ("#440154FF")
 
 ################################ FIGURE 1 ##################################################################
 ########################## PUBLICATIONS BY YEAR ###########################################

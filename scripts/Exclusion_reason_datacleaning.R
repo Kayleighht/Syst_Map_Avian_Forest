@@ -55,3 +55,50 @@ birdexclean <- separate_wider_delim(mergedbirdex, cols = reason , delim = ",", n
 birdreasons<- birdexclean %>%
   dplyr:: count(reason1)
 birdreasons
+
+### FOREST ################################################################################################
+
+forestexcl<- read.csv("articles_forest.csv")
+forestexcl <- separate_wider_delim(forestexcl, cols = notes , delim = "|", names = c("notes", "decision", "reason"),
+                                 too_few = "align_start", too_many = "debug")
+
+#search for matching # of notes to subset and then recombine (2,3,4 etc)
+forestex1 <- forestexcl[grep("2", forestexcl$notes_pieces), ]
+#remove columns not needed
+forestex1<- subset(forestex1, select = -c(notes, reason, journal, notes_ok, notes_pieces, notes_remainder))
+
+forestex2 <- forestexcl[grep("3", forestexcl$notes_pieces), ]
+#remove columns not needed
+forestex2<- subset(forestex2, select = -c(notes, journal,  decision, notes_ok, notes_pieces, notes_remainder))
+colnames(forestex2) <- c("key", "title", "decision")
+
+forestex3 <- forestexcl[grep("4", forestexcl$notes_pieces), ]
+#remove columns not needed
+forestex3<- as.data.frame(subset(forestex3, select = -c(journal, reason, notes, decision, notes_ok, notes_pieces)))
+colnames(forestex3) <- c("key", "title", "decision")
+
+##MERGING
+
+df_merge12 <- merge(forestex1, forestex2, by=c("key", "title", "decision"),all.x=TRUE, all.y = TRUE) 
+df_merge12<- df_merge12[,-4]
+forestmergedex <- merge(df_merge12,forestex3, by=c("key", "title", "decision"),all.x=TRUE, all.y = TRUE)
+
+
+#remove character string from reason column before separating
+forestmergedex$decision <- gsub("RAYYAN-EXCLUSION-REASONS: ", "", forestmergedex$decision)
+#search for values that contain relevant review to remove
+relevantreviews <- forestmergedex[grep("relevant review", forestmergedex$decision), ]
+#remove them from dataframe
+mergedbirdex<- forestmergedex[!grepl("relevant review", forestmergedex$decision), ]
+#remove inaccessible/not reviewed articles
+notretrieved <- forestmergedex[grep("inaccessible", forestmergedex$decision), ]
+forestmergedex<- forestmergedex[!grepl("inaccessible", forestmergedex$decision), ]
+
+
+#now separate by comma and only use first exclusion tag
+forestexclean <- separate_wider_delim(forestmergedex, cols = decision , delim = ",", names = c("reason1", "reason2", "reason3", "reason4"),
+                                    too_few = "align_start")
+
+forestreasons<- forestexclean %>%
+  dplyr:: count(reason1)
+forestreasons
