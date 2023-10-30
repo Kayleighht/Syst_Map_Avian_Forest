@@ -45,6 +45,32 @@ fyear.count <- fyear.count[!duplicated(fyear.count$Year), ]
 write.csv(fyear.count, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FYear.count.csv", row.names = FALSE)
 
 #COUNT TABLE
+#carbon metrics considered
+#subset columns needed
+carbon<- as.data.frame(forest.data[,c("Carbon.metric")])
+colnames(carbon) <- "Carbon.metric"
+carbon <- separate_wider_delim(carbon, cols = Carbon.metric, delim = ",", names = c("Carb1", "Carb2", "Carb3", "Carb4"),
+                     too_few = "align_start")
+
+carb1<- carbon %>%
+  dplyr:: count(Carb1)
+sum(carb1$n)
+
+carb2<- carbon %>%
+  dplyr:: count(Carb2)
+carb2<- carb2 %>% filter(row_number() <= n()-1)
+
+carb3<- carbon %>%
+  dplyr:: count(Carb3)
+carb3<- carb3 %>% filter(row_number() <= n()-1)
+
+carb4<- carbon %>%
+  dplyr:: count(Carb4)
+
+
+cbind(carb1, carb2, carb3, carb4)
+
+#COUNT TABLE
 #journal name count by study country
 fcountry.count <- forest.meta %>%
   group_by(COUNTRY, Journal) %>%
@@ -146,6 +172,21 @@ frecdf<- forest.meta[,c("Forest_Comp1","Forest_Comp2", "Forest_Comp3", "Forest_C
 #replace N/As with not recommendation in Rec1 column to incorporate "NO" recommendations
 frecdf <- frecdf %>% 
   mutate(across('Rec1', str_replace, 'N/A', 'No Recommendations'))
+
+#raw table for results section
+frecdf
+
+rec.1count<- frecdf %>%
+  dplyr:: count(Rec1)
+sum(rec.1count$n)
+
+rec2.count<- frecdf %>%
+  dplyr:: count(Rec2)
+
+rec3.count<- frecdf %>%
+  dplyr:: count(Rec3)
+
+cbind(rec.1count, rec2.count, rec3.count)
 
 #COUNT TABLE
 #create count table including all bird domain columns grouped by RECOMMENDATION TYPE (first only)

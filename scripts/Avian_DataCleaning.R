@@ -212,6 +212,21 @@ recdf<- av.meta[,c("birddomain1","birddomain2", "birddomain3", "birddomain4", "R
 recdf <- recdf %>% 
   mutate(across('Rec.1', str_replace, 'N/A', 'No Recommendations'))
 
+#raw counts for results section
+recdf
+
+rec.1count<- recdf %>%
+  dplyr:: count(Rec.1)
+sum(rec.1count$n)
+
+rec2.count<- recdf %>%
+  dplyr:: count(Rec.2)
+
+rec3.count<- recdf %>%
+  dplyr:: count(Rec.3)
+
+cbind(rec.1count, rec2.count, rec3.count)
+
 #COUNT TABLE
 #including all bird domain columns grouped by RECOMMENDATION TYPE 
 
