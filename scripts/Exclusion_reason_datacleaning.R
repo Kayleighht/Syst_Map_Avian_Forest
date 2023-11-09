@@ -57,35 +57,38 @@ birdreasons<- birdexclean %>%
 birdreasons
 
 ### FOREST ################################################################################################
-
 forestexcl<- read.csv("articles_forest.csv")
-forestexcl <- separate_wider_delim(forestexcl, cols = notes , delim = "|", names = c("notes", "decision", "reason"),
+#remove uneeded columns
+forestexcl<- subset(forestexcl, select = c(title, notes))
+
+forestexcl <- separate_wider_delim(forestexcl, cols = notes , delim = "|", names = c("notes1", "notes2", "notes3", "notes4"),
                                  too_few = "align_start", too_many = "debug")
 
 #search for matching # of notes to subset and then recombine (2,3,4 etc)
 forestex1 <- forestexcl[grep("2", forestexcl$notes_pieces), ]
 #remove columns not needed
-forestex1<- subset(forestex1, select = -c(notes, reason, journal, notes_ok, notes_pieces, notes_remainder))
+forestex1<- subset(forestex1, select = -c(notes, notes4, notes4, notes_ok, notes_pieces, notes_remainder))
+colnames(forestex1) <- c("title", "notes", "decision", "comments")
 
 forestex2 <- forestexcl[grep("3", forestexcl$notes_pieces), ]
 #remove columns not needed
-forestex2<- subset(forestex2, select = -c(notes, journal,  decision, notes_ok, notes_pieces, notes_remainder))
-colnames(forestex2) <- c("key", "title", "decision")
+forestex2<- subset(forestex2, select = -c(notes, notes2, notes4, notes_ok, notes_pieces, notes_remainder))
+colnames(forestex2) <- c("title", "journal", "decision")
 
 forestex3 <- forestexcl[grep("4", forestexcl$notes_pieces), ]
 #remove columns not needed
-forestex3<- as.data.frame(subset(forestex3, select = -c(journal, reason, notes, decision, notes_ok, notes_pieces)))
-colnames(forestex3) <- c("key", "title", "decision")
+forestex3<- as.data.frame(subset(forestex3, select = -c(notes, notes2, notes3, notes_ok, notes_pieces)))
+colnames(forestex3) <- c("title", "journal", "decision")
 
 ##MERGING
 
-df_merge12 <- merge(forestex1, forestex2, by=c("key", "title", "decision"),all.x=TRUE, all.y = TRUE) 
+df_merge12 <- merge(forestex1, forestex2, by=c("title", "decision"),all.x=TRUE, all.y = TRUE) 
 df_merge12<- df_merge12[,-4]
-forestmergedex <- merge(df_merge12,forestex3, by=c("key", "title", "decision"),all.x=TRUE, all.y = TRUE)
-
+forestmergedex <- merge(df_merge12,forestex3, by=c("title", "decision"),all.x=TRUE, all.y = TRUE)
+forestmergedex<- subset(forestmergedex, select = c(title, decision))
 
 #remove character string from reason column before separating
-forestmergedex$decision <- gsub("RAYYAN-EXCLUSION-REASONS: ", "", forestmergedex$decision)
+forestmergedex$decision <- gsub("| RAYYAN-EXCLUSION-REASONS: ", "", forestmergedex$decision)
 #search for values that contain relevant review to remove
 relevantreviews <- forestmergedex[grep("relevant review", forestmergedex$decision), ]
 #remove them from dataframe
@@ -102,3 +105,47 @@ forestexclean <- separate_wider_delim(forestmergedex, cols = decision , delim = 
 forestreasons<- forestexclean %>%
   dplyr:: count(reason1)
 forestreasons
+
+###############################################################################################################
+####################################### GREY LIT ##############################################################
+###############################################################################################################
+##############################################################################################################
+###############################################################################################################
+
+
+#BIRD##
+bgreyexcl<- read.csv("greylitarticles.csv")
+bgreyexcl <- separate_wider_delim(bgreyexcl, cols = notes , delim = "|", names = c("1", "2", "label", "reason", "5", "6", "7"),
+                                 too_few = "align_start", too_many = "debug")
+
+#choose the right columns
+birdgrey <- subset(bgreyexcl, select=c("title","label","reason"))
+
+#remove character string from reason column before separating
+birdgrey$label <- gsub("RAYYAN-LABELS:", "", birdgrey$label)
+birdgrey$reason <- gsub("RAYYAN-EXCLUSION-REASONS:", "", birdgrey$reason)
+
+#remove inaccessible/not reviewed articles
+notretrieved <- birdgrey[grep("inaccessible", birdgrey$reason), ]
+birdgrey<- birdgrey[!grepl("inaccessible", birdgrey$reason), ]
+
+#separate by labels
+birdgrey1<- birdgrey[grep("bird", birdgrey$label),]
+forestgrey<- birdgrey[grep("forest", birdgrey$label),]
+
+#now separate by comma and only use first exclusion tag
+birdgreyclean <- separate_wider_delim(birdgrey1, cols = reason , delim = ",", names = c("reason1", "reason2", "reason3", "reason4"),
+                                      too_few = "align_start", too_many = "debug")
+
+birdcountgrey<- birdgreyclean %>%
+  dplyr:: count(reason1)
+birdcountgrey
+
+#now separate by comma and only use first exclusion tag
+forestgreyclean <- separate_wider_delim(forestgrey, cols = reason , delim = ",", names = c("reason1", "reason2", "reason3", "reason4"),
+                                      too_few = "align_start", too_many = "debug")
+
+forestcountgrey<- forestgreyclean %>%
+  dplyr:: count(reason1)
+forestcountgrey
+sum(forestcountgrey$n)
