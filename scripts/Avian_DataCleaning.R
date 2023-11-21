@@ -26,15 +26,129 @@ av.meta <- av.data[,c("Year", "Journal", "Country.Auth", "Study.country", "Urb.s
 av.meta<- av.meta %>% 
   mutate(across(where(is.character), str_trim))
 
-#rename column in av.meta to match shape files with countries
-names(av.meta)[names(av.meta) == "Study.country"] <- "COUNTRY"
-
 #replace empty cells with N/A
 av.meta <- replace(av.meta, av.meta=='', NA)
 print(av.meta)
 
+#rename column in av.meta to match shape files with countries
+names(av.meta)[names(av.meta) == "Country.Auth"] <- "COUNTRY"
+
+unique(av.meta$COUNTRY)
+av.meta$COUNTRY[av.meta$COUNTRY == 'Republic of Korea'] <- 'South Korea'
+av.meta$COUNTRY[av.meta$COUNTRY == 'USA '] <- 'USA'
+av.meta$COUNTRY[av.meta$COUNTRY == 'United States'] <- 'USA'
+av.meta$COUNTRY[av.meta$COUNTRY == 'Austrailia'] <- 'Australia'
+av.meta$COUNTRY[av.meta$COUNTRY == 'USA \nof America'] <- 'USA'
+av.meta$COUNTRY[av.meta$COUNTRY == 'Finalnd'] <- 'Finland'
+av.meta$COUNTRY[av.meta$COUNTRY == 'Chicago'] <- 'USA'
+av.meta$COUNTRY[av.meta$COUNTRY == 'Korea'] <- 'South Korea'
+av.meta$COUNTRY[av.meta$COUNTRY == 'Australia '] <- 'Australia'
+av.meta$COUNTRY[av.meta$COUNTRY == 'Unites States'] <- 'USA'
+av.meta$COUNTRY[av.meta$COUNTRY == 'Japan '] <- 'Japan'
+
+# check for mistakes in spelling etc #
+unique(av.meta$Journal)
+
+av.meta$Journal[av.meta$Journal == 'Urban Ecoystems'] <- 'Urban Ecosystems'
+av.meta$Journal[av.meta$Journal == 'Journal of \nAnimal Ecology'] <- 'Journal of Animal Ecology'
+
 #PUSH OUT CSV
-write.csv(av.meta, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/AV.META.csv", row.names = FALSE)
+write.csv(av.meta, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/av.meta.csv", row.names = FALSE)
+
+###########################################################################################################
+######################## BUBBLE MAP PREP ########################################################################################
+
+cutoffs <- data.frame(id = 1:1, 
+                      lat_1 = c(23.5, -23.5), 
+                      lon_1 = c(-170.5, -170.5), 
+                      lat_2 = c(23.5, -23.5),
+                      lon_2 = c(170.5, 170.5))
+
+
+latlong<- read.csv("countries1.csv")
+colnames(latlong)[4] ="COUNTRY"
+latlong <- latlong[,c(2:4)]
+
+latlong$COUNTRY[latlong$COUNTRY == 'United States'] <- 'USA'
+meta_df1<-  av.meta[!(is.na(av.meta$COUNTRY) | av.meta$COUNTRY==""), ]
+
+unique(meta_df1$COUNTRY)
+
+meta_df1$COUNTRY[meta_df1$COUNTRY == 'Tokyo'] <- 'Japan'
+meta_df1$COUNTRY[meta_df1$COUNTRY == 'Scotland'] <- 'United Kingdom'
+meta_df1$COUNTRY[meta_df1$COUNTRY == 'United States'] <- 'USA'
+meta_df1$COUNTRY[meta_df1$COUNTRY == 'Multiple (Finland, Italy, Spain)'] <- 'Multiple'
+meta_df1$COUNTRY[meta_df1$COUNTRY == 'Multiple (Greece, Finland)'] <- 'Multiple'
+meta_df1$COUNTRY[meta_df1$COUNTRY == 'Multiple (Czech Republic, Poland, Italy, France)'] <- 'Multiple'
+meta_df1$COUNTRY[meta_df1$COUNTRY == 'Multiple (14 countries)'] <- 'Multiple'
+meta_df1$COUNTRY[meta_df1$COUNTRY == 'Korea'] <- 'South Korea'
+meta_df1$COUNTRY[meta_df1$COUNTRY == 'Prague'] <- 'Czech Republic'
+meta_df1$COUNTRY[meta_df1$COUNTRY == 'Bulgaria '] <- 'Bulgaria'
+meta_df1$COUNTRY[meta_df1$COUNTRY == 'France '] <- 'France'
+
+unique(meta_df1$COUNTRY)
+unique(latlong$COUNTRY)
+
+meta_df1<-meta_df1 %>%
+  group_by(COUNTRY) %>%
+  dplyr::mutate(count= n())
+
+# merge two data frames by ID
+merged_df <- merge(meta_df1,latlong,by="COUNTRY", all.x=TRUE)
+
+merged_df1<-merged_df %>% distinct(COUNTRY, .keep_all = TRUE)
+
+merged_df1<-merged_df1 %>% select(1,18:20)
+unique(merged_df1$COUNTRY)
+
+data <- merged_df1<- arrange(merged_df1, count)
+
+#write.csv(data, "map_data.csv")
+
+data$latitude[data$latitude == '20.593684'] <- '24.79368'
+
+data$latitude[data$latitude == '-14.235004'] <- '-33.733'
+
+data$latitude[data$latitude == '18.643501'] <- '15.643501'
+
+data$latitude[data$latitude == '-25.274398'] <- '-28.274398'
+
+data$latitude[data$latitude == '39.399872'] <- '40.39987'
+
+data$latitude[data$latitude == '23.69781'] <- '24.89781'
+
+data$latitude<-as.numeric(data$latitude)
+data$longitude<-as.numeric(data$longitude)
+
+#PUSH OUT CSV
+write.csv(data, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/data.csv", row.names = FALSE)
+
+
+# journal name count by study country
+country.count.av. <- av.meta %>%
+  group_by(COUNTRY,Journal) %>%
+  dplyr::mutate(journal.count= n())
+
+country.count.av. <- country.count.av. %>%
+  group_by(Journal) %>%
+  dplyr::mutate(count= n())
+
+#subset columns needed
+journal.df.av <- country.count.av.[,c("COUNTRY", "Journal","count","journal.count")]
+#sort column descending order
+journal.df.av <- arrange(journal.df.av, -count)
+#remove duplicates
+journal.df.av <- journal.df.av[!duplicated(journal.df.av), ]
+
+journal.df.av$COUNTRY[journal.df.av$COUNTRY == 'USA/ Germany'] <- 'USA'
+
+#esquisse::esquisser(journal.df)
+
+#select only top ten
+journal.df.av <- journal.df.av[1:63,]
+journal.df.av$COUNTRY[journal.df.av$journal.count <= 1] <- "Other"
+
+write.csv(journal.df.av, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/journal.df.av.csv", row.names = FALSE)
 
 ############################### DATA PREPARATION FOR COUNT TABLES ##############################################################
 

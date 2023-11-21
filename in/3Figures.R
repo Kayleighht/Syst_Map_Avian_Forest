@@ -1,7 +1,7 @@
 #packages needed
-Packages <- c("tidyverse", "ggplot2", "maps", "ggthemes", "cartography", "sf", "ggpubr", "plotly", "data.table", "cowplot", "janitor")
+Packages <- c("tidyverse", "ggplot2", "maps", "ggthemes", "cartography", "sf", "ggpubr", "plotly", "data.table", "cowplot", "janitor",
+              "rphylopic", "png", "viridis", "ggrepel" )
 lapply(Packages, library,character.only= TRUE)
-
 
 getwd()
 setwd("C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out")
@@ -77,11 +77,95 @@ ggsave(filename ="UFCBFig1.png", width = 16, height = 13, device='tiff', dpi=300
 
 ########################## FIGURE _ ###################################################
 ################### Study Country Heat Map ##################################
+journal.df.av <- read.csv("journal.df.av.csv")
+#read file
+bird<-readPNG("bird.1.png")
 
-# will add Riikka's code here
+av.plot<- journal.df.av %>%
+  filter(!is.na(COUNTRY)) %>%
+  ggplot() +
+  aes(x = reorder(Journal, count), y = journal.count, fill = COUNTRY) +
+  geom_col() + scale_fill_viridis(discrete=TRUE, direction=-1, end = 1, begin = 0.1, name="Country") +
+  labs(x= "", y= "Number of Publications") +
+  coord_flip() +
+  theme_classic() + 
+  theme(legend.position ="bottom",
+        text = element_text(color = "#22211d",size=4.5,family = "serif"),
+        axis.text.y = element_text(face="bold"),
+        plot.margin = margin(1, 0.3, 1, 1, "cm"),
+        legend.text = element_text(size = 3.3),
+        legend.key.size = unit(0.35,"line"),
+        legend.background = element_rect(fill = "white", color = NA)) + 
+  guides(fill = guide_legend(reverse = TRUE)) +
+  add_phylopic(bird, alpha = 1, x = 2, y = 35.4, ysize =0.8)
+av.plot
+
+#read file
+journal.df <- read.csv("journal.df.csv")
+tree<-readPNG("tree.1.png")
+
+for.plot <-journal.df %>%
+  filter(!is.na(COUNTRY)) %>%
+  ggplot() +
+  aes(x = reorder(Journal, count), y = journal.count, fill = COUNTRY) +
+  geom_col() + scale_fill_viridis(discrete=TRUE, direction=-1, end = 1, begin = 0.1, name="Country") +
+  labs(x= "", y= "Number of Publications") +
+  coord_flip() +
+  theme_classic() + 
+  theme(legend.position ="bottom",
+        text = element_text(color = "#22211d",size=4.5,family = "serif"),
+        axis.text.y = element_text(face="bold"),
+        plot.margin = margin(1, 1.5, 1, 0.3, "cm"),
+        legend.text = element_text(size = 3.3),
+        legend.key.size = unit(0.35,"line"),
+        legend.background = element_rect(fill = "white", color = NA)) + 
+  guides(fill = guide_legend(reverse = TRUE)) +
+  add_phylopic(tree, alpha = 1, x = 1.8, y = 20.4, ysize =0.8)
+for.plot
+
+library(cowplot)
+av_for_maps<- plot_grid(av.plot, for.plot)
+av_for_maps
+
+ggsave(filename ="av_for_plots_test.tiff", width = 170, units="mm", height = 85 , device='tiff', dpi=300)  
+
 
 ########################## FIGURE 3 #########################################################
 ############### # Publication according to Top 10 Journals with Country ###########################################
+world<- map_data("world")
+
+cutoffs <- data.frame(id = 1:1, 
+                      lat_1 = c(23.5, -23.5), 
+                      lon_1 = c(-170.5, -170.5), 
+                      lat_2 = c(23.5, -23.5),
+                      lon_2 = c(170.5, 170.5))
+
+data <- read.csv("data.csv")
+# Reorder data to show biggest cities on top
+data <- data %>%
+  arrange(-count)
+mybreaks <- c(1,5,15,35,95) 
+
+# Build the map
+
+av.map<- ggplot() +
+  geom_polygon(data = world, aes(x=long, y = lat, group = group), fill="grey", alpha=0.3) +
+  geom_point( data=data, aes(x=longitude, y=latitude, size=count, color=count), shape=20, stroke=FALSE) + 
+  geom_text_repel(data=data %>% arrange(count) %>% tail(10), aes(x=longitude, y=latitude, label=COUNTRY),     size=3, box.padding = 0.7, family = "serif", segment.color="grey50", max.overlaps = Inf) +
+  scale_size_continuous(range=c(2.5,16), breaks=mybreaks,name="Number of Studies") +
+  scale_color_viridis(option="viridis", end = 1, begin = 0.1, breaks=mybreaks, direction=-1, discrete =        FALSE, name="Number of Studies") +
+  theme_void() +  
+  coord_quickmap() +
+  ggtitle("") + 
+  theme(legend.position ="bottom",legend.direction = "horizontal",
+        text = element_text(color = "#22211d", size=10,family = "serif"),
+        plot.background = element_rect(fill = "white", color = NA), 
+        panel.background = element_rect(fill = "white", color = NA), 
+        legend.background = element_rect(fill = "white", color = NA)) +
+  guides(color = guide_legend(nrow=1, byrow=TRUE)) +
+  geom_segment(data = cutoffs,aes(x = lon_1, y = lat_1, xend = lon_2, yend = lat_2), color = "grey", alpha           = 0.5, linewidth = 0.6, linetype=2 , lineend = "round") 
+
+av.map
 
 #will add Riikka's code here
 
@@ -489,7 +573,7 @@ indicatorall$number_topics <- factor(indicatorall$number_topics, levels = c("One
 
 #PLOT
 ind.plotall <- ggplot(indicatorall, aes(x= number_topics, y=percent, fill=component)) +
-  geom_bar(stat='identity', position='dodge', width= 0.9) +
+  geom_col(position= position_dodge2(preserve = "single"), width= 0.9) +
   labs(x= "Indicators measured", y= "Percent of Studies") +
   
   scale_y_continuous(breaks = c(0, 20, 40, 60, 80, 100), limits = c(0,100)) +
@@ -500,5 +584,5 @@ ind.plotall <- ggplot(indicatorall, aes(x= number_topics, y=percent, fill=compon
 
 ind.plotall
 
-ggsave(filename ="UFCBFig2.png", width = 16, height = 13, device='tiff', dpi=300)  
+ggsave(filename ="UFCBFig_.png", width = 16, height = 13, device='tiff', dpi=300)  
 

@@ -21,16 +21,53 @@ ForestComps <- separate_wider_delim(forest.meta, cols = Forest.comp, delim = ","
                                                                                             "forestcomp5"),
                                     too_few = "align_start", too_many = "debug")
 
+#cut down to only necessary columns for figures (so far..)
+for.meta <- forest.data[,c(6:9)]
 
 #rename column in av.meta to match shape files with countries
-names(forest.meta)[names(forest.meta) == "Study.Country"] <- "COUNTRY"
+names(for.meta)[names(for.meta) == "Country.of.First.Author"] <- "COUNTRY"
 
 #replace empty cells with N/A
-forest.meta <- replace(forest.meta, forest.meta=='United States of America', "USA")
-print(forest.meta)
+for.meta <- replace(for.meta, for.meta=='', NA) 
+
+unique(for.meta$COUNTRY)
+
+for.meta$COUNTRY[for.meta$COUNTRY == 'United States'] <- 'USA'
+for.meta$COUNTRY[for.meta$COUNTRY == 'United State of America'] <- 'USA'
+for.meta$COUNTRY[for.meta$COUNTRY == 'United States of America'] <- 'USA'
+for.meta$COUNTRY[for.meta$COUNTRY == 'Korea'] <- 'South Korea'
+for.meta$COUNTRY[for.meta$COUNTRY == 'Helsinki'] <- 'Finland'
+for.meta$COUNTRY[for.meta$COUNTRY == 'Republic of Korea'] <- 'South Korea'
+
+unique(for.meta$Journal)
+for.meta$Journal[for.meta$Journal == 'Forests Multidisciplinary Digital Publishing Institute'] <- 'Forests'
+for.meta$Journal[for.meta$Journal == 'Forests Multidisciplinary Digital Publishing'] <- 'Forests'
+for.meta$Journal[for.meta$Journal == 'Multidisciplinary Digital Publishing Institute'] <- 'Forests'
+for.meta$Journal[for.meta$Journal == 'Sustainability Multidisciplinary Digital Publishing Institute'] <- 'Sustainability'
+for.meta$Journal[for.meta$Journal == 'Susainability'] <- 'Sustainability'
+for.meta$Journal[for.meta$Journal == 'Urban Foresty & Urban Greening'] <- 'Urban Forestry & Urban Greening'
+
+country.count <- for.meta %>%
+  group_by(COUNTRY, Journal) %>%
+  dplyr::mutate(journal.count= n())
+
+country.count <- country.count %>%
+  group_by(Journal) %>%
+  dplyr::mutate(count= n())
+
+#subset columns needed
+journal.df <- country.count[,c("COUNTRY", "Journal","count","journal.count")]
+#sort column descending order
+journal.df <- arrange(journal.df, -count)
+#remove duplicates
+journal.df <- journal.df[!duplicated(journal.df), ]
+
+#select only top ten
+journal.df <- journal.df[1:47,]
+journal.df$COUNTRY[journal.df$journal.count <= 1] <- "Other"
 
 #PUSH OUT CSV
-write.csv(forest.meta, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FOREST.META.csv", row.names = FALSE)
+write.csv(journal.df, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/journal.df.csv", row.names = FALSE)
 
 ###### STUDY BY YEAR COUNTS ################################################################################
 #subset necessary columns
