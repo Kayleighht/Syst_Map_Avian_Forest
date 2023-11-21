@@ -6,7 +6,7 @@ getwd()
 setwd("C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/in")
 
 #loading avian data and formatting
-forest.data<- read.csv("META_Forest_Climate_Data_Extraction.csv")
+forest.data<- read.csv("Metadata_ForestComponent.csv")
 
 ########################################################################################################################################
 ########################################### FOREST COMPONENT ########################################################################
@@ -14,9 +14,13 @@ forest.data<- read.csv("META_Forest_Climate_Data_Extraction.csv")
 
 #cut down to only necessary columns for figures (so far..)
 forest.meta <- forest.data[,c("Year", "Journal", "Publication.Type.", "Study.Country", "Urb.scale", 
-                      "Year.start", "Year.end", "Comparator", "Forest_Comp1", 
-                      "Forest_Comp2", "Forest_Comp3", "Forest_Comp4", "Forest_Comp5", "Rec.included",                    
+                      "Year.start", "Year.end", "Comparator", "Forest.comp", "Rec.included",                    
                       "Rec1", "Rec2", "Rec3")]
+
+ForestComps <- separate_wider_delim(forest.meta, cols = Forest.comp, delim = ",", names = c("forestcomp1", "forestcomp2", "forestcomp3", "forestcomp4",
+                                                                                            "forestcomp5"),
+                                    too_few = "align_start", too_many = "debug")
+
 
 #rename column in av.meta to match shape files with countries
 names(forest.meta)[names(forest.meta) == "Study.Country"] <- "COUNTRY"
@@ -28,21 +32,26 @@ print(forest.meta)
 #PUSH OUT CSV
 write.csv(forest.meta, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FOREST.META.csv", row.names = FALSE)
 
-#COUNT TABLE
+###### STUDY BY YEAR COUNTS ################################################################################
+#subset necessary columns
+#subset only columns needed
+forestyear<- subset(forest.meta, select = c(Year, Journal))
+
 #number of publications per year
-fyear.count <- forest.meta %>%
+fyear.count <- forestyear %>%
   group_by(Year) %>%
   dplyr::mutate(Year_count= n())
 
 #sort years for results section
-yearscolumn <- select(forest.meta, "Year")
-yearscolumn <- sort(yearscolumn$Year)
+yearscolumn <- sort(fyear.count$Year)
 
 #remove duplicates
-fyear.count <- fyear.count[!duplicated(fyear.count$Year), ]
+forestyearcount <- fyear.count[!duplicated(fyear.count$Year), ]
 
 #PUSH OUT CSV
-write.csv(fyear.count, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FYear.count.csv", row.names = FALSE)
+write.csv(forestyearcount, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FYear.count.csv", row.names = FALSE)
+
+##### CARBON METRICS ##########################################################################################
 
 #COUNT TABLE
 #carbon metrics considered
@@ -67,65 +76,141 @@ carb3<- carb3 %>% filter(row_number() <= n()-1)
 carb4<- carbon %>%
   dplyr:: count(Carb4)
 
-
+#bind all together
 cbind(carb1, carb2, carb3, carb4)
+
+###### COUNTRY #######################################################################
+
+#subset neccesary columns
+df<- subset(forest.meta, select = c(COUNTRY, Journal))
 
 #COUNT TABLE
 #journal name count by study country
-fcountry.count <- forest.meta %>%
+forestcountrycount <- df %>%
   group_by(COUNTRY, Journal) %>%
   dplyr::mutate(journal.count= n())
 
 #PUSH OUT CSV
-write.csv(fcountry.count, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FCountry.count.csv", row.names = FALSE)
-
-#COUNT TABLE
-#journal name country by recommendation included
-fjournal.rec<- forest.meta %>%
-  group_by(Rec.included, Journal) %>%
-  dplyr::mutate(journal.count=n())
-
-#get total count on journals
-journal.count<- fjournal.rec[,c("Journal", "journal.count", "Publication.Type.")]
-journal.count<- journal.count %>% distinct(Journal, .keep_all = TRUE)
-
-#PUSH OUT CSV
-write.csv(fjournal.rec, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/fjournal.rec.csv", row.names = FALSE)
+write.csv(forestcountrycount, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest
+                               /Syst_Map_Avian_Forest/out/FCountry.count.csv", row.names = FALSE)
 
 #COUNT TABLE
 #count only by COUNTRY
-fheatmap.count <- forest.meta %>%
+
+#subset 
+df<- subset(forest.meta, select = COUNTRY)
+
+countrycount <- df %>%
   group_by(COUNTRY) %>%
   dplyr::mutate(country.count= n())
 
 #PUSH OUT CSV
-write.csv(fheatmap.count, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FHeatmap.count.csv", row.names = FALSE)
+write.csv(countrycount, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest
+                        /Syst_Map_Avian_Forest/out/FHeatmap.count.csv", row.names = FALSE)
+
+#### RECOMMENDATIONS ###############################################################################
 
 #COUNT TABLE
-#create count table including all bird domain columns grouped by URBAN SCALE
-furb.counts <-forest.meta %>%
-  pivot_longer(cols = c(Forest_Comp1:Forest_Comp5)) %>%
-  dplyr::count(Urb.scale,value)
+#journal name country by recommendation included
+
+#subset columns needed
+df<- subset(forest.meta, select = c(Rec.included, Journal))
+
+journalandrec<- df %>%
+  group_by(Rec.included, Journal) %>%
+  dplyr::mutate(journal.count=n())
+
+#get total count on journals
+journal.count<- journalandrec[,c("Journal", "journal.count")]
+journal.count<- journal.count %>% distinct(Journal, .keep_all = TRUE)
+
+#PUSH OUT CSV
+write.csv(journalandrec, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest
+                          /Syst_Map_Avian_Forest/out/fjournal.rec.csv", row.names = FALSE)
+
+#COUNT TABLE
+#create count table including all forest domain columns grouped by URBAN SCALE
+furb.counts <-ForestComps %>%
+              pivot_longer(cols = c(forestcomp1:forestcomp5)) %>%
+              dplyr::count(Urb.scale,value)
 
 #non-categorized urban count
 urbanallcount<- forest.meta %>%
-  dplyr:: count(Urb.scale)
+                dplyr:: count(Urb.scale)
 
 #PUSH OUT CSV
 write.csv(furb.counts, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FUrb.count.csv", row.names = FALSE)
 
+###### COMPARATOR ############################################################################################################################
+
 #COUNT TABLE
 #create count table including all bird domain columns grouped by COMPARATOR USED Y/N
-fcomp.counts <-forest.meta %>%
-  pivot_longer(cols = c(Forest_Comp1:Forest_Comp5)) %>%
+#trim all leading or trailing spaces so that values match
+ForestComps <- ForestComps %>%
+  mutate_if(is.character, str_trim)
+
+fcomp.counts <-ForestComps %>%
+  pivot_longer(cols = c(forestcomp1:forestcomp5)) %>%
   dplyr::count(Comparator,value)
 
+#convert to dataframe
+Comp<- as.data.frame(fcomp.counts)
+
+#remove n/a's created from empty rows
+Comp <-Comp %>% drop_na(value)
+sum(Comp$n)
+
+#sort alphabetically to create percentages
+Comp <- Comp[order(Comp[,2]), ]
+Comp2<- Comp
+
+#spread rows so that we can create percent bars that reach 100%
+Comp<- Comp %>% spread(Comparator, n)
+
+#replace NA with 0
+Comp[is.na(Comp)] <- 0
+#create column of totals
+Comp$total <- Comp$Y + Comp$N
+#create percent yes column
+Comp$yespercent <- (Comp$Y/Comp$total)*100
+Comp$nopercent <- (Comp$N/Comp$total)*100
+sum(Comp$total)
+
+compyes<- subset(Comp, select = c(value, yespercent, Y))
+colnames(compyes)[2] = "comparator"
+colnames(compyes)[3] = "yes/no"
+compyes
+compno<- subset(Comp, select = c(value, nopercent, N))
+colnames(compno)[2] = "comparator"
+colnames(compno)[3] = "yes/no"
+compno
+
+Compmeta<- rbind(compyes, compno)
+#sort
+Compmeta <- Compmeta[order(Compmeta[,1]), ]
+
+#add zero values to Comp2 for binding
+Comp2[nrow(Comp2) + 1,] <- c("Y", "Fragmentation", 0)
+Comp2[nrow(Comp2) + 1,] <- c("Y", "Connectivity", 0)
+#resort
+Comp2 <- Comp2[order(Comp2[,2], Comp2[,3]), ]
+Compmeta$comp <- Comp2$Comparator
+
+#swap Y/N because not sorted properly
+Compmeta$comp[Compmeta$comp=="N"]<-"Yes"
+Compmeta$comp[Compmeta$comp=="Y"]<-"No"
+
+Compmeta
+
 #PUSH OUT CSV
-write.csv(fcomp.counts, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FComp.count.csv", row.names = FALSE)
+write.csv(Compmeta, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FComp.count.csv", row.names = FALSE)
+
+########### STUDY DURATION ############################################################################################################
 
 #subset data for STUDY DURATION 
 #clean and organize data
-fduration.df<- forest.meta[,c("Forest_Comp1", "Forest_Comp2", "Forest_Comp3", "Forest_Comp4", "Forest_Comp5", "Year.start", "Year.end")]
+fduration.df<- ForestComps[,c("forestcomp1", "forestcomp2", "forestcomp3", "forestcomp4",
+                             "forestcomp5", "Year.start", "Year.end")]
 
 #remove N/A
 fduration.df<- fduration.df[!grepl('N/A', fduration.df$Year.start),]
@@ -146,7 +231,7 @@ fduration.df<- fduration.df %>% mutate(duration_bin = cut(duration2, breaks=c(0,
 
 #create count table including all bird domain columns grouped by STUDY DURATION BIN
 fduration.counts <-fduration.df %>%
-  pivot_longer(cols = c(Forest_Comp1:Forest_Comp5)) %>%
+  pivot_longer(cols = c(forestcomp1:forestcomp5)) %>%
   count(duration_bin,value)
 
 fduration.counts2 <- fduration.df %>%
@@ -155,35 +240,88 @@ fduration.counts2 <- fduration.df %>%
 #remove duplicate N/As from additional columns for plotting
 fduration.counts <- fduration.counts %>% drop_na(duration_bin)
 fduration.counts <- fduration.counts %>% drop_na(value)
+#total (not according to topic)
 fduration.counts2 <- fduration.counts2 %>% drop_na(duration_bin)
 
 #PUSH OUT CSV
-write.csv(fduration.counts, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FDuration.count.csv", row.names = FALSE)
-write.csv(fduration.counts2, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FDuration.count2.csv", row.names = FALSE)
+write.csv(fduration.counts, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Studydurationtopic.csv", row.names = FALSE)
+write.csv(fduration.counts2, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Studydurationall.csv", row.names = FALSE)
 
-############################################
-######## SUBSETTING RECOMMENDATIONS ######
-##########################################
+############## COMPARATOR ####################################################################################################################
+
+#search for matching # of notes to subset and then recombine (2,3,4 etc)
+Comp1 <- ForestComps[grep("1", ForestComps$Forest.comp_pieces), ]
+#remove columns not needed
+Comp1<- subset(Comp1, select = c("forestcomp1"))
+colnames(Comp1) <- c("Component")
+
+Comp2 <- ForestComps[grep("2", ForestComps$Forest.comp_pieces), ]
+#remove columns not needed
+Comp2<- subset(Comp2, select = c("forestcomp2"))
+colnames(Comp2) <- c("Component")
+
+Comp3 <- ForestComps[grep("3", ForestComps$Forest.comp_pieces), ]
+#remove columns not needed
+Comp3<- subset(Comp3, select = c("forestcomp3"))
+colnames(Comp3) <- c("Component")
+
+Comp4 <- ForestComps[grep("4", ForestComps$Forest.comp_pieces), ]
+Comp4<- subset(Comp4, select = c("forestcomp4"))
+colnames(Comp4) <- c("Component")
+
+Comp5 <- ForestComps[grep("5", ForestComps$Forest.comp_pieces), ]
+Comp5<- subset(Comp5, select = c("forestcomp5"))
+colnames(Comp5) <- c("Component")
+
+##MERGING
+dfmerge12 <- merge(Comp1, Comp2, by=c("Component"),all.x=TRUE, all.y = TRUE) 
+dfmerge34 <- merge(dfmerge12, Comp3, by=c("Component"),all.x=TRUE, all.y = TRUE)
+dfmerge56 <- merge(dfmerge34,Comp4, by=c("Component"),all.x=TRUE, all.y = TRUE)
+dfmergefinal<- merge(dfmerge56,Comp5, by=c("Component"),all.x=TRUE, all.y = TRUE)
+
+dfmergefinal <- dfmergefinal %>%
+  mutate_if(is.character, str_trim)
+dfmergefinal$Component <- gsub("composition", "Composition", dfmergefinal$Component)
+
+forestcomps <- dfmergefinal %>%
+  dplyr:: count(Component)
+forestcomps <- as.data.frame(forestcomps)
+
+#unique(forestcomps$Component)
+
+forestcomps$percent <- ((forestcomps$n/170)*100)
+forestcomps
+
+#PUSH OUT CSV
+write.csv(forestcomps, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest
+                       /Syst_Map_Avian_Forest/out/forest.component.csv", row.names = FALSE)
+
+######## SUBSETTING RECOMMENDATIONS #########################################################################################################
 
 ################SUBSET FOR RECOMMENDATIONS
-frecdf<- forest.meta[,c("Forest_Comp1","Forest_Comp2", "Forest_Comp3", "Forest_Comp4", "Forest_Comp5", "Rec.included",
-                   "Rec1", "Rec2", "Rec3")]
+
+#open forest comps that we created already with forest components divided into separate columns
+ForestComps
+
+#clean dataframe of whitespace
+ForestComps <- ForesrComps %>% 
+  mutate(across(where(is.character), str_trim))
 
 #replace N/As with not recommendation in Rec1 column to incorporate "NO" recommendations
-frecdf <- frecdf %>% 
+Forestrec <- ForestComps %>% 
   mutate(across('Rec1', str_replace, 'N/A', 'No Recommendations'))
 
 #raw table for results section
-frecdf
+Forestrec
 
-rec.1count<- frecdf %>%
+rec.1count<- Forestrec %>%
   dplyr:: count(Rec1)
 sum(rec.1count$n)
 
-rec2.count<- frecdf %>%
+rec2.count<- Forestrec %>%
   dplyr:: count(Rec2)
 
-rec3.count<- frecdf %>%
+rec3.count<- Forestrec %>%
   dplyr:: count(Rec3)
 
 cbind(rec.1count, rec2.count, rec3.count)
@@ -192,31 +330,34 @@ cbind(rec.1count, rec2.count, rec3.count)
 #create count table including all bird domain columns grouped by RECOMMENDATION TYPE (first only)
 
 #REC 1
-frectype.counts <-as.data.frame(frecdf %>%
-                                 pivot_longer(cols = c(Forest_Comp1:Forest_Comp5)) %>%
+frectype.counts <-as.data.frame(Forestrec %>%
+                                 pivot_longer(cols = c(forestcomp1:forestcomp5)) %>%
                                  dplyr::count(Rec1,value))
+#remove NAs
 frectype.counts <- frectype.counts[!grepl("N/A", frectype.counts$Rec1),]
-frectype.counts <- frectype.counts[!grepl("N/A", frectype.counts$value),]
+frectype.counts<- frectype.counts %>% drop_na(value)
 sum(frectype.counts$n)
 
 #REC 2
-frectype.counts2 <-as.data.frame(frecdf %>%
-                                  pivot_longer(cols = c(Forest_Comp1:Forest_Comp5)) %>%
+frectype.counts2 <-as.data.frame(Forestrec %>%
+                                  pivot_longer(cols = c(forestcomp1:forestcomp5)) %>%
                                   dplyr::count(Rec2,value))
 
 #remove empty cells from studies with only 1 recommendation ##CHECK CHECK DOUBLE CHECK
 frectype.counts2 <- frectype.counts2[!grepl("N/A", frectype.counts2$Rec2),]
-frectype.counts2 <- frectype.counts2[!grepl("N/A", frectype.counts2$value),]
+#remove NA values in value column
+frectype.counts2<- frectype.counts2 %>% drop_na(value)
+
 #rename column to rec.1 to merge
 names(frectype.counts2)[names(frectype.counts2) == "Rec2"] <- "Rec1"
 sum(frectype.counts2$n)
 
 #REC 3
-frectype.counts3 <-as.data.frame(frecdf %>%
-                                  pivot_longer(cols = c(Forest_Comp1:Forest_Comp5)) %>%
+frectype.counts3 <-as.data.frame(Forestrec %>%
+                                  pivot_longer(cols = c(forestcomp1:forestcomp5)) %>%
                                   dplyr::count(Rec3,value))
 frectype.counts3 <- frectype.counts3[!grepl("N/A", frectype.counts3$Rec3),]
-frectype.counts3 <- frectype.counts3[!grepl("N/A", frectype.counts3$value),]
+frectype.counts3<- frectype.counts3 %>% drop_na(value)
 
 names(frectype.counts3)[names(frectype.counts3) == "Rec3"] <- "Rec1"
 sum(frectype.counts3$n)
@@ -236,145 +377,21 @@ write.csv(frectype.all, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest
 #calculate the percent according to topic and recommendation from TOTAL papers
 frectype.all
 sum(frectype.all$n)
-frectype.all$percent<- ((frectype.all$n/287)*100)
+frectype.all$percent<- ((frectype.all$n/170)*100)
 frectype.all
 
-#create a table to count the number of "NO" recommendations
+#create a table to count the number of "NO" recommendations for ALL PAPERS
 table(frecdf['Rec.included'])
 fnorec<- data.frame(
   Rec1 = "None",
   value= "No Recommendations",
   n = 45)
-fnorec$percent <- ((45/287)*100)
+fnorec$percent <- ((45/170)*100)
 fnorec
+
+rbind(fnorec, frectype.all)
 
 #PUSH OUT CSV
 write.csv(fnorec, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FNorec.count.csv", row.names = FALSE)
-
-##############################################################                                       
-####### SUBSETTING FOR MULTIPLE INDICATORS COUNTS ############
-#############################################################
-
-#create data frame to sort # publications with multiple indicators
-FIndicators <- forest.meta[,c("Forest_Comp1","Forest_Comp2", "Forest_Comp3", "Forest_Comp4", "Forest_Comp5")]
-
-#create count table including all bird domain columns grouped by RECOMMENDATION TYPE (first only)
-#FIRST INDICATOR
-fInd1 <- fjournal.rec<- FIndicators %>%
-  group_by(Forest_Comp1) %>%
-  dplyr::mutate(indicator1.count=n())
-fInd1 <- fInd1[!duplicated(fInd1$Forest_Comp1),]
-#remove N/A columns
-fInd1<- fInd1[!grepl('N/A', fInd1$Forest_Comp1),]
-#calculate sum
-sum(fInd1$indicator1.count)
-
-#SECOND INDICATOR
-fInd2 <- fjournal.rec<- FIndicators %>%
-  group_by(Forest_Comp2) %>%
-  dplyr::mutate(indicator2.count=n())
-fInd2 <- fInd2[!duplicated(fInd2$Forest_Comp2), ]
-#drop N/A
-fInd2<- fInd2[!grepl('N/A', fInd2$Forest_Comp2),]
-#calculate sum
-sum(fInd2$indicator2.count)
-
-#THIRD INDICATOR
-fInd3 <- fjournal.rec<- FIndicators %>%
-  group_by(Forest_Comp3) %>%
-  dplyr::mutate(indicator3.count=n())
-fInd3 <- fInd3[!duplicated(fInd3$Forest_Comp3), ]
-#drop N/A
-fInd3<- fInd3[!grepl('N/A', fInd3$Forest_Comp3),]
-sum(fInd3$indicator3.count)
-
-fInd4 <- fjournal.rec<- FIndicators %>%
-  group_by(Forest_Comp4) %>%
-  dplyr::mutate(indicator4.count=n())
-fInd4 <- fInd4[!duplicated(fInd4$Forest_Comp4), ]
-#drop N/A
-fInd4<- fInd4[!grepl('N/A', fInd4$Forest_Comp4),]
-sum(fInd4$indicator4.count)
-
-fInd5 <- fjournal.rec<- FIndicators %>%
-  group_by(Forest_Comp5) %>%
-  dplyr::mutate(indicator5.count=n())
-fInd5 <- fInd5[!duplicated(fInd5$Forest_Comp5), ]
-#drop N/A
-fInd5<- fInd5[!grepl('N/A', fInd5$Forest_Comp5),]
-sum(fInd5$indicator5.count)
-
-#create data frame to sort # publications with multiple indicators
-number_topics <- c("One Indicator", "Two Indicators", "Three Indicators", "Four Indicators", "Five Indicators")
-number_publications <- c("156","98", "41", "12", "3")
-
-#PUSH OUT CSV
-fallindicators<- data.frame(number_topics, number_publications)  
-write.csv(fallindicators, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FAllind.count.csv", row.names = FALSE)
-
-
-####################################
-####### TOPICS ONLY COUNT ##########
-####################################
-
-######### Categories only count ##############
-#create dataframes for each indicator/topic and align column names
-forestcomp1 <- fInd1[,-c(2:5)]
-colnames(forestcomp1)[2] = "indicatorcount"
-colnames(forestcomp1)[1] = "forestcomp"
-forestcomp2<- fInd2[,-c(1,3:5)]
-colnames(forestcomp2)[2] = "indicatorcount"
-colnames(forestcomp2)[1] = "forestcomp"
-forestcomp3<- fInd3[,-c(1:2,3:4)]
-colnames(forestcomp3)[2] = "indicatorcount"
-colnames(forestcomp3)[1] = "forestcomp"
-forestcomp4<- fInd4[,-c(1:3,5)]
-colnames(forestcomp4)[2] = "indicatorcount"
-colnames(forestcomp4)[1] = "forestcomp"
-forestcomp5<- fInd5[,-c(1:4)]
-colnames(forestcomp5)[2] = "indicatorcount"
-colnames(forestcomp5)[1] = "forestcomp"
-
-#BIND
-allforest<-rbind(forestcomp1, forestcomp2 ,forestcomp3 ,forestcomp4, forestcomp5 )
-merge1<- merge(forestcomp1, forestcomp2, by= "forestcomp", all= TRUE)
-merge2<- merge(forestcomp3, forestcomp4, by= "forestcomp", all= TRUE)
-merge3 <- merge(forestcomp5, forestcomp4, by= "forestcomp", all= TRUE)
-
-merge1$total<- merge1$indicatorcount.x + merge1$indicatorcount.y
-merge1<- merge1[,-c(2:3)]
-merge1[is.na(merge1)] <- 0
-
-merge2[is.na(merge2)] <- 0
-merge2$total<- merge2$indicatorcount.x + merge2$indicatorcount.y
-merge2<- merge2[,-c(2:3)]
-#remove remaining n/a
-merge2<- merge2[!grepl("N/A", merge2$forestcomp),]
-
-#since this includes duplicated fourth comp we must delete it
-merge3<- merge3[,-3]
-merge3[is.na(merge3)] <- 0
-merge3$total<- merge3$indicatorcount.x
-merge3<- merge3[,-c(2)]
-
-
-#combine all for a total across multiple indictors *** will have more articles than total
-forestcomponent<- merge(merge1, merge2, by= "forestcomp", all= TRUE)
-#create new total column
-forestcomponent[is.na(forestcomponent)] <- 0
-forestcomponent<- forestcomponent[!grepl("N/A", forestcomponent$forestcomp),]
-#create new column of totals
-forestcomponent$total<- (forestcomponent$total.x + forestcomponent$total.y)
-forestcomponent<- forestcomponent[,-c(2:3)]
-
-forestcomptotal <- merge(forestcomponent, merge3, by= "forestcomp", all= TRUE)
-#replace N/s with zero
-forestcomptotal[is.na(forestcomptotal)] <- 0
-forestcomptotal$total<- (forestcomptotal$total.x + forestcomptotal$total.y)
-#remove irrelevant rows
-forestcomptotal <- forestcomptotal[, -c(2:3)]
-
-#PUSH OUT CSV
-write.csv(forestcomptotal, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/forest.component.csv", row.names = FALSE)
 
 

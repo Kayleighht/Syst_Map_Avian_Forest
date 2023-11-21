@@ -6,15 +6,25 @@ getwd()
 setwd("C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/in")
 
 #loading avian data and formatting
-av.data <- read.csv("Meta_Avian_Data_Extraction - Master_Data.csv")
+av.data <- read.csv("Metadata_Avian_Component.csv")
+
+#spread bird topic into separate columns
+av.data <- separate_wider_delim(av.data, cols = Bird.domainraw, delim = ",", names = c("birdcomp1", "birdcomp2", "birdcomp3", "birdcomp4"),
+                                    too_few = "align_start", too_many = "debug")
+
+av.data <- separate_wider_delim(av.data, cols = Rec.type, delim = ",", names = c("Rec.1", "Rec.2", "Rec.3"),
+                                too_few = "align_start", too_many = "debug")
+
 
 ########## CLEANING AND ORGANIZING DATA ###################################################################################
 
 #cut down to only necessary columns for figures (so far..)
 av.meta <- av.data[,c("Year", "Journal", "Country.Auth", "Study.country", "Urb.scale", 
-                      "Start.year", "End.year", "Comparator", "birddomain1", 
-                      "birddomain2", "birddomain3", "birddomain4", "Rec.",
+                      "Start.year", "End.year", "Comparator", "birdcomp1", "birdcomp2", "birdcomp3", "birdcomp4", "Rec.",
                       "Rec.1", "Rec.2", "Rec.3","Forest.comp")]
+#remove whitespace
+av.meta<- av.meta %>% 
+  mutate(across(where(is.character), str_trim))
 
 #rename column in av.meta to match shape files with countries
 names(av.meta)[names(av.meta) == "Study.country"] <- "COUNTRY"
@@ -90,7 +100,7 @@ write.csv(heatmap.count, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Fores
 #COUNT TABLE
 #all bird domain columns grouped by URBAN SCALE
 urb.counts <-av.meta %>%
-  pivot_longer(cols = c(birddomain1:birddomain4)) %>%
+  pivot_longer(cols = c(birdcomp1:birdcomp4)) %>%
   dplyr::count(Urb.scale,value)
 
 #non-categorized urban count
@@ -98,28 +108,31 @@ urbanallcount<- av.meta %>%
   dplyr:: count(Urb.scale)
 
 #PUSH OUT CSV
-write.csv(urb.counts, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Urb.count.csv", row.names = FALSE)
+write.csv(urb.counts, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/birdurb.count.csv", row.names = FALSE)
 
 #COUNT TABLE
 #all bird domain columns grouped by COMPARATOR USED Y/N
 comp.counts <-av.meta %>%
-  pivot_longer(cols = c(birddomain1:birddomain4)) %>%
+  pivot_longer(cols = c(birdcomp1:birdcomp4)) %>%
   dplyr::count(Comparator,value)
 
 #PUSH OUT CSV
-write.csv(comp.counts, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Comp.count.csv", row.names = FALSE)
+write.csv(comp.counts, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Birdcomp.counts.csv", row.names = FALSE)
 
 #format for yes/100 to 100% bar graph
 Comp<- comp.counts
+Comp <- as.data.frame(Comp)
 
 #remove n/a's created from empty rows
-Comp <-Comp[!grepl('N/A', Comp$Comparator),]
-Comp <-Comp[!grepl('N/A', Comp$value),]
 Comp <- Comp %>% drop_na(Comparator)
 Comp <- Comp %>% drop_na(value)
 
 #sort alphabetically to create percentages
-Comp <- Comp[order(Comp[,2]), ]
+Comp <- Comp[order(Comp[,"value"]), ]
+#remove remaining empty cells 
+Comp <- Comp[-c(1,2),]
+
+#create another version for binding later
 Comp2<- Comp
 sum(Comp$n)
 
@@ -143,6 +156,7 @@ colnames(compno)[2] = "comparator"
 colnames(compno)[3] = "yes/no"
 
 Compmeta<- rbind(compyes, compno)
+
 #sort
 Compmeta <- Compmeta[order(Compmeta[,1]), ]
 Comp2[nrow(Comp2) + 1,] <- c("N", "Foraging", 0)
@@ -153,15 +167,15 @@ Compmeta$comp <- Comp2$Comparator
 #swap Y/N because not sorted properly
 Compmeta$comp[Compmeta$comp=="N"]<-"Yes"
 Compmeta$comp[Compmeta$comp=="Y"]<-"No"
+Birdcompmeta<- Compmeta
 
 #PUSH OUT CSV
-write.csv(Compmeta, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Comp.meta.csv", row.names = FALSE)
-
+write.csv(Birdcompmeta, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Comp.meta.csv", row.names = FALSE)
 
 ########################################### DATA SUBSETTING AND ORGANIZING ##################################################
 
 #subset data for STUDY DURATION 
-duration.df<- av.meta[,c("birddomain1", "birddomain2", "birddomain3", "birddomain4", "Start.year", "End.year")]
+duration.df<- av.meta[,c("birdcomp1", "birdcomp2", "birdcomp3", "birdcomp4", "Start.year", "End.year")]
 
 ##### CLEANING ########
 #remove N/A's
@@ -185,7 +199,7 @@ duration.df<- duration.df %>% mutate(duration_bin = cut(duration2, breaks=c(0, 1
 #COUNT TABLE
 #all bird domain columns grouped by STUDY DURATION BIN
 duration.counts <-duration.df %>%
-  pivot_longer(cols = c(birddomain1:birddomain4)) %>%
+  pivot_longer(cols = c(birdcomp1:birdcomp4)) %>%
   count(duration_bin,value)
 
 duration.counts2 <- duration.df %>%
@@ -206,12 +220,15 @@ write.csv(duration.counts2, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Fo
 
 ################SUBSET FOR RECOMMENDATIONS
 
-recdf<- av.meta[,c("birddomain1","birddomain2", "birddomain3", "birddomain4", "Rec.",
+recdf<- av.meta[,c("birdcomp1","birdcomp2", "birdcomp3", "birdcomp4", "Rec.",
                    "Rec.1", "Rec.2", "Rec.3")]
-#replace N/As with not recommendation in Rec1 column to incorporate "NO" recommendations
-recdf <- recdf %>% 
-  mutate(across('Rec.1', str_replace, 'N/A', 'No Recommendations'))
 
+#clean dataframe of whitespace
+recdf <- recdf %>% 
+  mutate(across(where(is.character), str_remove_all, pattern = fixed(" ")))
+
+#replace N/As with not recommendation in Rec1 column to incorporate "NO" recommendations
+recdf$Rec.1 <- recdf$Rec.1 %>% replace_na("No Recommendations")
 #raw counts for results section
 recdf
 
@@ -232,31 +249,29 @@ cbind(rec.1count, rec2.count, rec3.count)
 
 #REC 1
 rectype.counts <-as.data.frame(recdf %>%
-                                 pivot_longer(cols = c(birddomain1:birddomain4)) %>%
+                                 pivot_longer(cols = c(birdcomp1:birdcomp4)) %>%
                                  dplyr::count(Rec.1,value))
-#clean dataframe of whitespace
-rectype.counts<- rectype.counts %>% 
-  mutate(across(where(is.character), str_remove_all, pattern = fixed(" ")))
+
 
 #clean and remove N/As
 rectype.counts <- rectype.counts %>% drop_na(value)
-rectype.counts<- rectype.counts[!grepl("N/A", rectype.counts$Rec.1),]
-rectype.counts<- rectype.counts[!grepl("N/A", rectype.counts$value),]
+rectype.counts <- rectype.counts %>% drop_na(Rec.1)
 
 #REC 2
 rectype.counts2 <-as.data.frame(recdf %>%
-                                  pivot_longer(cols = c(birddomain1:birddomain4)) %>%
+                                  pivot_longer(cols = c(birdcomp1:birdcomp4)) %>%
                                   dplyr::count(Rec.2,value))
 #remove empty cells from studies with only 1 recommendation ##CHECK CHECK DOUBLE CHECK
 rectype.counts2 <- rectype.counts2 %>% drop_na(Rec.2)
 rectype.counts2 <- rectype.counts2 %>% drop_na(value)
+
 #rename column to rec.1 to merge
 names(rectype.counts2)[names(rectype.counts2) == "Rec.2"] <- "Rec.1"
 sum(rectype.counts2$n)
 
 #REC 3
 rectype.counts3 <-as.data.frame(recdf %>%
-                                  pivot_longer(cols = c(birddomain1:birddomain4)) %>%
+                                  pivot_longer(cols = c(birdcomp1:birdcomp4)) %>%
                                   dplyr::count(Rec.3,value))
 rectype.counts3 <- rectype.counts3 %>% drop_na(Rec.3)
 rectype.counts3 <- rectype.counts3 %>% drop_na(value)
@@ -264,13 +279,19 @@ names(rectype.counts3)[names(rectype.counts3) == "Rec.3"] <- "Rec.1"
 sum(rectype.counts3$n)
 
 #MERGE tables of ALL recommendations
+#rectype.all <- bind_rows(rectype.counts, rectype.counts2, rectype.counts3) %>% 
+# group_by(value, n) %>% 
+# distinct(.keep_all = TRUE)
+
 rectype.all <- bind_rows(rectype.counts, rectype.counts2, rectype.counts3) %>% 
-  group_by(value, n) %>% 
+  group_by(Rec.1, n) %>% 
   distinct(.keep_all = TRUE)
 
 #resort by category
 rectype.all <- as.data.frame(rectype.all)
-rectype.all <- rectype.all[order(rectype.all[,2]), ]
+rectype.all <- rectype.all[order(rectype.all[,"value"]), ]
+
+unique(rectype.all$Rec.1)
 
 #PUSHOUT
 write.csv(rectype.all, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Allrecraw.count.csv", row.names = FALSE)
@@ -278,7 +299,7 @@ write.csv(rectype.all, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/
 #calculate the percent according to topic and recommendation from TOTAL papers
 rectype.all
 sum(rectype.all$n)
-rectype.all$percent<- ((rectype.all$n/274)*100)
+rectype.all$percent<- ((rectype.all$n/267)*100)
 rectype.all
 
 #PUSH OUT CSV
@@ -368,37 +389,53 @@ write.csv(allindicators, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Fores
 
 ######### Categories only count ##############
 #create dataframes for each indicator/topic and align column names
-birddomain1 <- Ind1[,-c(2:4)]
-colnames(birddomain1)[2] = "indicatorcount"
-colnames(birddomain1)[1] = "birdomain"
-birdomain2<- Ind2[,-c(1,3:4)]
-colnames(birdomain2)[2] = "indicatorcount"
-colnames(birdomain2)[1] = "birdomain"
-birdomain3<- Ind3[,-c(1:2,4)]
-colnames(birdomain3)[2] = "indicatorcount"
-colnames(birdomain3)[1] = "birdomain"
-birdomain4<- Ind4[,-c(1:3)]
-colnames(birdomain4)[2] = "indicatorcount"
-colnames(birdomain4)[1] = "birdomain"
 
-#BIND
-allbird<-rbind(birddomain1, birdomain2, birdomain3, birdomain4)
-merge1<- merge(birddomain1, birdomain2, by= "birdomain", all= TRUE)
-merge2<- merge(birdomain3, birdomain4, by= "birdomain", all= TRUE)
-merge1$total<- merge1$indicatorcount.x + merge1$indicatorcount.y
-merge1<- merge1[,-c(2:3)]
-merge2[is.na(merge2)] <- 0
-merge2$total<- merge2$indicatorcount.x + merge2$indicatorcount.y
-merge2<- merge2[,-c(2:3)]
+Birdcomps <- separate_wider_delim(av.meta, cols = Bird.domainraw, delim = ",", names = c("birdcomp1", "birdcomp2", "birdcomp3", "birdcomp4",
+                                                                                            "birdcomp5"),
+                                    too_few = "align_start", too_many = "debug")
 
-#combine all for a total across multiple indictors *** will have more articles than total
-birdcomponent<- merge(merge1, merge2, by= "birdomain")
-birdcomponent$total<- birdcomponent$total.x + birdcomponent$total.y
-#remove N/A
-birdcomponent<- birdcomponent[!grepl('N/A', birdcomponent$birdomain),]
+#search for matching # of notes to subset and then recombine (2,3,4 etc)
+Comp1 <- Birdcomps[grep("1", Birdcomps$Bird.domainraw_pieces), ]
+#remove columns not needed
+Comp1<- subset(Comp1, select = c("birdcomp1"))
+colnames(Comp1) <- c("Component")
+
+Comp2 <- Birdcomps[grep("2", Birdcomps$Bird.domainraw_pieces), ]
+#remove columns not needed
+Comp2<- subset(Comp2, select = c("birdcomp2"))
+colnames(Comp2) <- c("Component")
+
+Comp3 <- Birdcomps[grep("3", Birdcomps$Bird.domainraw_pieces), ]
+#remove columns not needed
+Comp3<- subset(Comp3, select = c("birdcomp3"))
+colnames(Comp3) <- c("Component")
+
+Comp4 <- Birdcomps[grep("4", Birdcomps$Bird.domainraw_pieces), ]
+Comp4<- subset(Comp4, select = c("birdcomp4"))
+colnames(Comp4) <- c("Component")
+
+##MERGING
+dfmerge12 <- merge(Comp1, Comp2, by=c("Component"),all.x=TRUE, all.y = TRUE) 
+dfmerge34 <- merge(dfmerge12, Comp3, by=c("Component"),all.x=TRUE, all.y = TRUE)
+dfmergefinal <- merge(dfmerge34,Comp4, by=c("Component"),all.x=TRUE, all.y = TRUE)
+
+dfmergefinal <- dfmergefinal %>%
+  mutate_if(is.character, str_trim)
+
+dfmergefinal$Component <- gsub("foraging", "Foraging", dfmergefinal$Component)
+dfmergefinal$Component <- gsub("Demographics/patterns", "Demographics/Patterns", dfmergefinal$Component)
+unique(dfmergefinal$Component)
+
+birdcomps <- dfmergefinal %>%
+  dplyr:: count(Component)
+birdcomps <- as.data.frame(birdcomps)
+
+
+birdcomps$percent <- ((forestcomps$n/277)*100)
+birdcomps
 
 #PUSH OUT CSV
-write.csv(birdcomponent, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/bird.component.csv", row.names = FALSE)
+write.csv(birdcomps, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/bird.component.csv", row.names = FALSE)
 
 
 

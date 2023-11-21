@@ -1,7 +1,8 @@
-"birdomain","total.x","total.y","total"
-"Behaviour",26,3,29
-"Biodiversity",188,1,189
-"Breeding",48,1,49
-"Demographics/Patterns",45,1,46
-"Resources",5,2,7
-"Survival",24,4,28
+"Component","n","percent"
+"Behaviour",17,6.13718411552347
+"Biodiversity",167,60.2888086642599
+"Breeding",28,10.1083032490975
+"Demographics/Patterns",32,11.5523465703971
+"Foraging",1,0.36101083032491
+"Resources",4,1.44404332129964
+"Survival",37,13.3574007220217

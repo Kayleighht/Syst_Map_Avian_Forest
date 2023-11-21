@@ -401,4 +401,198 @@ used?")
                               hjust = -2.3)
   journal.allplot
   
+
+  #create count table including all bird domain columns grouped by RECOMMENDATION TYPE (first only)
+#FIRST INDICATOR
+  fInd1 <- fjournal.rec<- FIndicators %>%
+    group_by(Forest_Comp1) %>%
+    dplyr::mutate(indicator1.count=n())
+  fInd1 <- fInd1[!duplicated(fInd1$Forest_Comp1),]
+  #remove N/A columns
+  fInd1<- fInd1[!grepl('N/A', fInd1$Forest_Comp1),]
+  #calculate sum
+  sum(fInd1$indicator1.count)
+  
+  #SECOND INDICATOR
+  fInd2 <- fjournal.rec<- FIndicators %>%
+    group_by(Forest_Comp2) %>%
+    dplyr::mutate(indicator2.count=n())
+  fInd2 <- fInd2[!duplicated(fInd2$Forest_Comp2), ]
+  #drop N/A
+  fInd2<- fInd2[!grepl('N/A', fInd2$Forest_Comp2),]
+  #calculate sum
+  sum(fInd2$indicator2.count)
+  
+  #THIRD INDICATOR
+  fInd3 <- fjournal.rec<- FIndicators %>%
+    group_by(Forest_Comp3) %>%
+    dplyr::mutate(indicator3.count=n())
+  fInd3 <- fInd3[!duplicated(fInd3$Forest_Comp3), ]
+  #drop N/A
+  fInd3<- fInd3[!grepl('N/A', fInd3$Forest_Comp3),]
+  sum(fInd3$indicator3.count)
+  
+  fInd4 <- fjournal.rec<- FIndicators %>%
+    group_by(Forest_Comp4) %>%
+    dplyr::mutate(indicator4.count=n())
+  fInd4 <- fInd4[!duplicated(fInd4$Forest_Comp4), ]
+  #drop N/A
+  fInd4<- fInd4[!grepl('N/A', fInd4$Forest_Comp4),]
+  sum(fInd4$indicator4.count)
+  
+  fInd5 <- fjournal.rec<- FIndicators %>%
+    group_by(Forest_Comp5) %>%
+    dplyr::mutate(indicator5.count=n())
+  fInd5 <- fInd5[!duplicated(fInd5$Forest_Comp5), ]
+  #drop N/A
+  fInd5<- fInd5[!grepl('N/A', fInd5$Forest_Comp5),]
+  sum(fInd5$indicator5.count)
+  
+  #create data frame to sort # publications with multiple indicators
+  number_topics <- c("One Indicator", "Two Indicators", "Three Indicators", "Four Indicators", "Five Indicators")
+  number_publications <- c("156","98", "41", "12", "3")
+  
+  #PUSH OUT CSV
+  fallindicators<- data.frame(number_topics, number_publications)  
+  write.csv(fallindicators, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FAllind.count.csv", row.names = FALSE)
+  
+  ####################################
+  ####### TOPICS ONLY COUNT ##########
+  ####################################
+  
+  ######### Categories only count ##############
+  #create dataframes for each indicator/topic and align column names
+  forestcomp1 <- fInd1[,-c(2:5)]
+  colnames(forestcomp1)[2] = "indicatorcount"
+  colnames(forestcomp1)[1] = "forestcomp"
+  forestcomp2<- fInd2[,-c(1,3:5)]
+  colnames(forestcomp2)[2] = "indicatorcount"
+  colnames(forestcomp2)[1] = "forestcomp"
+  forestcomp3<- fInd3[,-c(1:2,3:4)]
+  colnames(forestcomp3)[2] = "indicatorcount"
+  colnames(forestcomp3)[1] = "forestcomp"
+  forestcomp4<- fInd4[,-c(1:3,5)]
+  colnames(forestcomp4)[2] = "indicatorcount"
+  colnames(forestcomp4)[1] = "forestcomp"
+  forestcomp5<- fInd5[,-c(1:4)]
+  colnames(forestcomp5)[2] = "indicatorcount"
+  colnames(forestcomp5)[1] = "forestcomp"
+  
+  #BIND
+  allforest<-rbind(forestcomp1, forestcomp2 ,forestcomp3 ,forestcomp4, forestcomp5 )
+  merge1<- merge(forestcomp1, forestcomp2, by= "forestcomp", all= TRUE)
+  merge2<- merge(forestcomp3, forestcomp4, by= "forestcomp", all= TRUE)
+  merge3 <- merge(forestcomp5, forestcomp4, by= "forestcomp", all= TRUE)
+  
+  merge1$total<- merge1$indicatorcount.x + merge1$indicatorcount.y
+  merge1<- merge1[,-c(2:3)]
+  merge1[is.na(merge1)] <- 0
+  
+  merge2[is.na(merge2)] <- 0
+  merge2$total<- merge2$indicatorcount.x + merge2$indicatorcount.y
+  merge2<- merge2[,-c(2:3)]
+  #remove remaining n/a
+  merge2<- merge2[!grepl("N/A", merge2$forestcomp),]
+  
+  #since this includes duplicated fourth comp we must delete it
+  merge3<- merge3[,-3]
+  merge3[is.na(merge3)] <- 0
+  merge3$total<- merge3$indicatorcount.x
+  merge3<- merge3[,-c(2)]
+  
+  
+  #combine all for a total across multiple indictors *** will have more articles than total
+  forestcomponent<- merge(merge1, merge2, by= "forestcomp", all= TRUE)
+  #create new total column
+  forestcomponent[is.na(forestcomponent)] <- 0
+  forestcomponent<- forestcomponent[!grepl("N/A", forestcomponent$forestcomp),]
+  #create new column of totals
+  forestcomponent$total<- (forestcomponent$total.x + forestcomponent$total.y)
+  forestcomponent<- forestcomponent[,-c(2:3)]
+  
+  forestcomptotal <- merge(forestcomponent, merge3, by= "forestcomp", all= TRUE)
+  #replace N/s with zero
+  forestcomptotal[is.na(forestcomptotal)] <- 0
+  forestcomptotal$total<- (forestcomptotal$total.x + forestcomptotal$total.y)
+  #remove irrelevant rows
+  forestcomptotal <- forestcomptotal[, -c(2:3)]
+  
+
+#BIRD
+  
+  birddomain1 <- Ind1[,-c(2:4)]
+  colnames(birddomain1)[2] = "indicatorcount"
+  colnames(birddomain1)[1] = "birdomain"
+  birdomain2<- Ind2[,-c(1,3:4)]
+  colnames(birdomain2)[2] = "indicatorcount"
+  colnames(birdomain2)[1] = "birdomain"
+  birdomain3<- Ind3[,-c(1:2,4)]
+  colnames(birdomain3)[2] = "indicatorcount"
+  colnames(birdomain3)[1] = "birdomain"
+  birdomain4<- Ind4[,-c(1:3)]
+  colnames(birdomain4)[2] = "indicatorcount"
+  colnames(birdomain4)[1] = "birdomain"
+  
+  #BIND
+  allbird<-rbind(birddomain1, birdomain2, birdomain3, birdomain4)
+  merge1<- merge(birddomain1, birdomain2, by= "birdomain", all= TRUE)
+  merge2<- merge(birdomain3, birdomain4, by= "birdomain", all= TRUE)
+  merge1$total<- merge1$indicatorcount.x + merge1$indicatorcount.y
+  merge1<- merge1[,-c(2:3)]
+  merge2[is.na(merge2)] <- 0
+  merge2$total<- merge2$indicatorcount.x + merge2$indicatorcount.y
+  merge2<- merge2[,-c(2:3)]
+  
+  #combine all for a total across multiple indictors *** will have more articles than total
+  birdcomponent<- merge(merge1, merge2, by= "birdomain")
+  birdcomponent$total<- birdcomponent$total.x + birdcomponent$total.y
+  #remove N/A
+  birdcomponent<- birdcomponent[!grepl('N/A', birdcomponent$birdomain),]
+  
+  #PUSH OUT CSV
+  write.csv(birdcomponent, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/bird.component.csv", row.names = FALSE)
+  
+### COMPARATOR CLEANING BIRD
+  Comp<- read.csv("Comp.count.csv")
+  #remove n/a's created from empty rows
+  Comp <-Comp[!grepl('N/A', Comp$Comparator),]
+  Comp <-Comp[!grepl('N/A', Comp$value),]
+  Comp <- Comp %>% drop_na(Comparator)
+  Comp <- Comp %>% drop_na(value)
+  
+  #sort alphabetically to create percentages
+  Comp <- Comp[order(Comp[,2]), ]
+  Comp2<- Comp
+  sum(Comp$n)
+  
+  #spread rows so that we can create percent bars that reach 100%
+  Comp<- Comp %>% spread(Comparator, n)
+  
+  #replace NA with 0
+  Comp[is.na(Comp)] <- 0
+  #create column of totals
+  Comp$total <- Comp$Y + Comp$N
+  #create percent yes column
+  Comp$yespercent <- (Comp$Y/Comp$total)*100
+  Comp$nopercent <- (Comp$N/Comp$total)*100
+  sum(Comp$total)
+  
+  compyes<- subset(Comp, select = c(value, yespercent, Y))
+  colnames(compyes)[2] = "comparator"
+  colnames(compyes)[3] = "yes/no"
+  compno<- subset(Comp, select = c(value, nopercent, N))
+  colnames(compno)[2] = "comparator"
+  colnames(compno)[3] = "yes/no"
+  
+  Compmeta<- rbind(compyes, compno)
+  #sort
+  Compmeta <- Compmeta[order(Compmeta[,1]), ]
+  Comp2[nrow(Comp2) + 1,] <- c("N", "Foraging", 0)
+  #resort
+  Comp2 <- Comp2[order(Comp2[,2], Comp2[,3]), ]
+  Compmeta$comp <- Comp2$Comparator
+  
+  #swap Y/N because not sorted properly
+  Compmeta$comp[Compmeta$comp=="N"]<-"Yes"
+  Compmeta$comp[Compmeta$comp=="Y"]<-"No"
   

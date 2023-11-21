@@ -1,9 +1,11 @@
-"forestcomp","total"
-"Composition",111
-"Connectivity",2
-"Diversity metric",1
-"Exotic/invasive species",9
-"Forested area",19
-"Individual tree management",26
-"Land use type",86
-"Native species",13
+"Component","n","percent"
+"Canopy cover",90,52.9411764705882
+"Composition",531,312.352941176471
+"Connectivity",2,1.17647058823529
+"Diversity metric",1,0.588235294117647
+"Exotic/invasive species",3,1.76470588235294
+"Forested area",11,6.47058823529412
+"Fragmentation",1,0.588235294117647
+"Individual tree management",18,10.5882352941176
+"Land use type",241,141.764705882353
+"Native species",8,4.70588235294118

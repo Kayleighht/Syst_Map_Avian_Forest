@@ -92,7 +92,7 @@ forestmergedex$decision <- gsub("| RAYYAN-EXCLUSION-REASONS: ", "", forestmerged
 #search for values that contain relevant review to remove
 relevantreviews <- forestmergedex[grep("relevant review", forestmergedex$decision), ]
 #remove them from dataframe
-mergedbirdex<- forestmergedex[!grepl("relevant review", forestmergedex$decision), ]
+mergedforestex<- forestmergedex[!grepl("relevant review", forestmergedex$decision), ]
 #remove inaccessible/not reviewed articles
 notretrieved <- forestmergedex[grep("inaccessible", forestmergedex$decision), ]
 forestmergedex<- forestmergedex[!grepl("inaccessible", forestmergedex$decision), ]
@@ -148,4 +148,24 @@ forestgreyclean <- separate_wider_delim(forestgrey, cols = reason , delim = ",",
 forestcountgrey<- forestgreyclean %>%
   dplyr:: count(reason1)
 forestcountgrey
-sum(forestcountgrey$n)
+
+#### PHASE 2 GREY LIT #############################################################
+#########################################################################################
+
+#BIRD##
+phase2grey<- read.csv("phase2grey_articles.csv")
+
+phase2grey<- subset(phase2grey, select = c(title, notes))
+
+phase2grey <- separate_wider_delim(phase2grey, cols = notes , delim = "|", names = c("notes1", "notes2", "notes3", "notes4"),
+                                   too_few = "align_start", too_many = "debug")
+
+
+#remove inaccessible/not reviewed articles
+notretrieved <- birdgrey[grep("inaccessible", birdgrey$reason), ]
+birdgrey<- birdgrey[!grepl("inaccessible", birdgrey$reason), ]
+
+#separate by labels
+birdgrey1<- birdgrey[grep("bird", birdgrey$label),]
+forestgrey<- birdgrey[grep("forest", birdgrey$label),]
+
