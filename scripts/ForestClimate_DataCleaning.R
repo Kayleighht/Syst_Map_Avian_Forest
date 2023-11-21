@@ -69,6 +69,56 @@ journal.df$COUNTRY[journal.df$journal.count <= 1] <- "Other"
 #PUSH OUT CSV
 write.csv(journal.df, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/journal.df.csv", row.names = FALSE)
 
+##################################################################################################################################
+################################### BUBBLEMAPS PREP ################################################################
+
+#cut down to only necessary columns for figures (so far..)
+for.meta <- forest.data[,c(6,8,9, 13)]
+
+#rename column in av.meta to match shape files with countries
+names(for.meta)[names(for.meta) == "Study.Country"] <- "COUNTRY"
+
+#replace empty cells with N/A
+for.meta <- replace(for.meta, for.meta=='', NA) 
+
+unique(for.meta$COUNTRY)
+
+for.meta$COUNTRY[for.meta$COUNTRY == 'United States'] <- 'USA'
+for.meta$COUNTRY[for.meta$COUNTRY == 'United State of America'] <- 'USA'
+for.meta$COUNTRY[for.meta$COUNTRY == 'United States of America'] <- 'USA'
+for.meta$COUNTRY[for.meta$COUNTRY == 'Spain and France'] <- 'Multiple'
+for.meta$COUNTRY[for.meta$COUNTRY == 'Korea'] <- 'South Korea'
+for.meta$COUNTRY[for.meta$COUNTRY == 'Almada'] <- 'Portugal'
+for.meta$COUNTRY[for.meta$COUNTRY == 'Republic of Korea'] <- 'South Korea'
+#for.meta$COUNTRY[for.meta$COUNTRY == 'France '] <- 'France'
+
+meta_for<-for.meta %>%
+  group_by(COUNTRY) %>%
+  dplyr::mutate(count= n())
+
+
+# merge two data frames by ID
+merged_for <- merge(meta_for,latlong,by="COUNTRY", all.x=TRUE)
+merged_for<-merged_for %>% select(1,5:7)
+merged_for<-merged_for %>% distinct(COUNTRY, .keep_all = TRUE)
+
+data1 <- arrange(merged_for, -count)
+write.csv(data1, "map_data_for.csv")
+
+data1$latitude[data1$latitude == "23.82408"] <- "25.562583"
+
+data1$latitude[data1$latitude == '24.24902'] <- '25.24902'	
+
+data1$latitude <- as.numeric(data1$latitude)
+
+write.csv(data1, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/data1.csv", row.names = FALSE)
+
+
+
+
+
+
+
 ###### STUDY BY YEAR COUNTS ################################################################################
 #subset necessary columns
 #subset only columns needed

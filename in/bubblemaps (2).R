@@ -206,9 +206,6 @@ mybreaks <- c(1,5,15,35,95)
     
    ggsave(filename ="av_for_maps1.png", width = 12, height = 6, device='tiff', dpi=300)
   
-   
-
-   
  ##### Bubble maps ####################################################################
   
   #### Number of Publications per country by country of first author ####
