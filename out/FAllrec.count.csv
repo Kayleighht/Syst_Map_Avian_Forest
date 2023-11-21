@@ -1,49 +1,80 @@
 "Rec1","value","n"
-"Conservation","Composition",10
-"Management","Composition",74
-"No Recommendations","Composition",32
-"Restoration","Composition",3
-"Conservation","Composition",3
-"Management","Composition",9
-"Restoration","Composition",5
-"Management","Composition",2
-"Conservation","Connectivity",1
-"Management","Connectivity",2
-"Restoration","Connectivity",2
+"Conservation"," Canopy cover",2
+"Management"," Canopy cover",16
+"No Recommendations"," Canopy cover",4
+"Management"," Canopy cover",2
+"Restoration"," Canopy cover",1
+"Conservation"," Composition",6
+"Management"," Composition",30
+"No Recommendations"," Composition",14
+"Restoration"," Composition",3
+"Conservation"," Composition",2
+"Management"," Composition",5
+"Management"," Composition",2
+"Conservation"," Connectivity",1
+"Management"," Connectivity",1
+"Restoration"," Connectivity",2
+"Conservation"," Diversity metric",1
+"Management"," Diversity metric",1
+"Restoration"," Diversity metric",1
+"Conservation"," Exotic/invasive species",1
+"Management"," Exotic/invasive species",5
+"No Recommendations"," Exotic/invasive species",2
+"Management"," Exotic/invasive species",1
+"Conservation"," Forested area",1
+"Management"," Forested area",14
+"No Recommendations"," Forested area",4
+"Management"," Forested area",1
+"Restoration"," Forested area",1
+"Management"," Fragmentation",1
+"No Recommendations"," Fragmentation",1
+"Conservation"," Individual tree management",2
+"Management"," Individual tree management",6
+"No Recommendations"," Individual tree management",2
+"Conservation"," Individual tree management",1
+"Management"," Individual tree management",1
+"Restoration"," Individual tree management",1
+"Conservation"," Land use type",3
+"Management"," Land use type",34
+"No Recommendations"," Land use type",11
+"Restoration"," Land use type",1
+"Management"," Land use type",4
+"Restoration"," Land use type",2
+"Conservation"," Native species",2
+"Management"," Native species",6
+"No Recommendations"," Native species",1
+"Management"," Native species",1
+"Restoration"," Native species",2
+"Management","Canopy cover",9
+"No Recommendations","Canopy cover",2
+"Conservation","Composition",4
+"Management","Composition",45
+"No Recommendations","Composition",18
+"Conservation","Composition",1
+"Management","Composition",4
+"Restoration","Composition",2
 "Management","Connectivity",1
-"Conservation","Diversity metric",1
-"Management","Diversity metric",2
-"Restoration","Diversity metric",1
 "Management","Diversity metric",1
-"Conservation","Exotic/invasive species",1
-"Management","Exotic/invasive species",5
-"No Recommendations","Exotic/invasive species",3
+"Restoration","Diversity metric",1
+"No Recommendations","Exotic/invasive species",1
 "Restoration","Exotic/invasive species",1
-"Management","Exotic/invasive species",1
-"Conservation","Forested area",2
-"Management","Forested area",20
-"No Recommendations","Forested area",7
 "Conservation","Forested area",1
-"Management","Forested area",2
-"Restoration","Forested area",2
-"Management","Fragmentation",1
-"No Recommendations","Fragmentation",1
-"Conservation","Individual tree management",2
-"Management","Individual tree management",17
-"No Recommendations","Individual tree management",7
-"Management","Individual tree management",1
-"Restoration","Individual tree management",1
-"Conservation","Land use type",11
-"Management","Land use type",63
-"No Recommendations","Land use type",25
-"Restoration","Land use type",2
+"Management","Forested area",6
+"No Recommendations","Forested area",3
+"Management","Forested area",1
+"Restoration","Forested area",1
+"Management","Individual tree management",11
+"No Recommendations","Individual tree management",6
+"Conservation","Individual tree management",1
+"Conservation","Land use type",8
+"Management","Land use type",29
+"No Recommendations","Land use type",14
+"Restoration","Land use type",1
 "Conservation","Land use type",4
-"Management","Land use type",8
-"Restoration","Land use type",5
+"Management","Land use type",4
+"Restoration","Land use type",3
 "Management","Land use type",2
-"Conservation","Native species",2
-"Management","Native species",10
-"No Recommendations","Native species",2
+"Management","Native species",4
+"No Recommendations","Native species",1
 "Restoration","Native species",2
-"Management","Native species",3
-"Management","Native species",1
+"Management","Native species",2

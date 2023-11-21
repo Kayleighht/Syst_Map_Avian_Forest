@@ -1,26 +1,27 @@
 "duration_bin","value","n"
-"(0,1]","Composition",44
+"(0,1]","Canopy cover",14
+"(0,1]","Composition",43
 "(0,1]","Connectivity",1
 "(0,1]","Exotic/invasive species",3
 "(0,1]","Forested area",11
 "(0,1]","Fragmentation",1
 "(0,1]","Individual tree management",7
 "(0,1]","Land use type",39
-"(0,1]","N/A",190
 "(0,1]","Native species",4
-"(1,5]","Composition",23
+"(1,5]","Canopy cover",8
+"(1,5]","Composition",24
 "(1,5]","Diversity metric",2
 "(1,5]","Exotic/invasive species",4
 "(1,5]","Forested area",4
 "(1,5]","Individual tree management",6
 "(1,5]","Land use type",17
-"(1,5]","N/A",95
 "(1,5]","Native species",4
-"(5,10]","Composition",4
+"(5,10]","Canopy cover",2
+"(5,10]","Composition",5
 "(5,10]","Forested area",2
 "(5,10]","Individual tree management",1
 "(5,10]","Land use type",4
-"(5,10]","N/A",29
+"(10,100]","Canopy cover",1
 "(10,100]","Composition",6
 "(10,100]","Connectivity",1
 "(10,100]","Diversity metric",1
@@ -29,5 +30,4 @@
 "(10,100]","Fragmentation",1
 "(10,100]","Individual tree management",1
 "(10,100]","Land use type",9
-"(10,100]","N/A",40
 "(10,100]","Native species",2

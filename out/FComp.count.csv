@@ -1,19 +1,21 @@
-"Comparator","value","n"
-"N","Composition",107
-"N","Connectivity",3
-"N","Diversity metric",3
-"N","Exotic/invasive species",8
-"N","Forested area",25
-"N","Fragmentation",2
-"N","Individual tree management",20
-"N","Land use type",88
-"N","N/A",465
-"N","Native species",14
-"Y","Composition",12
-"Y","Diversity metric",1
-"Y","Exotic/invasive species",2
-"Y","Forested area",4
-"Y","Individual tree management",6
-"Y","Land use type",13
-"Y","N/A",75
-"Y","Native species",2
+"value","comparator","yes/no","comp"
+"Canopy cover",12.1212121212121,4,"Yes"
+"Canopy cover",87.8787878787879,29,"No"
+"Composition",10.8333333333333,13,"Yes"
+"Composition",89.1666666666667,107,"No"
+"Connectivity",0,0,"No"
+"Connectivity",100,3,"Yes"
+"Diversity metric",25,1,"No"
+"Diversity metric",75,3,"Yes"
+"Exotic/invasive species",20,2,"No"
+"Exotic/invasive species",80,8,"Yes"
+"Forested area",13.7931034482759,4,"Yes"
+"Forested area",86.2068965517241,25,"No"
+"Fragmentation",0,0,"No"
+"Fragmentation",100,2,"Yes"
+"Individual tree management",22.2222222222222,6,"Yes"
+"Individual tree management",77.7777777777778,21,"No"
+"Land use type",12.8712871287129,13,"No"
+"Land use type",87.1287128712871,88,"Yes"
+"Native species",12.5,2,"Yes"
+"Native species",87.5,14,"No"
