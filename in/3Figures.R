@@ -295,8 +295,8 @@ birdpalette4 <- c("#481567FF", "#404788FF", "#33638DFF", "#238A8Dff")
 scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= name , y= percent)) +
               geom_bar(stat= 'identity') + alltheme + labs(x= "", y= "Percent of Studies") +
               theme(axis.text.x = element_text(colour= "black", size= 12), axis.text.y = element_text(size = 13, colour= "black", angle = 0)) + 
-              coord_flip() + scale_y_continuous(limits= c(0,100)) + scale_fill_manual(values = birdpalette4)
-
+              coord_flip() + scale_y_continuous(limits= c(0,100)) + scale_fill_manual(values = birdpalette4) 
+              
 bird.scaleplot<- scale.plot + labs(fill= "Urban Scale") + theme_legend3 + alltheme
 bird.scaleplot
 
@@ -339,7 +339,6 @@ Urban$name <- factor(Urban$name, levels = c("Composition", "Land use type", "Can
                                                                 "Diversity metric", "Fragmentation"))
 
 forestpalette4 <- c("#20A387FF", "#55C667FF", "#B8DE29FF", "#FDE725FF")
-
 
 scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= name, y= percent)) +
   geom_bar(stat= 'identity') + alltheme + labs(x= "", y= "Percent of Studies") +
@@ -446,22 +445,22 @@ embeddedfig<- ggarrange(birdtopic.plot, foresttopic.plot,
 
 embeddedfig
 
--############################# FIGURE 7 ####################################################################
+############################# FIGURE 7 ####################################################################
 ####################### PERCENT PUBLICATIONS ACCORDING TO ONE/MANY INDICATORS ##########################
-birdpalette3 <- c("#ae017e","#f768a1","#fbb4b9","#feebe2")
+birdpalette4 <- c("#481567FF", "#404788FF", "#33638DFF", "#238A8Dff")
 
-Indicator.ct<- read.csv("Allind.count.csv")
-sum(Indicator.ct$number_publications)
+BIndicator.ct<- read.csv("Allind.count.csv")
+sum(BIndicator.ct$number_publications)
 #add column with percents
-Indicator.ct$percent<- (Indicator.ct$number_publications/347)*100
+BIndicator.ct$percent<- (BIndicator.ct$number_publications/347)*100
   
-indicator.plot <- ggplot(Indicator.ct, aes(x= reorder(number_topics, -percent), y= percent)) +
-                  geom_bar(stat= 'identity', fill= birdpalette3) + theme(axis.text.x = element_text(size= 10))+
+indicator.plot <- ggplot(BIndicator.ct, aes(x= reorder(number_topics, -percent), y= percent)) +
+                  geom_bar(stat= 'identity', fill= birdpalette4) + theme(axis.text.x = element_text(size= 10))+
                   theme_hc() + labs(x = "", y=" Percent of Studies") + coord_flip()
 bird.indicatorplot<- indicator.plot + alltheme
 
 #FOREST#
-forestpalette5 <- c("#006837","#31a354", "#78c679", "#c2e699","#ffffcc")
+forestpalette5 <- c("#1F968BFF", "#29AF7FFF", "#55C667FF", "#B8DE29FF", "#FDE725FF")
 
 Indicator.ct<- read.csv("FAllind.count.csv")
 sum(Indicator.ct$number_publications)
@@ -479,6 +478,27 @@ all.indicatorplot<- ggarrange(bird.indicatorplot, forest.indicatorplot,
                               ncol = 2, nrow = 1)
 all.indicatorplot
 
+## COMBINED
+
+indicatorall<- rbind(BIndicator.ct, Indicator.ct)
+indicatorall$component <- c("Avian", "Avian", "Avian", "Avian", "Forest", "Forest", "Forest", "Forest", "Forest")
+
+#factor indicators for ordering
+indicatorall$number_topics <- factor(indicatorall$number_topics, levels = c("One Indicator", "Two Indicators", "Three Indicators", 
+                                                                            "Four Indicators", "Five Indicators"))
+
+#PLOT
+ind.plotall <- ggplot(indicatorall, aes(x= number_topics, y=percent, fill=component)) +
+  geom_bar(stat='identity', position='dodge', width= 0.9) +
+  labs(x= "Indicators measured", y= "Percent of Studies") +
+  
+  scale_y_continuous(breaks = c(0, 20, 40, 60, 80, 100), limits = c(0,100)) +
+  scale_fill_manual(values=c(birdcol, forestcol)) + alltheme + theme_legend +
+  labs(fill = "Topic") + scale_x_discrete(labels=c("One Indicator" = "One", "Two Indicators" = "Two",
+                                                   "Three Indicators" = "Three", "Four Indicators" = "Four", "Five Indicators" = "Five"))
 
 
+ind.plotall
+
+ggsave(filename ="UFCBFig2.png", width = 16, height = 13, device='tiff', dpi=300)  
 
