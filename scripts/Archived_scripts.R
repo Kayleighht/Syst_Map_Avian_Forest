@@ -595,4 +595,33 @@ used?")
   #swap Y/N because not sorted properly
   Compmeta$comp[Compmeta$comp=="N"]<-"Yes"
   Compmeta$comp[Compmeta$comp=="Y"]<-"No"
+
   
+  ###### COUNTRY ###################################################################################################################################
+  
+  #subset necessary columns
+  df<- subset(forest.meta, select = c(COUNTRY, Journal))
+  
+  #COUNT TABLE
+  #journal name count by study country
+  forestcountrycount <- df %>%
+    group_by(COUNTRY, Journal) %>%
+    dplyr::mutate(journal.count= n())
+  
+  #PUSH OUT CSV
+  write.csv(forestcountrycount, 
+            "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FCountry.count.csv", row.names = FALSE)
+  
+  #COUNT TABLE
+  #count only by COUNTRY
+  
+  #subset 
+  df<- subset(forest.meta, select = COUNTRY)
+  
+  countrycount <- df %>%
+    group_by(COUNTRY) %>%
+    dplyr::mutate(country.count= n())
+  
+  #PUSH OUT CSV
+  write.csv(countrycount, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest
+                        /Syst_Map_Avian_Forest/out/FHeatmap.count.csv", row.names = FALSE)
