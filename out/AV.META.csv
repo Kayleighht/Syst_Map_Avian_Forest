@@ -80,7 +80,7 @@
 2004,"Acta Oecologica","Czech Republic","Czech Republic","Multi-patch",2001,2002,"Y","Behaviour","Biodiversity",NA,NA,"Yes","Management",NA,NA,"Composition"
 2008,"Landscape Ecology","United Kingdom","United Kingdom","Multi-patch",2003,2005,"Y","Breeding","Biodiversity","Survival",NA,"Yes","Management",NA,NA,"Composition, Fragmentation, Canopy Cover"
 2010,"Biological Conservation","South Africa","South Africa","Patch",2008,2009,"Y","Demographics/Patterns",NA,NA,NA,"Yes","Management",NA,NA,"Canopy Cover, Composition"
-2017,"The European Zoological Journal","Poland","Poland","Multi-patch",2002,2015,"Y","Breeding",NA,NA,NA,"No",NA,NA,NA,""
+2017,"The European Zoological Journal","Poland","Poland","Multi-patch",2002,2015,"Y","Breeding",NA,NA,NA,"No",NA,NA,NA,NA
 2013,"Pakistan Journal of Zoology","China","China","Multi-patch",2004,2005,"Y","Biodiversity",NA,NA,NA,"No",NA,NA,NA,"Land use type"
 1997,"The Condor","Spain","Spain","Multi-patch",1992,1994,"N","Biodiversity","Breeding",NA,NA,"No",NA,NA,NA,"Composition, Canopy Cover"
 2005,"The Condor","USA","USA","Multi-patch",2001,2001,"Y","Biodiversity","Breeding",NA,NA,"Yes","Management",NA,NA,"Composition, Land use type"
@@ -107,9 +107,9 @@
 2009,"Urban Ecosystems","USA","USA","Multi-patch",2000,2002,"Y","Biodiversity","Demographics/Patterns",NA,NA,"Yes","Conservation",NA,NA,"Canopy Cover, Composition"
 2018,"Journal of Urban Ecology","Singapore","Italy","Patch",2017,2017,"Y","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,"Individual tree management"
 2017,"Ekológia","Ukraine","Ukraine","Patch",2016,2016,"Y","Biodiversity",NA,NA,NA,"No",NA,NA,NA,"Composition, Diversity metric"
-2011,"Pacific Conservation Biology","Australia","Australia","Patch",2003,2004,"Y","Biodiversity",NA,NA,NA,"Yes","Conservation",NA,NA,""
+2011,"Pacific Conservation Biology","Australia","Australia","Patch",2003,2004,"Y","Biodiversity",NA,NA,NA,"Yes","Conservation",NA,NA,NA
 2020,"Australian Zoologist","Australia","Australia","Patch",NA,NA,"N","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,"Land use type"
-2019,"Journal of Urban Ecology","Australia","Australia","Multi-patch",2012,2012,"N","Demographics/Patterns","Biodiversity",NA,NA,"Yes","Management","Conservation","Restoration",""
+2019,"Journal of Urban Ecology","Australia","Australia","Multi-patch",2012,2012,"N","Demographics/Patterns","Biodiversity",NA,NA,"Yes","Management","Conservation","Restoration",NA
 2018,"Urban Forestry & Urban Greening","China","China","Multi-patch",1987,2014,"Y","Demographics/Patterns","Biodiversity",NA,NA,"No",NA,NA,NA,"Forested area, Land use type, Composition"
 2013,"Landscape Ecology","Germany","Germany","Multi-patch",2007,2007,"Y","Survival","Demographics/Patterns","Behaviour","Foraging","No",NA,NA,NA,"Land use type, Forested Area"
 2009,"Ecology of cities and towns: A comparative approach.","Australia","Australia","Multi-patch",1985,2000,"Y","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,"Land use type"
@@ -209,10 +209,10 @@
 2021,"Current Zoology","China","China","Patch",2019,2020,"Y","Biodiversity","Demographics/Patterns",NA,NA,"Yes","Conservation",NA,NA,"Connectivity, Diversity metric, Forested area"
 2020,"Avian Research","China","China","Patch",2019,2020,"Y","Biodiversity","Demographics/Patterns",NA,NA,"Yes","Conservation",NA,NA,"Connectivity, Diversity metric, Forested area"
 2005,"Urban Ecosystems","USA","USA","Region",2002,2003,"Y","Demographics/Patterns",NA,NA,NA,"Yes","Conservation",NA,NA,"Diversity metric, Land use type, Composition"
-2021,"Ecological Society of America","USA","USA","Multi-city",2017,2018,"N","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,""
+2021,"Ecological Society of America","USA","USA","Multi-city",2017,2018,"N","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,NA
 2015,"Urban Forestry & Urban Greening","China","China","Patch",2009,2010,"N","Biodiversity","Behaviour",NA,NA,"Yes","Management",NA,NA,"Forested area, Composition"
 2009,"Journal of Arboriculture","Italy","Italy","Patch",2005,2006,"Y","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,"Forested area, Composition, Canopy Cover"
-2018,"Ecosphere","Australia","Multiple","Multi-city",2013,2016,"N","Biodiversity",NA,NA,NA,"Yes","Conservation","Management",NA,""
+2018,"Ecosphere","Australia","Multiple","Multi-city",2013,2016,"N","Biodiversity",NA,NA,NA,"Yes","Conservation","Management",NA,NA
 2013,"Urban Ecosystems","Australia","Australia","Multi-patch",2011,2011,"Y","Behaviour","Biodiversity",NA,NA,"Yes","Management",NA,NA,"Land use type"
 2020,"Urban Ecosystems","France","France","Multi-patch",2003,2017,"N","Biodiversity",NA,NA,NA,"No",NA,NA,NA,"Forested area, Composition"
 2014,"Urban Ecosystems","Czech Republic","Prague","Multi-patch",2007,2008,"N","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,"Forested area, Composition"
@@ -227,9 +227,9 @@
 2013,"Diversity and Distributions","Australia","Australia","Multi-patch",2009,2009,"Y","Biodiversity",NA,NA,NA,"Yes","Conservation","Management",NA,"Native species, Exotic/invasive species, Composition"
 2008,"Biodiversity & Conservation","USA","USA","Region",2001,2002,"Y","Biodiversity",NA,NA,NA,"Yes","Management","Restoration",NA,"Composition, Forested area, Canopy Cover"
 2012,"Urban Ecosystems","USA","USA","Region",2009,2010,"N","Biodiversity","Breeding",NA,NA,"Yes","Management","Conservation",NA,"Forested area, Canopy Cover, Composition"
-2020,"Ecological Applications","","USA","Patch",2016,2018,"N","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,"Native species, Composition"
+2020,"Ecological Applications",NA,"USA","Patch",2016,2018,"N","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,"Native species, Composition"
 2011,"Landscape and Urban Planning","Switzerland","Switzerland","Multi-city",2007,2007,"Y","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,"Diversity metric, Native species, Exotic/invasive species, Composition"
-2022,"Journal of Applied Ecology","USA","USA","Patch",2010,2018,"","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,"Forested area, Canopy Cover"
+2022,"Journal of Applied Ecology","USA","USA","Patch",2010,2018,NA,"Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,"Forested area, Canopy Cover"
 2014,"Urban Ecosystems","USA","USA","Region",2006,2010,"N","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,"Composition, Canopy Cover"
 2011,"Ecological Applications","USA","USA","Multi-patch",2006,2008,"Y","Biodiversity",NA,NA,NA,"No",NA,NA,NA,"Composition, Native species"
 2008,"Biological Conservation","USA","USA","Multi-patch",2003,2003,"N","Biodiversity",NA,NA,NA,"Yes","Management","Conservation",NA,"Canopy Cover, Forested area, Land use type, Composition"
@@ -263,7 +263,7 @@
 2013,"Emu-Austral Ornithology","New Zealand","New Zealand","Multi-patch",2009,2010,"Y","Behaviour",NA,NA,NA,"No",NA,NA,NA,"Individual tree management, Native species, Exotic/invasive species"
 2013,"Landscape and Urban Planning","China","China","Patch",1997,1997,"Y","Biodiversity",NA,NA,NA,"Yes","Management","Conservation",NA,"Forested area, Connectivity, Composition"
 2018,"Diversity and Distributions","Australia","Australia","Multi-patch",2012,2014,"Y","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,"Land use type, Individual tree management, Composition"
-1981,"Urban Ecology","USA","USA","Multi-patch",1972,1972,"Y","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,""
+1981,"Urban Ecology","USA","USA","Multi-patch",1972,1972,"Y","Biodiversity",NA,NA,NA,"Yes","Management",NA,NA,NA
 2018,"Journal of Urban Ecology","Canada","Canada","Multi-patch",2011,2017,"Y","Behaviour",NA,NA,NA,"Yes","Conservation",NA,NA,"Fragmentation, Canopy Cover"
 2006,"Urban Ecosystems","Australia","Australia","Patch",2003,2003,"Y","Demographics/Patterns",NA,NA,NA,"Yes","Management",NA,NA,"Forested area, Fragmentation, Connectivity"
 2015,"Australian Zoologist","Australia","Australia","Region",1952,NA,"Y","Demographics/Patterns",NA,NA,NA,"No",NA,NA,NA,"Composition, Canopy Cover, Individual tree management, Land use type"

@@ -1,5 +1,5 @@
 #packagesneeded
-Packages <- c("tidyverse", "ggplot2", "maps", "bibliometrix", "ggthemes", "cartography", "sf", "stringr")
+Packages <- c("tidyverse", "ggplot2", "bibliometrix", "ggthemes", "cartography", "sf", "stringr")
 lapply(Packages, library,character.only= TRUE)
 
 getwd()
@@ -123,8 +123,9 @@ data$longitude<-as.numeric(data$longitude)
 #PUSH OUT CSV
 write.csv(data, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/data.csv", row.names = FALSE)
 
+########################################## JOURNAL AND COUNTRY #########################################################################
 
-# journal name count by study country
+# journal name count by country of first author
 country.count.av. <- av.meta %>%
   group_by(COUNTRY,Journal) %>%
   dplyr::mutate(journal.count= n())
@@ -150,8 +151,7 @@ journal.df.av$COUNTRY[journal.df.av$journal.count <= 1] <- "Other"
 
 write.csv(journal.df.av, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/journal.df.av.csv", row.names = FALSE)
 
-############################### DATA PREPARATION FOR COUNT TABLES ##############################################################
-
+###################################################### YEAR ###############################################################################
 #COUNT TABLE
 #number of publications per year
 year.count <- av.meta %>%
@@ -176,7 +176,7 @@ country.count <- av.meta %>%
 #PUSH OUT CSV
 write.csv(country.count, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Country.count.csv", row.names = FALSE)
 
-#journal name country by recommendation included
+############################################# RECOMMENDATION AND JOURNAL ###################################################
 journal.rec<- av.meta %>%
   group_by(Rec., Journal) %>%
   dplyr::mutate(journal.count=n())
@@ -190,26 +190,14 @@ write.csv(journal.rec, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/
 
 #get total counts on country of first author
 country<- av.meta %>%
-  group_by(Country.Auth) %>%
+  group_by(COUNTRY) %>%
   dplyr::mutate(country.count=n())
 
 #get total count on country of first author
-authcountry <- country[,c("Country.Auth", "country.count")]
-authcountry <- authcountry %>% distinct(Country.Auth, .keep_all = TRUE)
+authcountry <- country[,c("COUNTRY", "country.count")]
+authcountry <- authcountry %>% distinct(COUNTRY, .keep_all = TRUE)
 
-#COUNT TABLE
-#count only by COUNTRY
-heatmap.count <- av.meta %>%
-  group_by(COUNTRY) %>%
-  dplyr::mutate(country.count= n())
-
-#country first author count
-#get total count on journals
-country.count<- heatmap.count[,c("COUNTRY", "country.count")]
-country.count<- country.count %>% distinct(COUNTRY, .keep_all = TRUE)
-
-#PUSH OUT CSV
-write.csv(heatmap.count, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Heatmap.count.csv", row.names = FALSE)
+############################################### URBAN SCALE ##############################################################################
 
 #COUNT TABLE
 #all bird domain columns grouped by URBAN SCALE
@@ -224,11 +212,16 @@ urbanallcount<- av.meta %>%
 #PUSH OUT CSV
 write.csv(urb.counts, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/birdurb.count.csv", row.names = FALSE)
 
+#################################### COMPARATOR #######################################
+
 #COUNT TABLE
 #all bird domain columns grouped by COMPARATOR USED Y/N
 comp.counts <-av.meta %>%
   pivot_longer(cols = c(birdcomp1:birdcomp4)) %>%
   dplyr::count(Comparator,value)
+
+comp.counts2 <-av.meta %>%
+  dplyr::count(Comparator)
 
 #PUSH OUT CSV
 write.csv(comp.counts, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Birdcomp.counts.csv", row.names = FALSE)
@@ -328,11 +321,7 @@ duration.counts2 <- duration.counts2 %>% drop_na(n)
 write.csv(duration.counts, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Duration.count.csv", row.names = FALSE)
 write.csv(duration.counts2, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Duration.count2.csv", row.names = FALSE)
 
-############################################
-######## SUBSETTING RECOMMENDATIONS #######
-###########################################
-
-################SUBSET FOR RECOMMENDATIONS
+################SUBSET FOR RECOMMENDATIONS ########################################
 
 recdf<- av.meta[,c("birdcomp1","birdcomp2", "birdcomp3", "birdcomp4", "Rec.",
                    "Rec.1", "Rec.2", "Rec.3")]
@@ -504,14 +493,8 @@ write.csv(allindicators, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Fores
 ######### Categories only count ##############
 #create dataframes for each indicator/topic and align column names
 
-Birdcomps <- separate_wider_delim(av.meta, cols = Bird.domainraw, delim = ",", names = c("birdcomp1", "birdcomp2", "birdcomp3", "birdcomp4",
-                                                                                            "birdcomp5"),
-                                    too_few = "align_start", too_many = "debug")
-
-#search for matching # of notes to subset and then recombine (2,3,4 etc)
-Comp1 <- Birdcomps[grep("1", Birdcomps$Bird.domainraw_pieces), ]
 #remove columns not needed
-Comp1<- subset(Comp1, select = c("birdcomp1"))
+Comp1<- subset(av.meta, select = c("birdcomp1"))
 colnames(Comp1) <- c("Component")
 
 Comp2 <- Birdcomps[grep("2", Birdcomps$Bird.domainraw_pieces), ]
@@ -529,9 +512,9 @@ Comp4<- subset(Comp4, select = c("birdcomp4"))
 colnames(Comp4) <- c("Component")
 
 ##MERGING
-dfmerge12 <- merge(Comp1, Comp2, by=c("Component"),all.x=TRUE, all.y = TRUE) 
-dfmerge34 <- merge(dfmerge12, Comp3, by=c("Component"),all.x=TRUE, all.y = TRUE)
-dfmergefinal <- merge(dfmerge34,Comp4, by=c("Component"),all.x=TRUE, all.y = TRUE)
+dfmerge12 <- rbind(Comp1, Comp2)
+dfmerge34 <- rbind(dfmerge12, Comp3)
+dfmergefinal <- rbind(dfmerge34,Comp4)
 
 dfmergefinal <- dfmergefinal %>%
   mutate_if(is.character, str_trim)
@@ -545,7 +528,7 @@ birdcomps <- dfmergefinal %>%
 birdcomps <- as.data.frame(birdcomps)
 
 
-birdcomps$percent <- ((forestcomps$n/277)*100)
+birdcomps$percent <- ((birdcomps$n/277)*100)
 birdcomps
 
 #PUSH OUT CSV
