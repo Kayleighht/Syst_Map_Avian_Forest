@@ -73,7 +73,7 @@ publication.years<- byyear_av + alltheme +
 publication.years 
 
 #### SAVE FILE
-ggsave(filename ="UFCBFig1.png", width = 16, height = 13, device='tiff', dpi=300)  
+ggsave(filename ="EV_Fig1.png", width = 16, height = 13, dpi=300)  
 
 ########################## FIGURE _ ###################################################
 ################### Study Country Heat Map ##################################

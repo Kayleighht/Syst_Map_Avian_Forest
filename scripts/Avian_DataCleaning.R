@@ -534,6 +534,53 @@ birdcomps
 #PUSH OUT CSV
 write.csv(birdcomps, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/bird.component.csv", row.names = FALSE)
 
+######### Categories of forest management only count ##############
+#create dataframes for each indicator/topic and align column names
+av.forestmanagement <- separate_wider_delim(av.data, cols = Forest.comp, delim = ",", 
+                                names = c("fint1", "fint2", "fint3", "fint4", "fint5"),
+                                too_few = "align_start", too_many = "debug")
+av.forestmanagement <- av.forestmanagement[,c("fint1", "fint2", "fint3", "fint4", "Forest.comp_pieces")]
+
+#remove columns not needed
+Comp1<- subset(av.forestmanagement, select = c("fint1"))
+colnames(Comp1) <- c("Component")
+
+Comp2 <- av.forestmanagement[grep("2", av.forestmanagement$Forest.comp_pieces), ]
+#remove columns not needed
+Comp2<- subset(Comp2, select = c("birdcomp2"))
+colnames(Comp2) <- c("Component")
+
+Comp3 <- av.forestmanagement[grep("3", av.forestmanagement$Forest.comp_pieces), ]
+#remove columns not needed
+Comp3<- subset(Comp3, select = c("birdcomp3"))
+colnames(Comp3) <- c("Component")
+
+Comp4 <- av.forestmanagement[grep("4", av.forestmanagement$Forest.comp_pieces), ]
+Comp4<- subset(Comp4, select = c("birdcomp4"))
+colnames(Comp4) <- c("Component")
+
+##MERGING
+dfmerge12 <- rbind(Comp1, Comp2)
+dfmerge34 <- rbind(dfmerge12, Comp3)
+dfmergefinal <- rbind(dfmerge34,Comp4)
+
+dfmergefinal <- dfmergefinal %>%
+  mutate_if(is.character, str_trim)
+
+dfmergefinal$Component <- gsub("foraging", "Foraging", dfmergefinal$Component)
+dfmergefinal$Component <- gsub("Demographics/patterns", "Demographics/Patterns", dfmergefinal$Component)
+unique(dfmergefinal$Component)
+
+birdcomps <- dfmergefinal %>%
+  dplyr:: count(Component)
+birdcomps <- as.data.frame(birdcomps)
+
+
+birdcomps$percent <- ((birdcomps$n/277)*100)
+birdcomps
+
+#PUSH OUT CSV
+write.csv(birdcomps, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/bird.component.csv", row.names = FALSE)
 
 
 

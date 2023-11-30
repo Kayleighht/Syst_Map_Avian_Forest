@@ -1,12 +1,14 @@
 "COUNTRY","Journal","count","journal.count"
-"Finland","Urban Forestry & Urban Greening",21,3
+"Other","Urban Forestry & Urban Greening",21,1
 "Germany","Urban Forestry & Urban Greening",21,2
 "Italy","Urban Forestry & Urban Greening",21,3
-"USA","Urban Forestry & Urban Greening",21,5
+"USA","Urban Forestry & Urban Greening",21,4
 "Other","Urban Forestry & Urban Greening",21,1
+"Finland","Urban Forestry & Urban Greening",21,2
 "Other","Urban Forestry & Urban Greening",21,1
 "Other","Urban Forestry & Urban Greening",21,1
 "China","Urban Forestry & Urban Greening",21,2
+"Other","Urban Forestry & Urban Greening",21,1
 "Other","Urban Forestry & Urban Greening",21,1
 "Other","Urban Forestry & Urban Greening",21,1
 "Other","Urban Forestry & Urban Greening",21,1
@@ -17,9 +19,11 @@
 "Other","Landscape and Urban Planning",14,1
 "Other","Sustainability",12,1
 "China","Sustainability",12,3
-"USA","Sustainability",12,3
+"USA","Sustainability",12,2
 "Italy","Sustainability",12,3
-"South Korea","Sustainability",12,2
+"Other","Sustainability",12,1
+"Other","Sustainability",12,1
+"Other","Sustainability",12,1
 "China","Forests",7,2
 "Japan","Forests",7,2
 "Other","Forests",7,1
@@ -42,7 +46,3 @@
 "Other","Journal of Cleaner Production",3,1
 "Other","Journal of Applied Ecology",3,1
 "United Kingdom","Journal of Applied Ecology",3,2
-"Other","Journal of Cleaner Production",3,1
-"USA","Environmental Science & Policy",3,2
-"Other","Ecological Indicators",3,1
-"Other","Environmental Science & Policy",3,1
