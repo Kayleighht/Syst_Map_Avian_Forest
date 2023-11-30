@@ -22,6 +22,9 @@ forest.meta <- separate_wider_delim(forest.meta, cols = Forest.comp, delim = ","
                                                                                             "forestcomp5"),
                                     too_few = "align_start", too_many = "debug")
 
+#remove white space (leading and trailing zeros)
+forest.meta<- forest.meta %>% 
+  mutate(across(where(is.character), str_trim))
 
 ##################### CLEANING ###################################################################################################################
 #rename column in av.meta to match shape files with countries
@@ -69,6 +72,7 @@ journal.df <- journal.df[!duplicated(journal.df), ]
 #select only top ten
 journal.df <- journal.df[1:47,]
 journal.df$COUNTRY[journal.df$journal.count <= 1] <- "Other"
+journal.df$COUNTRY[journal.df$COUNTRY == 'United States of America'] <- 'USA'
 
 #PUSH OUT CSV
 write.csv(journal.df, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/journal.df.csv", row.names = FALSE)
@@ -138,6 +142,51 @@ forestyearcount <- fyear.count[!duplicated(fyear.count$Year), ]
 #PUSH OUT CSV
 write.csv(forestyearcount, 
           "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FYear.count.csv", row.names = FALSE)
+
+########### STUDY DURATION ############################################################################################################
+
+#subset data for STUDY DURATION 
+#clean and organize data
+fduration.df<- forest.meta[,c("forestcomp1", "forestcomp2", "forestcomp3", "forestcomp4",
+                              "forestcomp5", "Year.start", "Year.end")]
+
+#remove N/A
+fduration.df<- fduration.df[!grepl('N/A', fduration.df$Year.start),]
+fduration.df<-fduration.df[!grepl('N/A', fduration.df$Year.end),]
+
+#ensure columns are numerics
+fduration.df <- fduration.df %>% mutate_at(c('Year.start', 'Year.end'), as.numeric)
+fduration.df <- as.data.frame(fduration.df)
+
+#create new column with total duration of study
+fduration.df$duration <- as.numeric(fduration.df$Year.end-fduration.df$Year.start)
+
+#since single year studies are zeros according to calculation, I will transform column by adding one to all values
+fduration.df$duration2 <-fduration.df[,8]+1
+
+#create BINS for values based on duration column
+fduration.df<- fduration.df %>% mutate(duration_bin = cut(duration2, breaks=c(0, 1, 5, 10, 100)))
+
+#create count table including all bird domain columns grouped by STUDY DURATION BIN
+fduration.counts <-fduration.df %>%
+  pivot_longer(cols = c(forestcomp1:forestcomp5)) %>%
+  count(duration_bin,value)
+
+fduration.counts2 <- fduration.df %>%
+  count(duration_bin)
+
+#remove duplicate N/As from additional columns for plotting
+fduration.counts <- fduration.counts %>% drop_na(duration_bin)
+fduration.counts <- fduration.counts %>% drop_na(value)
+#total (not according to topic)
+fduration.counts2 <- fduration.counts2 %>% drop_na(duration_bin)
+
+#PUSH OUT CSV
+write.csv(fduration.counts, 
+          "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Studydurationtopic.csv", row.names = FALSE)
+
+write.csv(fduration.counts2, 
+          "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Studydurationall.csv", row.names = FALSE)
 
 ##### CARBON METRICS ###############################################################################################################
 
@@ -274,50 +323,6 @@ Compmeta
 write.csv(Compmeta, 
           "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FComp.count.csv", row.names = FALSE)
 
-########### STUDY DURATION ############################################################################################################
-
-#subset data for STUDY DURATION 
-#clean and organize data
-fduration.df<- forest.meta[,c("forestcomp1", "forestcomp2", "forestcomp3", "forestcomp4",
-                             "forestcomp5", "Year.start", "Year.end")]
-
-#remove N/A
-fduration.df<- fduration.df[!grepl('N/A', fduration.df$Year.start),]
-fduration.df<-fduration.df[!grepl('N/A', fduration.df$Year.end),]
-
-#ensure columns are numerics
-fduration.df <- fduration.df %>% mutate_at(c('Year.start', 'Year.end'), as.numeric)
-fduration.df <- as.data.frame(fduration.df)
-
-#create new column with total duration of study
-fduration.df$duration <- as.numeric(fduration.df$Year.end-fduration.df$Year.start)
-
-#since single year studies are zeros according to calculation, I will transform column by adding one to all values
-fduration.df$duration2 <-fduration.df[,8]+1
-
-#create BINS for values based on duration column
-fduration.df<- fduration.df %>% mutate(duration_bin = cut(duration2, breaks=c(0, 1, 5, 10, 100)))
-
-#create count table including all bird domain columns grouped by STUDY DURATION BIN
-fduration.counts <-fduration.df %>%
-  pivot_longer(cols = c(forestcomp1:forestcomp5)) %>%
-  count(duration_bin,value)
-
-fduration.counts2 <- fduration.df %>%
-  count(duration_bin)
-
-#remove duplicate N/As from additional columns for plotting
-fduration.counts <- fduration.counts %>% drop_na(duration_bin)
-fduration.counts <- fduration.counts %>% drop_na(value)
-#total (not according to topic)
-fduration.counts2 <- fduration.counts2 %>% drop_na(duration_bin)
-
-#PUSH OUT CSV
-write.csv(fduration.counts, 
-          "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Studydurationtopic.csv", row.names = FALSE)
-
-write.csv(fduration.counts2, 
-          "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Studydurationall.csv", row.names = FALSE)
 
 ############## FOREST COMPONENTS ####################################################################################################################
 

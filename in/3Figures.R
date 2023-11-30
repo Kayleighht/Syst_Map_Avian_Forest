@@ -1,6 +1,6 @@
 #packages needed
 Packages <- c("tidyverse", "ggplot2", "maps", "ggthemes", "cartography", "sf", "ggpubr", "plotly", "data.table", "cowplot", "janitor",
-              "rphylopic", "png", "viridis", "ggrepel" )
+              "rphylopic", "png", "viridis", "ggrepel" , "cowplot")
 lapply(Packages, library,character.only= TRUE)
 
 getwd()
@@ -15,7 +15,7 @@ alltheme <- theme(
   panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"),
   text = element_text(family = "serif"),
   axis.title.y = element_text(colour = "black",face = "bold", size = '40', vjust = +1),
-  axis.title.x = element_text(colour = "black", face = "bold", size= '40', vjust= -0.5),
+  axis.title.x = element_text(colour = "black", face = "bold", size= '40', vjust= 0),
   axis.ticks = element_line(size = 0.7),
   axis.text = element_text(size = 28, colour = "black")
   )
@@ -32,10 +32,10 @@ theme_legend2<- theme(
   legend.position = c(0.70, 0.80),
   legend.box.background =  element_rect(colour = "black"), legend.box.margin = margin(5,5,5,5))
 
-#LEGEND 3 THEME
-theme_legend3<- theme(
+#LEGEND 4 THEME
+theme_legend4<- theme(
   legend.title = element_text(colour = "black", size = 12, face= "bold"),
-  legend.position = c("right"),
+  legend.position = c(0.90,0.55),
   legend.box.background =  element_rect(colour = "black"), legend.box.margin = margin(5,5,5,5))
 
 
@@ -78,57 +78,45 @@ ggsave(filename ="UFCBFig1.png", width = 16, height = 13, device='tiff', dpi=300
 ########################## FIGURE _ ###################################################
 ################### Study Country Heat Map ##################################
 journal.df.av <- read.csv("journal.df.av.csv")
+journal.df.av$percent <- (journal.df.av$journal.count/277*100)
+
 #read file
 bird<-readPNG("bird.1.png")
 
 av.plot<- journal.df.av %>%
   filter(!is.na(COUNTRY)) %>%
   ggplot() +
-  aes(x = reorder(Journal, count), y = journal.count, fill = COUNTRY) +
+  aes(x = reorder(Journal, count), y = percent, fill = COUNTRY) +
   geom_col() + scale_fill_viridis(discrete=TRUE, direction=-1, end = 1, begin = 0.1, name="Country") +
-  labs(x= "", y= "Number of Publications") +
-  coord_flip() +
-  theme_classic() + 
-  theme(legend.position ="bottom",
-        text = element_text(color = "#22211d",size=4.5,family = "serif"),
-        axis.text.y = element_text(face="bold"),
-        plot.margin = margin(1, 0.3, 1, 1, "cm"),
-        legend.text = element_text(size = 3.3),
-        legend.key.size = unit(0.35,"line"),
-        legend.background = element_rect(fill = "white", color = NA)) + 
-  guides(fill = guide_legend(reverse = TRUE)) +
-  add_phylopic(bird, alpha = 1, x = 2, y = 35.4, ysize =0.8)
+  labs(x= "", y= "") +
+  coord_flip() + alltheme + theme_legend4 + 
+  theme(axis.text = element_text(size = 18, colour = "black")) +
+  add_phylopic(bird, alpha = 1, x = 2, y = 35.4, ysize =0.8) + 
+  scale_y_continuous(breaks = c(0, 5, 10, 15), limits = c(0,15))
 av.plot
 
 #read file
 journal.df <- read.csv("journal.df.csv")
+journal.df$percent <- (journal.df$journal.count/169*100)
 tree<-readPNG("tree.1.png")
 
 for.plot <-journal.df %>%
   filter(!is.na(COUNTRY)) %>%
   ggplot() +
-  aes(x = reorder(Journal, count), y = journal.count, fill = COUNTRY) +
+  aes(x = reorder(Journal, count), y = percent, fill = COUNTRY) +
   geom_col() + scale_fill_viridis(discrete=TRUE, direction=-1, end = 1, begin = 0.1, name="Country") +
-  labs(x= "", y= "Number of Publications") +
-  coord_flip() +
-  theme_classic() + 
-  theme(legend.position ="bottom",
-        text = element_text(color = "#22211d",size=4.5,family = "serif"),
-        axis.text.y = element_text(face="bold"),
-        plot.margin = margin(1, 1.5, 1, 0.3, "cm"),
-        legend.text = element_text(size = 3.3),
-        legend.key.size = unit(0.35,"line"),
-        legend.background = element_rect(fill = "white", color = NA)) + 
-  guides(fill = guide_legend(reverse = TRUE)) +
-  add_phylopic(tree, alpha = 1, x = 1.8, y = 20.4, ysize =0.8)
+  labs(x= "", y= "Percent of Publications") +
+  coord_flip() + alltheme + theme_legend4 + theme(axis.text = element_text(size = 18, colour = "black")) +
+  add_phylopic(tree, alpha = 1, x = 1.8, y = 20.4, ysize =0.8) + 
+  scale_y_continuous(breaks = c(0, 5, 10, 15), limits = c(0,15))
+
 for.plot
 
-library(cowplot)
-av_for_maps<- plot_grid(av.plot, for.plot)
+#combined plot
+av_for_maps<- plot_grid(av.plot, for.plot, align = "v", nrow = 2, ncol= 1)
 av_for_maps
 
-ggsave(filename ="av_for_plots_test.tiff", width = 170, units="mm", height = 85 , device='tiff', dpi=300)  
-
+ggsave(filename ="UFCBFig2.png", width = 350, units="mm", height = 260 , device='tiff', dpi=300)  
 
 ########################## FIGURE 3 #########################################################
 ############### # Publication according to Top 10 Journals with Country ###########################################
@@ -196,13 +184,10 @@ for.map<-  ggplot() +
 
 for.map
 
-library(cowplot)
 av_for_maps<- plot_grid(av.map, for.map)
 av_for_maps
 
-ggsave(filename ="av_for_maps_test.tiff", width = 170, units="mm", height = 85 , device='tiff', dpi=300)  
-
-#will add Riikka's code here
+ggsave(filename ="UFCBFig3.png", width = 230, units="mm", height = 90 , dpi=300)  
 
 ################################## FIGURE __ #########################################################
 ####################### NUMBER OF PUBLICATIONS ACCORDING TO STUDY DURATION ###############################################
@@ -212,8 +197,9 @@ Duration<- read.csv("Duration.count2.csv")
 sum(Duration$n)
 
 #create column for percentage for plotting
-Duration$percent <- ((Duration$n/255)*100)
+Duration$percent <- ((Duration$n/277)*100)
 sum(Duration$percent)   #confirm the percentage adds to 100
+Duration <- Duration[-5,]
 
 #PLOT 
 
@@ -232,11 +218,11 @@ bird.durationplot
 
 #FOREST#
 
-Duration2<- read.csv("FDuration.count2.csv")
+Duration2<- read.csv("Studydurationall.csv")
 sum(Duration2$n)
 
 #create column for percentage for plotting
-Duration2$percent <- ((Duration2$n/112)*100)
+Duration2$percent <- ((Duration2$n/169)*100)
 
 duration.plot <- ggplot(Duration2, aes(x= reorder(duration_bin, -percent) , y= percent)) +
   geom_bar(stat= 'identity', position = 'dodge', fill= forestcol, width = 0.6) + theme_hc() + labs(x= "Time-scale considered", y= "Percent of Studies") +
@@ -257,6 +243,15 @@ durationall<- ggarrange(bird.durationplot, forest.durationplot,
                         common.legend = TRUE)
 durationall
 
+#legend
+#LEGEND 5 THEME
+theme_legend5<- theme(
+  legend.key.size = unit(2, 'cm'),
+  legend.title = element_text(colour = "black", size = 15, face= "bold"),
+  legend.position = c(0.88,0.85), ## (h,v)
+  legend.text = element_text(size=15),
+  legend.box.background =  element_rect(colour = "black"), legend.box.margin = margin(5,5,5,5))
+
 ## COMBINE IN ONE STACKED BAR CHART
 durationall<- rbind(Duration2, Duration)
 durationall$component <- c("Forest", "Forest", "Forest", "Forest", "Avian", "Avian", "Avian", "Avian")
@@ -267,56 +262,66 @@ durationall$duration_binclean <- factor(durationall$duration_binclean,levels = c
 
 duration.plotall <- ggplot(durationall, aes(x= duration_binclean, y=percent, fill=component)) +
                     geom_bar(stat='identity', position='dodge', width= 0.9) +
-                    labs(x= "Time-scale considered (years)", y= "Percent of Studies") +
+                    labs(x= "Time-Scale Considered (years)", y= "Percent of Studies") +
                     
                     scale_y_continuous(breaks = c(0, 10, 20, 30, 40, 50), limits = c(0,55)) +
-                    scale_fill_manual(values=c(birdcol, forestcol)) + alltheme + theme_legend +
+                    scale_fill_manual(values=c(birdcol, forestcol)) + alltheme + theme_legend5 +
                     labs(fill = "Topic")
 duration.plotall
 
-ggsave(filename ="UFCBFig2.png", width = 16, height = 13, device='tiff', dpi=300)  
+ggsave(filename ="UFCBFig4.png", width = 16, height = 13, device='tiff', dpi=300)  
 
 #################################### FIGURE __ ######################################################
 ############################ TOPICS ONLY ###########################################################
 
+bigtheme <- theme(
+  panel.border = element_blank(), panel.grid.major = element_blank(),
+  panel.background = element_rect(fill = "white", color = NA),
+  plot.background = element_rect(fill = "white", color = NA),
+  panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"),
+  text = element_text(family = "serif"),
+  axis.title.y = element_text(colour = "black",face = "bold", size = '200', vjust = +1),
+  axis.title.x = element_text(colour = "black", face = "bold", size= '200', vjust= 0),
+  axis.ticks = element_line(size = 0.7),
+  axis.text = element_text(size = 170, colour = "black")
+)
+
+#LEGEND 3 THEME
+theme_legend3<- theme(
+                      legend.title = element_text(colour = "black", size = 120, face= "bold"),
+                      legend.text = element_text(colour = "black", size = 110),
+                      legend.position = c("right"),
+                      legend.key.size = unit(3.5, "cm"),
+                      legend.box.background =  element_rect(colour = "black", size = 3), 
+                      legend.box.margin = margin(5,5,5,5))
+
 #AVIAN
 birdtopics<- read.csv("bird.component.csv")
+#remove row 8 NA since the metric didn't fit into our topic categories
+birdtopics<- birdtopics[-8,]
 
 #create new column with percent of studies
 #sum(birdtopics$total)
 #birdtopics$percent <- (birdtopics$total/348)*100
 
 birdtopic.plot <- ggplot(birdtopics, aes(x= reorder(Component, -percent) , y= percent)) +
-                  geom_bar(stat= 'identity', position = 'dodge', fill= birdcol, width = 0.8) + 
-                  
-                  theme(axis.text.x = element_text(size= 12), 
-                  axis.text.y = (element_text(size = 13, angle = 0))) + alltheme + 
-                  labs(x= "", y= "Percent of Studies") + 
-                  scale_y_continuous(limits = c(0,75), breaks = c(25, 50, 75)) +
+                  geom_bar(stat= 'identity', position = 'dodge', fill= birdcol, width = 0.8)  + 
+                  bigtheme + 
+                  labs(x= "", y= "") + 
+                  scale_y_continuous(limits = c(0,72), breaks = c(10,20, 30,40,50,60,70)) +
                   coord_flip()
 
-birdtopic.plot<- birdtopic.plot + alltheme
 birdtopic.plot
-
 #FOREST 
 foresttopics<- read.csv("forest.component.csv")
 
-#create new column with percent of studies
-
-#sum(foresttopics$total)
-#foresttopics$percent <- (foresttopics$total/267)*100
-
-
 foresttopic.plot <- ggplot(foresttopics, aes(x= reorder(Component, -percent) , y= percent)) +
-  geom_bar(stat= 'identity', position = 'dodge', fill= forestcol, width = 0.8) + 
-  
-  theme(axis.text.x = element_text(size= 12), 
-        axis.text.y = (element_text(size = 13, angle = 0)))  + alltheme + 
-  labs(x= "", y= "Percent of Studies") + 
-  scale_y_continuous(limits = c(0,320), breaks = c(50, 100, 150, 200, 250, 300, 350)) +
-  coord_flip()
+                    geom_bar(stat= 'identity', position = 'dodge', fill= forestcol, width = 0.8) +
+                    bigtheme + 
+                    labs(x= "", y= "") + 
+                    scale_y_continuous(limits = c(0,70), breaks = c(10, 20, 30 ,40 ,50, 60, 70)) +
+                    coord_flip()
 
-foresttopic.plot<- foresttopic.plot + alltheme
 foresttopic.plot
 
 componentall<- ggarrange(birdtopic.plot, foresttopic.plot,
@@ -328,7 +333,7 @@ componentall
 ###################################### FIGURE __ ######################################################################
 ######################### BIRD SUCCESS COMPONENT BY COMPARATOR #################################################
 
-Compmeta<- read.csv(Birdcomp.counts.csv)
+Compmeta<- read.csv("Comp.meta.csv")
 
 #create column for percentage for plotting
 birdpalette2<- c("#481567FF","#404788FF")
@@ -336,16 +341,17 @@ birdpalette2<- c("#481567FF","#404788FF")
 Compmeta$value <- factor(Compmeta$value, levels = c("Biodiversity", "Survival", "Demographics/Patterns", "Breeding", "Behaviour", "Resources", "Foraging"))
 
 comparator.plot<- ggplot(Compmeta, aes(fill = comp, x= value, y= comparator)) +
-                  geom_bar(stat= 'identity') + theme(axis.text.y = element_text(size= 13, angle = 0), 
-                                                     axis.text.x = element_text(size = 13))+
-                  alltheme + labs(x= "", y= "Percent of Studies") + scale_y_continuous(limits = c(0,105), 
-                                                                   breaks = c(0, 20, 40, 60, 80, 100)) +
-                  scale_fill_manual(labels= c("No", "Yes"), values = birdpalette2) + coord_flip() 
+                  geom_bar(stat= 'identity') +
+                  bigtheme + 
+                  labs(x= "", y= "") + 
+                  scale_y_continuous(limits = c(0,100), breaks = c(0, 20, 40, 60, 80, 100)) +
+                  scale_fill_manual(labels= c("No", "Yes"), values = birdpalette2) + 
+                  coord_flip() + 
+                  theme_legend3
   
-bird.comparatorplot<- comparator.plot + alltheme + theme_legend3 + labs(fill= "Comparator 
+bird.comparatorplot<- comparator.plot + labs(fill= "Comparator 
 used?")
 bird.comparatorplot
-
 
 #PLOTTING
 
@@ -358,14 +364,17 @@ Forestcompmeta$value <- factor(Forestcompmeta$value, levels = c("Composition", "
                                                      "Diversity metric", "Fragmentation"))
 
 comparator.plot<- ggplot(Forestcompmeta, aes(fill = comp, x= value, y= comparator)) +
-  geom_bar(stat= 'identity') + theme(axis.text.y = element_text(size= 13, angle = 0), 
-                                     axis.text.x = element_text(size = 13))+
-  alltheme + labs(x= "", y= "Percent of Studies") + scale_y_continuous(limits = c(0,101), 
-                                                                         breaks = c(0, 20, 40, 60, 80, 100)) +
-  scale_fill_manual(values= forestpalette2, labels= c("No", "Yes")) + coord_flip()
+                  geom_bar(stat= 'identity') +
+                  bigtheme + 
+                  labs(x= "", y= "") + 
+                  scale_y_continuous(limits = c(0,100), breaks = c(0, 20, 40, 60, 80, 100)) +
+                  scale_fill_manual(values= forestpalette2, labels= c("No", "Yes")) + 
+                  coord_flip() +
+                  theme_legend3
 
-forest.comparatorplot<-comparator.plot + alltheme + theme_legend3 + labs(fill= "Comparator
+forest.comparatorplot<- comparator.plot + labs(fill= "Comparator
 used?")
+
 forest.comparatorplot
 
 all.comparatorplot<- ggarrange(bird.comparatorplot, forest.comparatorplot,
@@ -412,17 +421,22 @@ Urban$name <- factor(Urban$name, levels = c("Biodiversity", "Survival", "Demogra
 birdpalette4 <- c("#481567FF", "#404788FF", "#33638DFF", "#238A8Dff")
 
 scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= name , y= percent)) +
-              geom_bar(stat= 'identity') + alltheme + labs(x= "", y= "Percent of Studies") +
-              theme(axis.text.x = element_text(colour= "black", size= 12), axis.text.y = element_text(size = 13, colour= "black", angle = 0)) + 
-              coord_flip() + scale_y_continuous(limits= c(0,100)) + scale_fill_manual(values = birdpalette4) 
+              geom_bar(stat= 'identity') + 
+              labs(x= "", y= "") + 
+              coord_flip() + 
+              scale_y_continuous(limits= c(0,100)) + 
+              scale_fill_manual(values = birdpalette4) +
+              bigtheme +
+              theme_legend3
               
-bird.scaleplot<- scale.plot + labs(fill= "Urban Scale") + theme_legend3 + alltheme
+bird.scaleplot<- scale.plot + labs(fill= "Urban Scale") 
 bird.scaleplot
 
 #FOREST#
 Urban <- read.csv("FUrb.count.csv")
 #remove n/a's created from empty rows
 Urban <- Urban %>% drop_na(value)
+
 
 #drop additional N/A
 Urban <-Urban[!grepl('N/A', Urban$value),]
@@ -439,12 +453,15 @@ Urban<- Urban %>% spread(value, n)
 Urban[is.na(Urban)] <- 0
 
 #pivot table
-Urban <- Urban %>% pivot_longer(., cols = c(`Composition`, `Connectivity`, `Diversity metric`, `Exotic/invasive species`, 
-                                            `Forested area`, Fragmentation, `Individual tree management`, `Land use type`, `Native species`, `Canopy cover`))
+Urban <- Urban %>% pivot_longer(., cols = c(`Canopy cover`,`Composition`, `Connectivity`, `Diversity metric`, `Exotic/invasive species`, 
+                                          `Forested area`, `Fragmentation`, `Individual tree management`, `Land use type`, `Native species`))
+
+colnames(Urban)
 Urban <- as.data.frame(Urban)
 #sort
 Urban <- Urban[order(Urban[,2]), ]
-Totals<- c(33,33,33,33,120,120,120,120,3,3,3,3,4,4,4,4,10,10,10,10,29,29,29,29,2,2,2,2,27,27,27,27,101,101,101,101,16,16,16,16)
+Totals<- c(33,33,33,33,120,120,120,120,3,3,3,3,4,4,4,4,10,10,10,10,
+           29,29,29,29,2,2,2,2,27,27,27,27,101,101,101,101,16,16,16,16)
 
 Urban <-cbind(Urban, Totals)
 
@@ -460,11 +477,16 @@ Urban$name <- factor(Urban$name, levels = c("Composition", "Land use type", "Can
 forestpalette4 <- c("#20A387FF", "#55C667FF", "#B8DE29FF", "#FDE725FF")
 
 scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= name, y= percent)) +
-  geom_bar(stat= 'identity') + alltheme + labs(x= "", y= "Percent of Studies") +
-  theme(axis.text.x = element_text(colour= "black", size= 12), axis.text.y = element_text(size = 13, colour= "black", angle = 0)) + 
-  coord_flip() + scale_y_continuous(limits= c(0,100)) + scale_fill_manual(values= forestpalette4)
+              geom_bar(stat= 'identity') + 
+              labs(x= "", y= "") + 
+              coord_flip() + 
+              scale_y_continuous(limits= c(0,100)) + 
+              scale_fill_manual(values= forestpalette4) +
+              bigtheme +
+              theme_legend3
 
-forest.scaleplot<- scale.plot + alltheme + labs(fill= "Urban Scale") + theme_legend3
+forest.scaleplot<- scale.plot + labs(fill= "Urban Scale") 
+
 forest.scaleplot
 
 #COMBINE ALL
@@ -484,28 +506,37 @@ recs<- read.csv("Allrecraw.count.csv")
 #sort based on bird category
 recs <- recs[order(recs[,2]), ]
 #manually add a column of totals
-totals<- c(31,31,31,31,31,224,224,224,224,224,224,224,224,53,53,53,53,53,53,50,50,50,50,50,50,50,1,7,7,7,29,29,29,29,29)
+totals<- c(31,31,31,31,31,224,224,224,224,224,224,224,224,53,53,53,53,53,53,
+           50,50,50,50,50,50,50,1,7,7,7,29,29,29,29,29)
 #bind
 recs<- cbind(recs, totals)
 
 recs$percent<- (recs$n/recs$totals)*100
+recs$Rec.1[recs$Rec.1 == 'No Recommendations'] <- 'None'
 
 ##### PLOT
 
 #factor columns to correct order
 recs$value <- factor(recs$value, levels = c("Biodiversity", "Survival", "Demographics/Patterns", "Breeding", "Behaviour", "Resources", "Foraging"))
-recs$Rec.1 <- factor(recs$Rec.1, levels= c("Restoration", "Management", "Conservation", "No Recommendations"))
+recs$Rec.1 <- factor(recs$Rec.1, levels= c("Restoration", "Management", "Conservation", "None"))
 
 birdpalette4s <- c("#2D708EFF", "#481567FF", "#404788FF", "#787276")
 
 rec.plot <- ggplot(recs, aes(fill= Rec.1, x= value , y= percent)) +
-  geom_bar(stat= 'identity') + alltheme + labs(x= "", y= "Percent of Studies") +
-  theme(axis.text.x = element_text(colour= "black", size= 12), axis.text.y = element_text(size = 13, colour= "black", angle = 0)) + 
-  coord_flip() + scale_y_continuous(limits= c(0,100)) + scale_fill_manual(values = birdpalette4s, name =  "Recommendation 
-Type") + theme_legend3
+            geom_bar(stat= 'identity') + 
+            labs(x= "", y= "Percent of Studies") +
+            coord_flip() + 
+            scale_y_continuous(limits= c(0,100)) + 
+            scale_fill_manual(values = birdpalette4s, name =  "Recommendation 
+Type") + 
+            theme_legend3 + 
+            bigtheme
 
 birdrecoplot <- rec.plot
+
 birdrecoplot
+
+#theme(axis.text.x = element_text(colour= "black", size= 150), axis.text.y = element_text(size = 150, colour= "black", angle = 0)) 
 
 ##### FOREST
 recs<- read.csv("FAllrec.count.csv")
@@ -517,32 +548,35 @@ recs<- recs %>%
 recs <- recs[order(recs[,"value"]), ]
 
 #manually add a column of totals
-totals<- c(36,36,36,36,36,36,36, 136,136,136,136,136,136,136,136,136,136,136,136,136,5,5,5,5,5,5,5,5,5,11,
-           11,11,11,11,11, 33,33,33,33,33,33,33,33,33,33,2,2,31,31,31,31,31,31,31,31,31,120,120,120,120,
-           120,120,120,120,120,120,120,120,120,120,21,21,21,21,21,21,21,21,21)
+totals<- c(36,36,36,36,36,139,139,139,139,139,139,139,139,6,6,6,6,5,5,5,5,11,
+           11,11,11,11,34,34,34,34,34,34,2,2,29,29,29,29,29,120,120,120,120,
+           120,120,120,120,20,20,20,20,20,20)
 #bind
 recs<- cbind(recs, totals)
 
 recs$percent<- (recs$n/recs$totals)*100
+recs$Rec1[recs$Rec1 == 'No Recommendations'] <- 'None'
 
 ##### PLOT
 recs$value <- factor(recs$value, levels = c("Composition", "Land use type", "Canopy cover", "Individual tree management", 
                                             "Forested area", "Native species", "Exotic/invasive species", "Connectivity",
                                             "Diversity metric", "Fragmentation"))
-recs$Rec1 <- factor(recs$Rec1, levels= c("Restoration", "Management", "Conservation", "No Recommendations"))
+recs$Rec1 <- factor(recs$Rec1, levels= c("Restoration", "Management", "Conservation", "None"))
 
 
 forestpalette4s <- c("#B8DE29FF","#29AF7FFF","#FDE725FF", "#787276")
 
 rec.plot <- ggplot(recs, aes(fill= Rec1, x= value , y= percent)) +
-  geom_bar(stat= 'identity') + alltheme + labs(x= "", y= "Percent of Studies") +
-  theme(axis.text.x = element_text(colour= "black", size= 12), axis.text.y = element_text(size = 13, colour= "black", angle = 0)) + 
-  coord_flip() + scale_y_continuous(limits= c(0,100)) + scale_fill_manual(values = forestpalette4s, 
+            geom_bar(stat= 'identity') + labs(x= "", y= "Percent of Studies") +
+            coord_flip() + 
+            bigtheme +
+            scale_y_continuous(limits= c(0,100)) + 
+            theme_legend3 +
+            scale_fill_manual(values = forestpalette4s, 
                                                                           name =  "Recommendation 
 Type")
 
-forestrecoplot <- rec.plot + theme_legend3 + alltheme 
-                  
+forestrecoplot <- rec.plot
 forestrecoplot
 
 #COMBINE IN ONE PLOT
@@ -563,6 +597,9 @@ embeddedfig<- ggarrange(birdtopic.plot, foresttopic.plot,
                         ncol = 2, nrow = 4)
 
 embeddedfig
+
+ggsave(filename ="UFCBFig5.png", width = 120, height = 95, dpi=100, limitsize = FALSE)  
+
 
 ############################# FIGURE 7 ####################################################################
 ####################### PERCENT PUBLICATIONS ACCORDING TO ONE/MANY INDICATORS ##########################

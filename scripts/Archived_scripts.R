@@ -625,3 +625,42 @@ used?")
   #PUSH OUT CSV
   write.csv(countrycount, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest
                         /Syst_Map_Avian_Forest/out/FHeatmap.count.csv", row.names = FALSE)
+  
+## FROM figure avian plots
+  av.plot<- journal.df.av %>%
+    filter(!is.na(COUNTRY)) %>%
+    ggplot() +
+    aes(x = reorder(Journal, count), y = journal.count, fill = COUNTRY) +
+    geom_col() + scale_fill_viridis(discrete=TRUE, direction=-1, end = 1, begin = 0.1, name="Country") +
+    labs(x= "", y= "Number of Publications") +
+    coord_flip() +
+    theme_classic() + 
+    theme(legend.position ="bottom",
+          text = element_text(color = "#22211d",size=4.5,family = "serif"),
+          axis.text.y = element_text(face="bold"),
+          plot.margin = margin(1, 0.3, 1, 1, "cm"),
+          legend.text = element_text(size = 3.3),
+          legend.key.size = unit(0.35,"line"),
+          legend.background = element_rect(fill = "white", color = NA)) + 
+    guides(fill = guide_legend(reverse = TRUE)) +
+    add_phylopic(bird, alpha = 1, x = 2, y = 35.4, ysize =0.8)
+  av.plot
+  
+  for.plot <-journal.df %>%
+    filter(!is.na(COUNTRY)) %>%
+    ggplot() +
+    aes(x = reorder(Journal, count), y = journal.count, fill = COUNTRY) +
+    geom_col() + scale_fill_viridis(discrete=TRUE, direction=-1, end = 1, begin = 0.1, name="Country") +
+    labs(x= "", y= "Number of Publications") +
+    coord_flip() +
+    theme_classic() + 
+    theme(legend.position ="bottom",
+          text = element_text(color = "#22211d",size=4.5,family = "serif"),
+          axis.text.y = element_text(face="bold"),
+          plot.margin = margin(1, 1.5, 1, 0.3, "cm"),
+          legend.text = element_text(size = 3.3),
+          legend.key.size = unit(0.35,"line"),
+          legend.background = element_rect(fill = "white", color = NA)) + 
+    guides(fill = guide_legend(reverse = TRUE)) +
+    add_phylopic(tree, alpha = 1, x = 1.8, y = 20.4, ysize =0.8)
+  for.plot
