@@ -70,3 +70,6 @@ forestpalette2<- c("#B8DE29FF", "#55C667FF")
 birdpalette4 <- c("#481567FF", "#404788FF", "#33638DFF", "#238A8Dff")
 forestpalette4 <- c("#20A387FF", "#55C667FF", "#B8DE29FF", "#FDE725FF")
 forestpalette5 <- c("#1F968BFF", "#29AF7FFF", "#55C667FF", "#B8DE29FF", "#FDE725FF")
+
+birdpalette4s <- c("#2D708EFF", "#481567FF", "#404788FF", "#787276")
+forestpalette4s <- c("#B8DE29FF","#29AF7FFF","#FDE725FF", "#787276")
