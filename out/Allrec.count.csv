@@ -1,0 +1,36 @@
+"Rec.1","value","n","percent"
+"Conservation","Behaviour",5,1.87265917602996
+"Management","Behaviour",11,4.11985018726592
+"No Recommendations","Behaviour",13,4.8689138576779
+"Management","Behaviour",1,0.374531835205993
+"Restoration","Behaviour",1,0.374531835205993
+"Conservation","Biodiversity",28,10.4868913857678
+"Management","Biodiversity",102,38.2022471910112
+"No Recommendations","Biodiversity",57,21.3483146067416
+"Restoration","Biodiversity",2,0.749063670411985
+"Conservation","Biodiversity",15,5.61797752808989
+"Management","Biodiversity",12,4.49438202247191
+"Restoration","Biodiversity",5,1.87265917602996
+"Restoration","Biodiversity",3,1.12359550561798
+"Conservation","Breeding",6,2.24719101123596
+"Management","Breeding",17,6.36704119850187
+"No Recommendations","Breeding",25,9.36329588014981
+"Restoration","Breeding",1,0.374531835205993
+"Conservation","Breeding",2,0.749063670411985
+"Management","Breeding",2,0.749063670411985
+"Conservation","Demographics/Patterns",8,2.99625468164794
+"Management","Demographics/Patterns",20,7.49063670411985
+"No Recommendations","Demographics/Patterns",15,5.61797752808989
+"Restoration","Demographics/Patterns",3,1.12359550561798
+"Conservation","Demographics/Patterns",2,0.749063670411985
+"Management","Demographics/Patterns",1,0.374531835205993
+"Restoration","Demographics/Patterns",1,0.374531835205993
+"No Recommendations","Foraging",1,0.374531835205993
+"Conservation","Resources",1,0.374531835205993
+"Management","Resources",3,1.12359550561798
+"No Recommendations","Resources",3,1.12359550561798
+"Conservation","Survival",3,1.12359550561798
+"Management","Survival",10,3.74531835205993
+"No Recommendations","Survival",14,5.2434456928839
+"Restoration","Survival",1,0.374531835205993
+"Conservation","Survival",1,0.374531835205993
