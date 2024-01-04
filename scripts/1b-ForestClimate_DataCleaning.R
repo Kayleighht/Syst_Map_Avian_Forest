@@ -117,7 +117,7 @@ merged_for<-merged_for %>% select(1,4:6)
 merged_for<-merged_for %>% distinct(COUNTRY, .keep_all = TRUE)
 
 data1 <- arrange(merged_for, -count)
-write.csv(data1, "map_data_for.csv")
+write.csv(data1, "out/map_data_for.csv")
 
 data1$latitude[data1$latitude == "23.82408"] <- "25.562583"
 
