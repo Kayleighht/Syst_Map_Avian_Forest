@@ -502,23 +502,21 @@ write.csv(allindicators, "out/Allind.count.csv", row.names = FALSE)
 
 
 ######### Categories only count ##############
-#create dataframes for each indicator/topic and align column names
-
 #remove columns not needed
-Comp1<- subset(av.meta, select = c("birdcomp1"))
+Comp1<- subset(av.data, select = c("birdcomp1"))
 colnames(Comp1) <- c("Component")
 
-Comp2 <- Birdcomps[grep("2", Birdcomps$Bird.domainraw_pieces), ]
+Comp2 <- av.data[grep("2", av.data$Bird.domainraw_pieces), ]
 #remove columns not needed
 Comp2<- subset(Comp2, select = c("birdcomp2"))
 colnames(Comp2) <- c("Component")
 
-Comp3 <- Birdcomps[grep("3", Birdcomps$Bird.domainraw_pieces), ]
+Comp3 <- av.data[grep("3", av.data$Bird.domainraw_pieces), ]
 #remove columns not needed
 Comp3<- subset(Comp3, select = c("birdcomp3"))
 colnames(Comp3) <- c("Component")
 
-Comp4 <- Birdcomps[grep("4", Birdcomps$Bird.domainraw_pieces), ]
+Comp4 <- av.data[grep("4", av.data$Bird.domainraw_pieces), ]
 Comp4<- subset(Comp4, select = c("birdcomp4"))
 colnames(Comp4) <- c("Component")
 
@@ -558,16 +556,16 @@ colnames(Comp1) <- c("Component")
 
 Comp2 <- av.forestmanagement[grep("2", av.forestmanagement$Forest.comp_pieces), ]
 #remove columns not needed
-Comp2<- subset(Comp2, select = c("birdcomp2"))
+Comp2<- subset(Comp2, select = c("fint2"))
 colnames(Comp2) <- c("Component")
 
 Comp3 <- av.forestmanagement[grep("3", av.forestmanagement$Forest.comp_pieces), ]
 #remove columns not needed
-Comp3<- subset(Comp3, select = c("birdcomp3"))
+Comp3<- subset(Comp3, select = c("fint3"))
 colnames(Comp3) <- c("Component")
 
 Comp4 <- av.forestmanagement[grep("4", av.forestmanagement$Forest.comp_pieces), ]
-Comp4<- subset(Comp4, select = c("birdcomp4"))
+Comp4<- subset(Comp4, select = c("fint4"))
 colnames(Comp4) <- c("Component")
 
 ##MERGING
@@ -591,4 +589,4 @@ birdcomps$percent <- ((birdcomps$n/277)*100)
 birdcomps
 
 #PUSH OUT CSV
-write.csv(birdcomps, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/bird.component.csv", row.names = FALSE)
+write.csv(birdcomps, "out/bird.component.csv", row.names = FALSE)
