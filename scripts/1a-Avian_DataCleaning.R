@@ -575,18 +575,3 @@ dfmergefinal <- rbind(dfmerge34,Comp4)
 
 dfmergefinal <- dfmergefinal %>%
   mutate_if(is.character, str_trim)
-
-#dfmergefinal$Component <- gsub("foraging", "Foraging", dfmergefinal$Component)
-#dfmergefinal$Component <- gsub("Demographics/patterns", "Demographics/Patterns", dfmergefinal$Component)
-#unique(dfmergefinal$Component)
-#
-#birdcomps <- dfmergefinal %>%
-#  dplyr:: count(Component)
-#birdcomps <- as.data.frame(birdcomps)
-#
-#
-#birdcomps$percent <- ((birdcomps$n/277)*100)
-#birdcomps
-
-#PUSH OUT CSV
-#write.csv(birdcomps, "out/bird.component.csv", row.names = FALSE)
