@@ -102,7 +102,7 @@ forestexclean <- separate_wider_delim(forestmergedex, cols = decision , delim = 
                                     too_few = "align_start")
 
 forestreasons<- forestexclean %>%
-  dplyr:: count(reason1)
+  dplyr::count(reason1)
 forestreasons
 
 ###############################################################################################################
