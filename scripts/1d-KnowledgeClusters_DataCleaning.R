@@ -1,14 +1,19 @@
 #packagesneeded
-Packages <- c("tidyverse", "ggplot2", "maps", "bibliometrix", "ggthemes", "cartography", "sf", "janitor")
-lapply(Packages, library,character.only= TRUE)
-
-getwd()
-setwd("C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/in")
+source('scripts/0-packages.R')
 
 #loading avian data and formatting
-av.data <- read.csv("Meta_Avian_Data_Extraction - Master_Data.csv")
+av.data <- read.csv("in/Metadata_Avian_Component.csv")
 
-########## CLEANING AND ORGANIZING DATA ###################################################################################
+
+# Cleaning and Organizing Data --------------------------------------------
+
+
+av.data <- separate_wider_delim(av.data, cols = Bird.domainraw, delim = ",", names = c("birddomain1", "birddomain2", "birddomain3", "birddomain4"),
+                                too_few = "align_start", too_many = "debug")
+
+av.data <- separate_wider_delim(av.data, cols = Rec.type, delim = ",", names = c("Rec.1", "Rec.2", "Rec.3"),
+                                too_few = "align_start", too_many = "debug")
+
 
 #cut down to only necessary columns for figures (so far..)
 av.meta <- av.data[,c("Year", "Journal", "Study.country", "Urb.scale", 
@@ -30,7 +35,8 @@ urb.counts <- urb.counts %>% drop_na()
 #drop remaining empty rows
 urb.counts<- urb.counts[!apply(urb.counts == "", 1, all), ]
 #still empty rows to be deleted
-urb.counts <- urb.counts[-c(1:2,18:19,50:51),]
+urb.counts <- urb.counts %>% 
+  filter(value != "" & value != " ") 
 
 urb.wide<- pivot_wider(urb.counts, names_from = value, values_from = n)
 #merge matching columns and add numbers
@@ -56,9 +62,10 @@ urb.all<- t(rowsum(t(urb.all), group = colnames(urb.all), na.rm = F))
 ###############################################################################
 
 #loading avian data and formatting
-forest.data <- read.csv("META_Forest_Climate_Data_Extraction.csv")
+forest.data <- read.csv("in/Metadata_ForestComponent.csv")
 
-########## CLEANING AND ORGANIZING DATA ###################################################################################
+
+# Cleaning and Organizing Data --------------------------------------------
 
 #cut down to only necessary columns for figures (so far..)
 forest.data <- forest.data[,c("Year", "Journal", "Study.Country", "Urb.scale", 
@@ -157,8 +164,8 @@ forestmerged<- rbind(forest1, forest2, forest3, forest4, forest5)
 carbon3<- carbon2 %>% gather("forest1", "forest2", "forest3", "forest4", "forest5")
 # urban scale by forest component
 carb.counts <-forest.carb %>%
-  pivot_longer(cols = c(forest1:forest5)) %>%
-  dplyr::count(carbon1:carbon4 ,value)
+  pivot_longer(cols = c(forest1:forest5)) %>% 
+  dplyr::count(carbon1:carbon4, value)
 urb.countsf <- as.data.frame(urb.countsf)
 
 #################################################################################################################################
@@ -269,7 +276,7 @@ birdcat3
 
 birdcat4<- av.data1 %>% count(bird4, value, sort=TRUE)
 #clean duplicates and NAs
-birdcat4[birdforest4 == ""] <- NA 
+birdcat4[birdcat4 == ""] <- NA 
 birdforest4<- birdcat4 %>% drop_na()
 birdcat4 <-birdcat4[!grepl('N/A', birdcat4),]
 colnames(birdcat4)[1] = "birdcategory"
@@ -285,5 +292,4 @@ birdcat5
 
 
 birdcatmerged <- rbind(birdcat1, birdcat2, birdcat3, birdcat4, birdcat5)
-write.csv(birdcatmerged, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/birdcatmerged.csv", row.names = FALSE)
-
+write.csv(birdcatmerged, "out/birdcatmerged.csv", row.names = FALSE)
