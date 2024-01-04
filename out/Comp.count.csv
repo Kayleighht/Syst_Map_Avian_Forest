@@ -1,0 +1,34 @@
+"Comparator","value","n"
+"N"," Behaviour",5
+"N"," Biodiversity",9
+"N"," Breeding",5
+"N"," Demographics/Patterns",1
+"N"," Resources",2
+"N"," Survival",4
+"N","Behaviour",5
+"N","Biodiversity",85
+"N","Breeding",15
+"N","Demographics/Patterns",9
+"N","Resources",1
+"N","Survival",4
+"N",NA,331
+"Y"," Behaviour",2
+"Y"," Behaviour ",1
+"Y"," Biodiversity",10
+"Y"," Biodiversity ",1
+"Y"," Breeding",9
+"Y"," Demographics/Patterns",10
+"Y"," Foraging",1
+"Y"," Resources",2
+"Y"," Resources ",1
+"Y"," Survival",10
+"Y","Behaviour",16
+"Y","Biodiversity",83
+"Y","Breeding",20
+"Y","Demographics/Patterns",25
+"Y","Resources",1
+"Y","Survival",10
+"Y",NA,422
+NA,"Biodiversity",1
+NA,"Demographics/Patterns",1
+NA,NA,6

@@ -1,0 +1,46 @@
+"Urb.scale","value","n"
+"Multi-city"," Biodiversity",2
+"Multi-city"," Biodiversity ",1
+"Multi-city"," Breeding",2
+"Multi-city","Biodiversity",9
+"Multi-city","Breeding",1
+"Multi-city","Demographics/Patterns",3
+"Multi-city","Survival",1
+"Multi-city",NA,37
+"Multi-patch"," Behaviour",5
+"Multi-patch"," Biodiversity",13
+"Multi-patch"," Breeding",10
+"Multi-patch"," Demographics/Patterns",7
+"Multi-patch"," Foraging",1
+"Multi-patch"," Resources",1
+"Multi-patch"," Resources ",1
+"Multi-patch"," Survival",9
+"Multi-patch","Behaviour",15
+"Multi-patch","Biodiversity",87
+"Multi-patch","Breeding",22
+"Multi-patch","Demographics/Patterns",18
+"Multi-patch","Resources",1
+"Multi-patch","Survival",6
+"Multi-patch",NA,404
+"Patch"," Behaviour",2
+"Patch"," Behaviour ",1
+"Patch"," Biodiversity",4
+"Patch"," Breeding",1
+"Patch"," Demographics/Patterns",4
+"Patch"," Resources",3
+"Patch"," Survival",4
+"Patch","Behaviour",5
+"Patch","Biodiversity",61
+"Patch","Breeding",11
+"Patch","Demographics/Patterns",7
+"Patch","Survival",6
+"Patch",NA,251
+"Region"," Breeding",1
+"Region"," Survival",1
+"Region","Behaviour",1
+"Region","Biodiversity",12
+"Region","Breeding",1
+"Region","Demographics/Patterns",7
+"Region","Resources",1
+"Region","Survival",1
+"Region",NA,67
