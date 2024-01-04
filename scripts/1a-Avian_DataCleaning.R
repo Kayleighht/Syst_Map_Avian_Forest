@@ -444,46 +444,46 @@ write.csv(norec2, "out/Norec.count2.csv", row.names = FALSE)
 
 
 #subset data frame to sort # publications with multiple indicators
-Indicators <- av.meta[,c("birddomain1","birddomain2", "birddomain3", "birddomain4")]
+Indicators <- av.meta[,c("birdcomp1","birdcomp2", "birdcomp3", "birdcomp4")]
 
 #COUNT TABLE
 #create count table including all bird domain columns grouped by Indicator TYPE (first only)
 # FIRST INDICATOR
 Ind1 <- journal.rec<- Indicators %>%
-  group_by(birddomain1) %>%
+  group_by(birdcomp1) %>%
   dplyr::mutate(indicator1.count=n())
 #remove duplicates in first indicator column
-Ind1 <- Ind1[!duplicated(Ind1$birddomain1),]
+Ind1 <- Ind1[!duplicated(Ind1$birdcomp1),]
 #remove N/A columns
-Ind1<- Ind1 %>% drop_na(birddomain1)
+Ind1<- Ind1 %>% drop_na(birdcomp1)
 #calculate sum
 sum(Ind1$indicator1.count)
 
 
 # SECOND INDICATOR
 Ind2 <- journal.rec<- Indicators %>%
-  group_by(birddomain2) %>%
+  group_by(birdcomp2) %>%
   dplyr::mutate(indicator2.count=n())
-Ind2 <- Ind2[!duplicated(Ind2$birddomain2), ]
-Ind2<- Ind2 %>% drop_na(birddomain2)
+Ind2 <- Ind2[!duplicated(Ind2$birdcomp2), ]
+Ind2<- Ind2 %>% drop_na(birdcomp2)
 #calculate sum
 sum(Ind2$indicator2.count)
 
 # THIRD INDICATOR
 Ind3 <- journal.rec<- Indicators %>%
-  group_by(birddomain3) %>%
+  group_by(birdcomp3) %>%
   dplyr::mutate(indicator3.count=n())
-Ind3 <- Ind3[!duplicated(Ind3$birddomain3), ]
-Ind3<- Ind3 %>% drop_na(birddomain3)
+Ind3 <- Ind3[!duplicated(Ind3$birdcomp3), ]
+Ind3<- Ind3 %>% drop_na(birdcomp3)
 #calculate sum
 sum(Ind3$indicator3.count)
 
 #FOURTH INDICATOR
 Ind4 <- journal.rec<- Indicators %>%
-  group_by(birddomain4) %>%
+  group_by(birdcomp4) %>%
   dplyr::mutate(indicator4.count=n())
-Ind4 <- Ind4[!duplicated(Ind4$birddomain4), ]
-Ind4<- Ind4 %>% drop_na(birddomain4)
+Ind4 <- Ind4[!duplicated(Ind4$birdcomp4), ]
+Ind4<- Ind4 %>% drop_na(birdcomp4)
 sum(Ind4$indicator4.count)
 
 #create data frame to sort # publications with multiple indicators
@@ -494,7 +494,7 @@ number_publications <- c("277","61", "12", "2")
 #create dataframe
 allindicators<- data.frame(number_topics, number_publications)  
 #PUSH OUT CSV
-write.csv(allindicators, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Allind.count.csv", row.names = FALSE)
+write.csv(allindicators, "out/Allind.count.csv", row.names = FALSE)
 
 
 
