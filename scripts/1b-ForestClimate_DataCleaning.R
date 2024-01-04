@@ -80,6 +80,12 @@ write.csv(journal.df, "out/journal.df.csv", row.names = FALSE)
 # Bubblemaps Prep ---------------------------------------------------------
 
 
+latlong<- read.csv("in/countries1.csv")
+colnames(latlong)[4] ="COUNTRY"
+latlong <- latlong[,c(2:4)]
+
+latlong$COUNTRY[latlong$COUNTRY == 'United States'] <- 'USA'
+
 #cut down to only necessary columns for bubblemap (so far..)
 for.meta <- forest.meta[,c(1,2,6)]
 
@@ -120,8 +126,7 @@ data1$latitude[data1$latitude == '24.24902'] <- '25.24902'
 data1$latitude <- as.numeric(data1$latitude)
 
 #write out CSV for bubblemap figure
-write.csv(data1, 
-          "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/data1.csv", row.names = FALSE)
+write.csv(data1, "out/data1.csv", row.names = FALSE)
 
 
 #subset only columns needed
