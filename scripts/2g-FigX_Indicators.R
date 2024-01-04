@@ -18,7 +18,7 @@ indicator.plot <- ggplot(BIndicator.ct, aes(x= reorder(number_topics, -percent),
 bird.indicatorplot<- indicator.plot + alltheme
 
 #FOREST#
-Indicator.ct<- read.csv("FAllind.count.csv")
+Indicator.ct<- read.csv("out/FAllind.count.csv")
 sum(Indicator.ct$number_publications)
 #add column with percents
 Indicator.ct$percent<- (Indicator.ct$number_publications/278)*100
