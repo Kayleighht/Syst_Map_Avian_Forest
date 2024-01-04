@@ -1,12 +1,8 @@
 #packagesneeded
-Packages <- c("tidyverse", "ggplot2", "bibliometrix", "ggthemes", "cartography", "sf", "stringr")
-lapply(Packages, library,character.only= TRUE)
-
-getwd()
-setwd("C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/in")
+source('scripts/0-packages.R')
 
 #loading avian data and formatting
-av.data <- read.csv("Metadata_Avian_Component.csv")
+av.data <- read.csv("in/Metadata_Avian_Component.csv")
 
 #spread bird topic into separate columns
 av.data <- separate_wider_delim(av.data, cols = Bird.domainraw, delim = ",", names = c("birdcomp1", "birdcomp2", "birdcomp3", "birdcomp4"),
@@ -16,7 +12,8 @@ av.data <- separate_wider_delim(av.data, cols = Rec.type, delim = ",", names = c
                                 too_few = "align_start", too_many = "debug")
 
 
-########## CLEANING AND ORGANIZING DATA ###################################################################################
+# Cleaning and Organizing Data --------------------------------------------
+
 
 #cut down to only necessary columns for figures (so far..)
 av.meta <- av.data[,c("Year", "Journal", "Country.Auth", "Study.country", "Urb.scale", 
@@ -53,10 +50,11 @@ av.meta$Journal[av.meta$Journal == 'Urban Ecoystems'] <- 'Urban Ecosystems'
 av.meta$Journal[av.meta$Journal == 'Journal of \nAnimal Ecology'] <- 'Journal of Animal Ecology'
 
 #PUSH OUT CSV
-write.csv(av.meta, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/av.meta.csv", row.names = FALSE)
+write.csv(av.meta, "out/av.meta.csv", row.names = FALSE)
 
-###########################################################################################################
-######################## BUBBLE MAP PREP ########################################################################################
+
+# Bubble Map Prep ---------------------------------------------------------
+
 
 cutoffs <- data.frame(id = 1:1, 
                       lat_1 = c(23.5, -23.5), 
@@ -65,7 +63,7 @@ cutoffs <- data.frame(id = 1:1,
                       lon_2 = c(170.5, 170.5))
 
 
-latlong<- read.csv("countries1.csv")
+latlong<- read.csv("in/countries1.csv")
 colnames(latlong)[4] ="COUNTRY"
 latlong <- latlong[,c(2:4)]
 
@@ -121,9 +119,11 @@ data$latitude<-as.numeric(data$latitude)
 data$longitude<-as.numeric(data$longitude)
 
 #PUSH OUT CSV
-write.csv(data, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/data.csv", row.names = FALSE)
+write.csv(data, "out/data.csv", row.names = FALSE)
 
-########################################## JOURNAL AND COUNTRY #########################################################################
+
+# Journal and Country -----------------------------------------------------
+
 
 # journal name count by country of first author
 country.count.av. <- av.meta %>%
@@ -149,9 +149,12 @@ journal.df.av$COUNTRY[journal.df.av$COUNTRY == 'USA/ Germany'] <- 'USA'
 journal.df.av <- journal.df.av[1:63,]
 journal.df.av$COUNTRY[journal.df.av$journal.count <= 1] <- "Other"
 
-write.csv(journal.df.av, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/journal.df.av.csv", row.names = FALSE)
+write.csv(journal.df.av, "out/journal.df.av.csv", row.names = FALSE)
 
-###################################################### YEAR ###############################################################################
+
+# Year --------------------------------------------------------------------
+
+
 #COUNT TABLE
 #number of publications per year
 year.count <- av.meta %>%
@@ -165,7 +168,7 @@ yearscolumn <- select(av.meta, "Year")
 yearscolumn <- sort(yearscolumn$Year)
 
 #PUSH OUT CSV
-write.csv(year.count, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Year.count.csv", row.names = FALSE)
+write.csv(year.count, "out/Year.count.csv", row.names = FALSE)
 
 #COUNT TABLE
 #journal name count by study country
@@ -174,9 +177,12 @@ country.count <- av.meta %>%
   dplyr::mutate(journal.count= n())
 
 #PUSH OUT CSV
-write.csv(country.count, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Country.count.csv", row.names = FALSE)
+write.csv(country.count, "out/Country.count.csv", row.names = FALSE)
 
-############################################# RECOMMENDATION AND JOURNAL ###################################################
+
+# Recommendation and Journal ----------------------------------------------
+
+
 journal.rec<- av.meta %>%
   group_by(Rec., Journal) %>%
   dplyr::mutate(journal.count=n())
@@ -186,7 +192,7 @@ journal.count<- journal.rec[,c("Journal", "journal.count")]
 journal.count<- journal.count %>% distinct(Journal, .keep_all = TRUE)
 
 #PUSH OUT CSV
-write.csv(journal.rec, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/journal.rec.csv", row.names = FALSE)
+write.csv(journal.rec, "out/journal.rec.csv", row.names = FALSE)
 
 #get total counts on country of first author
 country<- av.meta %>%
@@ -197,7 +203,9 @@ country<- av.meta %>%
 authcountry <- country[,c("COUNTRY", "country.count")]
 authcountry <- authcountry %>% distinct(COUNTRY, .keep_all = TRUE)
 
-############################################### URBAN SCALE ##############################################################################
+
+# Urban Scale -------------------------------------------------------------
+
 
 #COUNT TABLE
 #all bird domain columns grouped by URBAN SCALE
@@ -210,9 +218,11 @@ urbanallcount<- av.meta %>%
   dplyr:: count(Urb.scale)
 
 #PUSH OUT CSV
-write.csv(urb.counts, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/birdurb.count.csv", row.names = FALSE)
+write.csv(urb.counts, "out/birdurb.count.csv", row.names = FALSE)
 
-#################################### COMPARATOR #######################################
+
+# Comparator --------------------------------------------------------------
+
 
 #COUNT TABLE
 #all bird domain columns grouped by COMPARATOR USED Y/N
@@ -224,7 +234,7 @@ comp.counts2 <-av.meta %>%
   dplyr::count(Comparator)
 
 #PUSH OUT CSV
-write.csv(comp.counts, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Birdcomp.counts.csv", row.names = FALSE)
+write.csv(comp.counts, "out/Birdcomp.counts.csv", row.names = FALSE)
 
 #format for yes/100 to 100% bar graph
 Comp<- comp.counts
@@ -277,9 +287,11 @@ Compmeta$comp[Compmeta$comp=="Y"]<-"No"
 Birdcompmeta<- Compmeta
 
 #PUSH OUT CSV
-write.csv(Birdcompmeta, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Comp.meta.csv", row.names = FALSE)
+write.csv(Birdcompmeta, "out/Comp.meta.csv", row.names = FALSE)
 
-########################################### DATA SUBSETTING AND ORGANIZING ##################################################
+
+# Data Subsetting and Organizing ------------------------------------------
+
 
 #subset data for STUDY DURATION 
 duration.df<- av.meta[,c("birdcomp1", "birdcomp2", "birdcomp3", "birdcomp4", "Start.year", "End.year")]
@@ -318,8 +330,8 @@ duration.counts <- duration.counts %>% drop_na(value)
 duration.counts2 <- duration.counts2 %>% drop_na(n)
 
 #PUSH OUT CSV
-write.csv(duration.counts, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Duration.count.csv", row.names = FALSE)
-write.csv(duration.counts2, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Duration.count2.csv", row.names = FALSE)
+write.csv(duration.counts, "out/Duration.count.csv", row.names = FALSE)
+write.csv(duration.counts2, "out/Duration.count2.csv", row.names = FALSE)
 
 ################SUBSET FOR RECOMMENDATIONS ########################################
 
@@ -397,7 +409,7 @@ rectype.all <- rectype.all[order(rectype.all[,"value"]), ]
 unique(rectype.all$Rec.1)
 
 #PUSHOUT
-write.csv(rectype.all, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Allrecraw.count.csv", row.names = FALSE)
+write.csv(rectype.all, "out/Allrecraw.count.csv", row.names = FALSE)
 
 #calculate the percent according to topic and recommendation from TOTAL papers
 rectype.all
@@ -406,7 +418,7 @@ rectype.all$percent<- ((rectype.all$n/267)*100)
 rectype.all
 
 #PUSH OUT CSV
-write.csv(rectype.all, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Allrec.count.csv", row.names = FALSE)
+write.csv(rectype.all, "out/Allrec.count.csv", row.names = FALSE)
 
 #create a table to count the number of "NO" recommendations
 table(recdf['Rec.'])
@@ -425,12 +437,11 @@ norec2$totals <- (274)
 norec2
 
 #PUSH OUT CSV
-write.csv(norec, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Norec.count.csv", row.names = FALSE)
-write.csv(norec2, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Norec.count2.csv", row.names = FALSE)
+write.csv(norec, "out/Norec.count.csv", row.names = FALSE)
+write.csv(norec2, "out/Norec.count2.csv", row.names = FALSE)
 
-#######                                           ############
-####### SUBSETTING FOR MULTIPLE INDICATORS COUNTS ############
-#######                                           ############
+# Subsetting for Multiple Indicators Counts -------------------------------
+
 
 #subset data frame to sort # publications with multiple indicators
 Indicators <- av.meta[,c("birddomain1","birddomain2", "birddomain3", "birddomain4")]
@@ -486,9 +497,9 @@ allindicators<- data.frame(number_topics, number_publications)
 write.csv(allindicators, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Allind.count.csv", row.names = FALSE)
 
 
-####################################
-####### TOPICS ONLY COUNT ##########
-####################################
+
+# Topics Only Count -------------------------------------------------------
+
 
 ######### Categories only count ##############
 #create dataframes for each indicator/topic and align column names
@@ -532,7 +543,7 @@ birdcomps$percent <- ((birdcomps$n/277)*100)
 birdcomps
 
 #PUSH OUT CSV
-write.csv(birdcomps, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/bird.component.csv", row.names = FALSE)
+write.csv(birdcomps, "out/bird.component.csv", row.names = FALSE)
 
 ######### Categories of forest management only count ##############
 #create dataframes for each indicator/topic and align column names
@@ -581,13 +592,3 @@ birdcomps
 
 #PUSH OUT CSV
 write.csv(birdcomps, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/bird.component.csv", row.names = FALSE)
-
-
-
-
-
-
-
-
-
-

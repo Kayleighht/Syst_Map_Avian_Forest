@@ -1,12 +1,8 @@
 #packagesneeded
-Packages <- c("tidyverse", "ggplot2", "maps", "bibliometrix", "ggthemes", "cartography", "sf")
-lapply(Packages, library,character.only= TRUE)
-
-getwd()
-setwd("C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/in")
+source('scripts/0-packages.R')
 
 #loading avian data and formatting
-forest.data<- read.csv("Metadata_ForestComponent.csv")
+forest.data<- read.csv("in/Metadata_ForestComponent.csv")
 
 ########################################################################################################################################
 ########################################### FOREST COMPONENT ########################################################################
@@ -26,35 +22,39 @@ forest.meta <- separate_wider_delim(forest.meta, cols = Forest.comp, delim = ","
 forest.meta<- forest.meta %>% 
   mutate(across(where(is.character), str_trim))
 
-##################### CLEANING ###################################################################################################################
 #rename column in av.meta to match shape files with countries
 names(forest.meta)[names(forest.meta) == "Country.of.First.Author"] <- "COUNTRY"
+
+# Cleaning ----------------------------------------------------------------
+
 
 #replace empty cells with N/A
 forest.meta <- replace(forest.meta, forest.meta=='', NA) 
 
 unique(forest.meta$COUNTRY)
 
-forest.meta$COUNTRY[for.meta$COUNTRY == 'United States'] <- 'USA'
-forest.meta$COUNTRY[for.meta$COUNTRY == 'United State of America'] <- 'USA'
-forest.meta$COUNTRY[for.meta$COUNTRY == 'United States of America'] <- 'USA'
-forest.meta$COUNTRY[for.meta$COUNTRY == 'Korea'] <- 'South Korea'
-forest.meta$COUNTRY[for.meta$COUNTRY == 'Helsinki'] <- 'Finland'
-forest.meta$COUNTRY[for.meta$COUNTRY == 'Republic of Korea'] <- 'South Korea'
+forest.meta$COUNTRY[forest.meta$COUNTRY == 'United States'] <- 'USA'
+forest.meta$COUNTRY[forest.meta$COUNTRY == 'United State of America'] <- 'USA'
+forest.meta$COUNTRY[forest.meta$COUNTRY == 'United States of America'] <- 'USA'
+forest.meta$COUNTRY[forest.meta$COUNTRY == 'Korea'] <- 'South Korea'
+forest.meta$COUNTRY[forest.meta$COUNTRY == 'Helsinki'] <- 'Finland'
+forest.meta$COUNTRY[forest.meta$COUNTRY == 'Republic of Korea'] <- 'South Korea'
 
 unique(forest.meta$Journal)
-forest.meta$Journal[for.meta$Journal == 'Forests Multidisciplinary Digital Publishing Institute'] <- 'Forests'
-forest.meta$Journal[for.meta$Journal == 'Forests Multidisciplinary Digital Publishing'] <- 'Forests'
-forest.meta$Journal[for.meta$Journal == 'Multidisciplinary Digital Publishing Institute'] <- 'Forests'
-forest.meta$Journal[for.meta$Journal == 'Sustainability Multidisciplinary Digital Publishing Institute'] <- 'Sustainability'
-forest.meta$Journal[for.meta$Journal == 'Susainability'] <- 'Sustainability'
-forest.meta$Journal[for.meta$Journal == 'Urban Foresty & Urban Greening'] <- 'Urban Forestry & Urban Greening'
+forest.meta$Journal[forest.meta$Journal == 'Forests Multidisciplinary Digital Publishing Institute'] <- 'Forests'
+forest.meta$Journal[forest.meta$Journal == 'Forests Multidisciplinary Digital Publishing'] <- 'Forests'
+forest.meta$Journal[forest.meta$Journal == 'Multidisciplinary Digital Publishing Institute'] <- 'Forests'
+forest.meta$Journal[forest.meta$Journal == 'Sustainability Multidisciplinary Digital Publishing Institute'] <- 'Sustainability'
+forest.meta$Journal[forest.meta$Journal == 'Susainability'] <- 'Sustainability'
+forest.meta$Journal[forest.meta$Journal == 'Urban Foresty & Urban Greening'] <- 'Urban Forestry & Urban Greening'
 
-############## JOURNAL AND COUNTRY ##########################################################################################################
 #cut down to only necessary columns for figures (so far..)
 for.meta <- forest.meta[,c(3:5)]
 
-country.count <- for.meta %>%
+# Journal and Country -----------------------------------------------------
+
+
+country.count <- forest.meta %>%
   group_by(COUNTRY, Journal) %>%
   dplyr::mutate(journal.count= n())
 
@@ -75,10 +75,10 @@ journal.df$COUNTRY[journal.df$journal.count <= 1] <- "Other"
 journal.df$COUNTRY[journal.df$COUNTRY == 'United States of America'] <- 'USA'
 
 #PUSH OUT CSV
-write.csv(journal.df, "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/journal.df.csv", row.names = FALSE)
+write.csv(journal.df, "out/journal.df.csv", row.names = FALSE)
 
-##################################################################################################################################
-################################### BUBBLEMAPS PREP ################################################################################
+# Bubblemaps Prep ---------------------------------------------------------
+
 
 #cut down to only necessary columns for bubblemap (so far..)
 for.meta <- forest.meta[,c(1,2,6)]
@@ -124,9 +124,11 @@ write.csv(data1,
           "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/data1.csv", row.names = FALSE)
 
 
-###### STUDY BY YEAR COUNTS ###########################################################################################################
 #subset only columns needed
 forestyear<- subset(forest.meta, select = c(Year, Journal))
+
+# Study by Year Counts ----------------------------------------------------
+
 
 #number of publications per year
 fyear.count <- forestyear %>%
@@ -140,10 +142,11 @@ yearscolumn <- sort(fyear.count$Year)
 forestyearcount <- fyear.count[!duplicated(fyear.count$Year), ]
 
 #PUSH OUT CSV
-write.csv(forestyearcount, 
-          "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FYear.count.csv", row.names = FALSE)
+write.csv(forestyearcount, "out/FYear.count.csv", row.names = FALSE)
 
-########### STUDY DURATION ############################################################################################################
+
+# Study Duration ----------------------------------------------------------
+
 
 #subset data for STUDY DURATION 
 #clean and organize data
@@ -182,13 +185,13 @@ fduration.counts <- fduration.counts %>% drop_na(value)
 fduration.counts2 <- fduration.counts2 %>% drop_na(duration_bin)
 
 #PUSH OUT CSV
-write.csv(fduration.counts, 
-          "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Studydurationtopic.csv", row.names = FALSE)
+write.csv(fduration.counts, "out/Studydurationtopic.csv", row.names = FALSE)
 
-write.csv(fduration.counts2, 
-          "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/Studydurationall.csv", row.names = FALSE)
+write.csv(fduration.counts2, "out/Studydurationall.csv", row.names = FALSE)
 
-##### CARBON METRICS ###############################################################################################################
+
+# Carbon Metrics ----------------------------------------------------------
+
 
 #COUNT TABLE
 #carbon metrics considered
@@ -216,7 +219,9 @@ carb4<- carbon %>%
 #bind all together
 cbind(carb1, carb2, carb3, carb4)
 
-#### JOURNAL ################################################################################################################
+
+# Journal -----------------------------------------------------------------
+
 
 #COUNT TABLE
 #journal name country by recommendation included
@@ -233,16 +238,17 @@ journal.count<- journalandrec[,c("Journal", "journal.count")]
 journal.count<- journal.count %>% distinct(Journal, .keep_all = TRUE)
 
 #PUSH OUT CSV
-write.csv(journalandrec, 
-          "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/fjournal.rec.csv", row.names = FALSE)
+write.csv(journalandrec, "out/fjournal.rec.csv", row.names = FALSE)
 
 
-########################################## URBAN SCALE #######################################################
 #COUNT TABLE
 #create count table including all forest domain columns grouped by URBAN SCALE
 furb.counts <-forest.meta %>%
               pivot_longer(cols = c(forestcomp1:forestcomp5)) %>%
               dplyr::count(Urb.scale,value)
+
+# Urban Scale -------------------------------------------------------------
+
 
 #non-categorized urban count
 urbanallcount<- forest.meta %>%
@@ -250,10 +256,11 @@ urbanallcount<- forest.meta %>%
 
 urbanallcount
 #PUSH OUT CSV
-write.csv(furb.counts, 
-          "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FUrb.count.csv", row.names = FALSE)
+write.csv(furb.counts, "out/FUrb.count.csv", row.names = FALSE)
 
-###### COMPARATOR ############################################################################################################################
+
+# Comparator --------------------------------------------------------------
+
 
 #COUNT TABLE
 #create count table including all bird domain columns grouped by COMPARATOR USED Y/N
@@ -320,11 +327,12 @@ Compmeta$comp[Compmeta$comp=="Y"]<-"No"
 Compmeta
 
 #PUSH OUT CSV
-write.csv(Compmeta, 
-          "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FComp.count.csv", row.names = FALSE)
+write.csv(Compmeta, "out/FComp.count.csv", row.names = FALSE)
 
 
-############## FOREST COMPONENTS ####################################################################################################################
+
+# Forest Components -------------------------------------------------------
+
 
 #remove columns not needed
 Comp1<- subset(forest.meta, select = c("forestcomp1"))
@@ -369,10 +377,11 @@ forestcomps$percent <- ((forestcomps$n/169)*100)
 forestcomps
 
 #PUSH OUT CSV
-write.csv(forestcomps, 
-          "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/forest.component.csv", row.names = FALSE)
+write.csv(forestcomps, "out/forest.component.csv", row.names = FALSE)
 
-######## SUBSETTING RECOMMENDATIONS #########################################################################################################
+
+# Subsetting Recommendations ----------------------------------------------
+
 
 #open forest comps that we created already with forest components divided into separate columns
 forest.meta
@@ -446,8 +455,7 @@ frectype.all <- as.data.frame(frectype.all)
 frectype.all <- frectype.all[order(frectype.all[,2]), ]
 
 #PUSH OUT CSV
-write.csv(frectype.all, 
-          "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FAllrec.count.csv", row.names = FALSE)
+write.csv(frectype.all, "out/FAllrec.count.csv", row.names = FALSE)
 
 #calculate the percent according to topic and recommendation from TOTAL papers
 frectype.all
@@ -456,7 +464,7 @@ frectype.all$percent<- ((frectype.all$n/170)*100)
 frectype.all
 
 #create a table to count the number of "NO" recommendations for ALL PAPERS
-table(frecdf['Rec.included'])
+#table(frecdf['Rec.included'])
 fnorec<- data.frame(
   Rec1 = "None",
   value= "No Recommendations",
@@ -465,7 +473,4 @@ fnorec$percent <- ((45/170)*100)
 fnorec
 
 #PUSH OUT CSV
-write.csv(fnorec, 
-          "C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/out/FNorec.count.csv", row.names = FALSE)
-
-
+write.csv(fnorec, "out/FNorec.count.csv", row.names = FALSE)

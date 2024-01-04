@@ -1,11 +1,7 @@
 #packagesneeded
-Packages <- c("tidyverse", "ggplot2", "maps", "bibliometrix", "ggthemes", "cartography", "sf", "stringr")
-lapply(Packages, library,character.only= TRUE)
+source('scripts/0-packages.R')
 
-getwd()
-setwd("C:/Users/KHUTTTAY/Documents/Systematic_Map_Avian_Forest/Syst_Map_Avian_Forest/in")
-
-birdexcl<- read.csv("articles_avian.csv")
+birdexcl<- read.csv("in/articles_avian.csv")
 birdexcl <- separate_wider_delim(birdexcl, cols = notes , delim = "|", names = c("notes", "decision", "reason"),
                                too_few = "align_start", too_many = "debug")
 
@@ -26,7 +22,7 @@ birdex3 <- birdex3[-c(12,23),]
 birdex4<- birdex3[c(12,23),]
 
 #remove irrelevant column in birdex4
-birdex4 <- subset(birdex4, select=-c(notes_ok,notes_pieces, notes_remainder, notes))
+birdex4 <- subset(birdex4, select=-c(notes_remainder, notes))
 
 #recombine
 colnames(birdex3) <- c("key", "title", "authors", "journal2", "notes", "decision", "reason")
@@ -56,10 +52,13 @@ birdreasons<- birdexclean %>%
   dplyr:: count(reason1)
 birdreasons
 
-### FOREST ################################################################################################
-forestexcl<- read.csv("articles_forest.csv")
+# Forest ------------------------------------------------------------------
+
+
+forestexcl<- read.csv("in/articles_forest.csv")
 #remove uneeded columns
 forestexcl<- subset(forestexcl, select = c(title, notes))
+
 
 forestexcl <- separate_wider_delim(forestexcl, cols = notes , delim = "|", names = c("notes1", "notes2", "notes3", "notes4"),
                                  too_few = "align_start", too_many = "debug")
@@ -114,7 +113,7 @@ forestreasons
 
 
 #BIRD##
-bgreyexcl<- read.csv("greylitarticles.csv")
+bgreyexcl<- read.csv("in/greylitarticles.csv")
 bgreyexcl <- separate_wider_delim(bgreyexcl, cols = notes , delim = "|", names = c("1", "2", "label", "reason", "5", "6", "7"),
                                  too_few = "align_start", too_many = "debug")
 
@@ -153,7 +152,7 @@ forestcountgrey
 #########################################################################################
 
 #BIRD##
-phase2grey<- read.csv("phase2grey_articles.csv")
+phase2grey<- read.csv("in/phase2grey_articles.csv")
 
 phase2grey<- subset(phase2grey, select = c(title, notes))
 
@@ -168,4 +167,3 @@ birdgrey<- birdgrey[!grepl("inaccessible", birdgrey$reason), ]
 #separate by labels
 birdgrey1<- birdgrey[grep("bird", birdgrey$label),]
 forestgrey<- birdgrey[grep("forest", birdgrey$label),]
-
