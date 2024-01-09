@@ -1,173 +1,5 @@
 "birdcategory","value","n"
-"Biodiversity metric"," Composition",28
-"Abundance"," Forested area",26
-"Abundance"," Composition",25
-"Abundance","Composition",24
-"Biodiversity metric","Composition",21
-"Abundance"," Land use type",17
-"Biodiversity metric","Forested area",17
-"Abundance"," Canopy Cover",16
-"Abundance","Forested area",16
-"Biodiversity metric"," Forested area",16
-"Biodiversity metric"," Canopy Cover",15
-"Abundance","Land use type",14
-"Biodiversity metric","Land use type",11
-"Abundance","Canopy Cover",10
-"Biodiversity metric"," Land use type",10
-"Species distribution"," Composition",10
-"Species distribution"," Canopy Cover",9
-"Species distribution","Canopy Cover",9
-"Biodiversity metric","Canopy Cover",8
-"Nesting survival","Forested area",7
-"Species distribution"," Forested area",7
-"Species distribution","Composition",7
-"Species distribution","Forested area",7
-"Biodiversity metric"," Connectivity",6
-"Biodiversity metric"," Native species",6
-"Community changes","Forested area",6
-"Nesting survival","Composition",6
-"Species distribution"," Diversity metric",6
-"Species distribution"," Land use type",6
-"Abundance"," Connectivity",5
-"Biodiversity metric"," Diversity metric",5
-"Nesting survival"," Composition",5
-"Nesting survival"," Land use type",5
-"Abundance","Native species",4
-"Biodiversity metric","Diversity metric",4
-"Biodiversity metric","Fragmentation",4
-"Micro breeding"," Composition",4
-"Nesting survival","Canopy Cover",4
-"Nesting survival","Land use type",4
-"Species distribution"," Fragmentation",4
-"Species distribution","Connectivity",4
-"Species distribution","Land use type",4
-"Abundance"," Exotic/invasive species",3
-"Abundance"," Native species",3
-"Abundance","Connectivity",3
-"Community changes"," Land use type",3
-"Community changes","Composition",3
-"Foraging","Composition",3
-"Foraging/Movement","Composition",3
-"Individual survival/mortality"," Composition",3
-"Individual survival/mortality","Land use type",3
-"Meso breeding"," Composition",3
-"Nesting survival"," Canopy Cover",3
-"Population changes"," Forested area",3
-"Abundance","Diversity metric",2
-"Abundance","Individual tree management",2
-"Biodiversity metric"," Exotic/invasive species",2
-"Biodiversity metric"," Fragmentation",2
-"Biodiversity metric"," Individual tree management",2
-"Biodiversity metric","Exotic/invasive species",2
-"Community changes"," Composition",2
-"Foraging/Movement"," Individual tree management",2
-"Foraging/Movement","Land use type",2
-"Individual survival/mortality"," Land use type",2
-"Individual survival/mortality"," Native species",2
-"Micro breeding","Canopy Cover",2
-"Micro breeding","Land use type",2
-"Nesting survival"," Forested area",2
-"Nesting survival"," Fragmentation",2
-"Nesting survival","Fragmentation",2
-"Oral communication"," Forested Area",2
-"Oral communication","Canopy Cover",2
-"Population changes","Land use type",2
-"Species distribution","Diversity metric",2
-"Abundance"," ",1
-"Abundance"," Canopy cover",1
-"Abundance"," Diversity metric ",1
-"Abundance"," Forested Area",1
-"Abundance"," Fragmentation",1
-"Abundance"," Land-Use Type",1
-"Abundance","Exotic/invasive species",1
-"Abundance","Fragmentation",1
-"Abundance","Land Use Type",1
-"Biodiversity metric","  Composition",1
-"Biodiversity metric"," Forested area ",1
-"Biodiversity metric"," Land-use type",1
-"Biodiversity metric"," Species Composition",1
-"Biodiversity metric","Connectivity",1
-"Biodiversity metric","Native species",1
-"Breeding Micro","Individual tree management",1
-"Community changes"," Canopy Cover",1
-"Community changes"," Composition ",1
-"Community changes"," Connectivity",1
-"Community changes"," Forested area",1
-"Community changes"," Individual tree management",1
-"Community changes"," Individual tree management ",1
-"Community changes","Canopy Cover",1
-"Community changes","Exotic/invasive species",1
-"Community changes","Land use type",1
-"Foraging"," Canopy Cover",1
-"Foraging"," Land use type",1
-"Foraging/Movement"," ",1
-"Foraging/Movement"," Canopy Cover",1
-"Foraging/Movement"," Composition",1
-"Foraging/Movement"," Diversity metric",1
-"Foraging/Movement"," Exotic/invasive species",1
-"Foraging/Movement"," Forested area",1
-"Foraging/Movement"," Individual tree management ",1
-"Foraging/Movement"," Land use type",1
-"Foraging/Movement"," Native species",1
-"Foraging/Movement","Canopy Cover",1
-"Foraging/Movement","Forested area",1
-"Foraging/Movement","Fragmentation",1
-"Foraging/Movement","Individual tree management",1
-"Individual survival/mortality"," Forested Area",1
-"Individual survival/mortality","Canopy Cover",1
-"Individual survival/mortality","Composition",1
-"Individual survival/mortality","Exotic/invasive species",1
-"Individual survival/mortality","Forested area",1
-"Individual survival/mortality","Species Composition",1
-"Inter-specific competition","Forested area",1
-"Intra-specific competition","Composition",1
-"Meso breeding"," Canopy Cover",1
-"Meso breeding"," Forested area",1
-"Meso breeding"," Native species",1
-"Meso breeding","Canopy Cover",1
-"Meso breeding","Exotic/invasive species",1
-"Meso breeding","Forested area",1
-"Meso breeding","Land use type",1
-"Micro breeding"," Canopy Cover",1
-"Micro breeding"," Connectivity",1
-"Micro breeding"," Exotic/invasive species",1
-"Micro breeding"," Forested area",1
-"Micro breeding"," Land use type",1
-"Micro breeding"," Native species",1
-"Micro breeding","Composition",1
-"Micro breeding","Exotic/invasive species",1
-"Micro breeding","Forested area",1
-"Micro breeding","Fragmentation",1
-"Micro breeding","Individual tree management",1
-"Micro breeding","Native species",1
-"Micro breeding","Species Composition",1
-"Migration"," Canopy Cover",1
-"Migration"," Fragmentation",1
-"Migration","Connectivity",1
-"Migration","Forested area",1
-"Nesting survival"," Forested Area ",1
-"Nesting survival"," Individual tree management",1
-"Nesting survival"," Individual tree management ",1
-"Nesting survival","Exotic/invasive species",1
-"Nesting survival","Individual tree management",1
-"Nesting survival","Species composition",1
-"Nesting survival & Abundance ","Fragmentation",1
-"Oral communication"," Canopy Cover",1
-"Oral communication"," Canopy cover",1
-"Oral communication","Composition",1
-"Oral communication","Forested area",1
-"Oral communication","Land use type",1
-"Population changes"," ",1
-"Population changes"," Composition",1
-"Population changes"," Connectivity",1
-"Population changes"," Fragmentation",1
-"Population changes","Canopy Cover",1
-"Population changes","Exotic/invasive species",1
-"Population changes","Green space type",1
-"Species distribution"," Connectivity",1
-"Species distribution"," Individual tree management",1
-"Species distribution","Individual tree management",1
-" Abundance"," Composition",17
+" Abundance"," Composition",18
 " Biodiversity metric"," Composition",13
 " Biodiversity metric"," Forested area",12
 " Biodiversity metric","Composition",11
@@ -175,16 +7,17 @@
 " Biodiversity metric"," Canopy Cover",9
 " Abundance"," Canopy Cover",8
 " Abundance","Canopy Cover",8
-" Abundance","Composition",8
 " Abundance","Forested area",8
 " Biodiversity metric","Forested area",8
+" Abundance","Composition",7
 " Abundance","Land use type",6
 " Biodiversity metric"," Land use type",6
+" Nesting survival","Composition",6
 " Abundance"," Diversity metric",5
-" Abundance"," Land use type",5
-" Nesting survival","Composition",5
+" Abundance"," Land use type",4
 " Biodiversity metric","Canopy Cover",4
 " Foraging/Movement"," Composition",4
+" Species distribution","Composition",4
 " Abundance"," Connectivity",3
 " Abundance","Exotic/invasive species",3
 " Biodiversity metric"," Connectivity",3
@@ -195,7 +28,7 @@
 " Nesting survival","Exotic/invasive species",3
 " Species distribution"," Canopy Cover",3
 " Species distribution"," Composition",3
-" Species distribution","Composition",3
+" Species distribution"," Land use type",3
 " Species distribution","Forested area",3
 " Abundance"," Individual tree management",2
 " Biodiversity metric"," Fragmentation",2
@@ -209,11 +42,9 @@
 " Nesting survival"," Forested area",2
 " Nesting survival"," Land use type",2
 " Species distribution"," Forested area",2
-" Species distribution"," Land use type",2
 " Species distribution","Canopy Cover",2
 " Species distribution","Land use type",2
 " Abundance"," Native species",1
-" Abundance"," Species Composition",1
 " Abundance","Connectivity",1
 " Abundance "," Forested area",1
 " Abundance ","Composition",1
@@ -228,9 +59,9 @@
 " Community changes"," Land use type",1
 " Community changes","Canopy Cover",1
 " Community changes","Composition",1
-" Foraging"," Exotic/invasive species",1
-" Foraging"," Forested area",1
-" Foraging","Species Composition",1
+" Foraging/Movement"," Exotic/invasive species",1
+" Foraging/Movement"," Forested area",1
+" Foraging/Movement","Composition",1
 " Individual survival/mortality"," Canopy Cover",1
 " Individual survival/mortality"," Composition",1
 " Individual survival/mortality","Forested area",1
@@ -248,7 +79,6 @@
 " Nesting survival"," ",1
 " Nesting survival"," Fragmentation",1
 " Nesting survival","Land use type",1
-" Nesting survival","Species Composition",1
 " Oral communication","Composition",1
 " Population changes"," Canopy Cover",1
 " Population changes","Fragmentation",1
@@ -265,32 +95,32 @@
 " species distribution"," Canopy cover",1
 " species distribution","Forested area",1
 " Biodiversity metric"," Composition",3
+" Biodiversity metric","Composition",3
 " Community changes"," Forested area",3
 " Community changes","Land use type",3
 " Abundance","Forested area",2
-" Biodiversity metric","Composition",2
 " Community changes"," Canopy Cover",2
 " Community changes"," Composition",2
 " Community changes"," Diversity metric",2
 " Community changes","Connectivity",2
+" Foraging/Movement","Composition",2
 " Abundance"," Forested area",1
 " Abundance"," Fragmentation",1
 " Abundance"," Land use type",1
 " Abundance","Exotic/invasive species",1
 " Biodiversity metric"," Individual tree management",1
+" Biodiversity metric"," Land use type",1
 " Biodiversity metric","Canopy Cover",1
 " Biodiversity metric","Forested area",1
 " Biodiversity metric","Land use type",1
 " Changes in Community "," Forested Area",1
 " Changes in Community ","Composition",1
 " Community changes","Canopy Cover",1
-" Foraging","Composition",1
 " Foraging/Movement"," Native species",1
-" Foraging/Movement","Composition",1
 " Foraging/Movement","Exotic/invasive species",1
 " Foraging/Movement","Land use type",1
-" Foraging/movement "," Individual tree management ",1
-" Foraging/movement ","Forested area",1
+" Foraging/Movement "," Individual tree management ",1
+" Foraging/Movement ","Forested area",1
 " Individual survival/mortality"," Forested area",1
 " Individual survival/mortality","Composition",1
 " Macro breeding"," Land use type",1
@@ -306,7 +136,7 @@
 " Migration","Composition",1
 " Nesting survival"," Exotic/invasive species",1
 " Nesting survival"," Forested area",1
-" Nesting survival","Species Composition",1
+" Nesting survival","Composition",1
 " Population changes","Composition",1
 " Species Distribution "," Forested area ",1
 " Species Distribution "," Land-use type",1
@@ -320,8 +150,8 @@
 " Species distribution","Land use type",1
 " community changes"," Forested Area",1
 " community changes","Land use type",1
-NA," Composition",82
-NA,"Composition",69
+NA," Composition",83
+NA,"Composition",72
 NA,"Forested area",59
 NA," Forested area",56
 NA," Canopy Cover",50
@@ -339,14 +169,13 @@ NA,"Exotic/invasive species",8
 NA,"Individual tree management",8
 NA," Exotic/invasive species",7
 NA," Individual tree management",7
-NA,"",6
+NA,NA,6
 NA,"Native species",6
 NA," Forested Area",3
 NA," Individual tree management ",3
 " Abundance","Composition",2
 NA," ",2
 NA," Canopy cover",2
-NA,"Species Composition",2
 " Abundance"," Canopy Cover",1
 " Abundance"," Forested area",1
 " Abundance"," Land use type",1
@@ -365,10 +194,8 @@ NA," Forested Area ",1
 NA," Forested area ",1
 NA," Land-Use Type",1
 NA," Land-use type",1
-NA," Species Composition",1
 NA,"Green space type",1
 NA,"Land Use Type",1
-NA,"Species composition",1
 " Meso breeding"," Land use type",1
 " Meso breeding","Composition",1
 NA,NA,NA
