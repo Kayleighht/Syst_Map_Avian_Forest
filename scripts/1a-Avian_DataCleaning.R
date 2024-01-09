@@ -575,3 +575,50 @@ dfmergefinal <- rbind(dfmerge34,Comp4)
 
 dfmergefinal <- dfmergefinal %>%
   mutate_if(is.character, str_trim)
+
+#MULTIPLE INDICATORS COUNTS
+#create data frame to sort # publications with multiple indicators
+
+Indicators <- av.meta[,c("birdcomp1","birdcomp2", "birdcomp3", "birdcomp4")]
+
+#create count table including all bird domain columns grouped by RECOMMENDATION TYPE (first only)
+Ind1 <- journal.rec<- Indicators %>%
+  group_by(birdcomp1) %>%
+  dplyr::mutate(indicator1.count=n())
+Ind1 <- Ind1[!duplicated(Ind1),]
+#remove N/A columns
+Ind1<- Ind1 %>% drop_na(birdcomp1)
+#remove remaining irrelevant rows
+Ind1 <- Ind1[-c(6,7,9:30),]
+sum(Ind1$indicator1.count)
+
+Ind2 <- journal.rec<- Indicators %>%
+  group_by(birdcomp2) %>%
+  dplyr::mutate(indicator2.count=n())
+Ind2 <- Ind2[!duplicated(Ind2), ]
+Ind2<- Ind2 %>% drop_na(birdcomp2)
+#remove remaining irrelevant rows
+Ind2 <- Ind2[-c(2,6,8:10, 12:24),]
+sum(Ind2$indicator2.count)
+
+Ind3 <- journal.rec<- Indicators %>%
+  group_by(birdcomp3) %>%
+  dplyr::mutate(indicator3.count=n())
+Ind3 <- Ind3[!duplicated(Ind3), ]
+Ind3<- Ind3 %>% drop_na(birdcomp3)
+Ind3 <- Ind3[-c(4,6,8:11),]
+sum(Ind3$indicator3.count)
+
+Ind4 <- journal.rec<- Indicators %>%
+  group_by(birdcomp4) %>%
+  dplyr::mutate(indicator4.count=n())
+Ind4 <- Ind4[!duplicated(Ind4), ]
+Ind4<- Ind4 %>% drop_na(birdcomp4)
+sum(Ind4$indicator4.count)
+
+#create data frame to sort # publications with multiple indicators
+number_topics <- c("One Indicator", "Two Indicators", "Three Indicators", "Four Indicators")
+number_publications <- c("274","60", "11", "2")
+
+allindicators<- data.frame(number_topics, number_publications)  
+write.csv(allindicators, "out/Allind.count.csv", row.names = FALSE)
