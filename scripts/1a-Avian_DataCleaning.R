@@ -130,6 +130,18 @@ country.count.av. <- av.meta %>%
   group_by(COUNTRY,Journal) %>%
   dplyr::mutate(journal.count= n())
 
+#raw ncounts per country
+authcountry <- av.meta %>%
+  group_by(COUNTRY) %>%
+  dplyr::mutate(author.count= n())
+
+#calculate average publication count from 2012 to 2022
+authoravg<- authcountry[c("COUNTRY", "author.count")]
+authoravg <- authoravg[order(-authoravg$author.count),]
+#cut to relevant years
+authoravg$percent <- (authoravg$author.count/169)*100
+authoravg
+
 country.count.av. <- country.count.av. %>%
   group_by(Journal) %>%
   dplyr::mutate(count= n())
@@ -169,6 +181,13 @@ yearscolumn <- sort(yearscolumn$Year)
 
 #PUSH OUT CSV
 write.csv(year.count, "out/Year.count.csv", row.names = FALSE)
+
+#calculate average publication count from 2012 to 2022
+year.average<- year.count[c("Year", "Year_count")]
+year.average <- year.average[order(year.average$Year),]
+#cut to relevant years
+year.average<- year.average[c(28:37),]
+mean(year.average$Year_count)
 
 #COUNT TABLE
 #journal name count by study country

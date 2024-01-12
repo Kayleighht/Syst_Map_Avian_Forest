@@ -11,7 +11,7 @@ forest.data<- read.csv("in/Metadata_ForestComponent.csv")
 #cut down to only necessary columns for figures (so far..)
 forest.meta <- forest.data[,c("Title","Year", "Journal", "Publication.Type.", "Country.of.First.Author","Study.Country", "Urb.scale", 
                       "Year.start", "Year.end", "Comparator", "Forest.comp", "Rec.included",                    
-                      "Rec1", "Rec2", "Rec3")]
+                      "Rec1", "Rec2", "Rec3", "Carbon.metric")]
 
 #separate forest component column into multiple columns with one indicator each
 forest.meta <- separate_wider_delim(forest.meta, cols = Forest.comp, delim = ",", names = c("forestcomp1", "forestcomp2", "forestcomp3", "forestcomp4",
@@ -51,12 +51,24 @@ forest.meta$Journal[forest.meta$Journal == 'Urban Foresty & Urban Greening'] <- 
 #cut down to only necessary columns for figures (so far..)
 for.meta <- forest.meta[,c(3:5)]
 
-# Journal and Country -----------------------------------------------------
 
+# Journal and Country -----------------------------------------------------
 
 country.count <- forest.meta %>%
   group_by(COUNTRY, Journal) %>%
   dplyr::mutate(journal.count= n())
+
+#raw ncounts per country
+authcountry <- forest.meta %>%
+  group_by(COUNTRY) %>%
+  dplyr::mutate(author.count= n())
+
+#calculate average publication count from 2012 to 2022
+authoravg<- authcountry[c("COUNTRY", "author.count")]
+authoravg <- authoravg[order(-authoravg$author.count),]
+#cut to relevant years
+authoravg$percent <- (authoravg$author.count/169)*100
+authoravg
 
 country.count <- country.count %>%
   group_by(Journal) %>%
@@ -149,6 +161,12 @@ forestyearcount <- fyear.count[!duplicated(fyear.count$Year), ]
 #PUSH OUT CSV
 write.csv(forestyearcount, "out/FYear.count.csv", row.names = FALSE)
 
+#calculate average publication count from 2012 to 2022
+year.average<- fyear.count[c("Year", "Year_count")]
+year.average <- year.average[order(year.average$Year),]
+#cut to relevant years
+year.average<- year.average[c(12:22),]
+mean(year.average$Year_count)
 
 # Study Duration ----------------------------------------------------------
 

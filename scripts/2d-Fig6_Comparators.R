@@ -59,15 +59,15 @@ comparator.plot<- ggplot(Compmeta, aes(fill = comp, x= value, y= comparator)) +
   scale_y_continuous(limits = c(0,100), breaks = c(0, 20, 40, 60, 80, 100)) +
   scale_fill_manual(labels= c("No", "Yes"), values = birdpalette2) + 
   coord_flip() + 
-  theme_legend3
+  theme_legend6
 
-bird.comparatorplot<- comparator.plot + labs(fill= "Comparator 
-used?")
+bird.comparatorplot<- comparator.plot + labs(fill= "Comparator used?")
 bird.comparatorplot
 
 #PLOTTING
 
 Forestcompmeta<- read.csv("out/FComp.count.csv")
+
 
 Forestcompmeta$value <- factor(Forestcompmeta$value, levels = c("Composition", "Land use type", "Canopy cover", "Individual tree management", 
                                                                 "Forested area", "Native species", "Exotic/invasive species", "Connectivity",
@@ -80,10 +80,9 @@ comparator.plot<- ggplot(Forestcompmeta, aes(fill = comp, x= value, y= comparato
   scale_y_continuous(limits = c(0,100), breaks = c(0, 20, 40, 60, 80, 100)) +
   scale_fill_manual(values= forestpalette2, labels= c("No", "Yes")) + 
   coord_flip() +
-  theme_legend3
+  theme_legend6
 
-forest.comparatorplot<- comparator.plot + labs(fill= "Comparator
-used?")
+forest.comparatorplot<- comparator.plot + labs(fill= "Comparator used?")
 
 forest.comparatorplot
 
@@ -126,9 +125,6 @@ Urban$percent <- (Urban$value/Urban$Totals)*100
 
 #PLOTTING ####################################################################
 
-Urban$name <- factor(Urban$name, levels = c("Biodiversity", "Survival", "Demographics/Patterns", "Breeding", "Behaviour", "Resources", "Foraging"))
-
-
 scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= name , y= percent)) +
   geom_bar(stat= 'identity') + 
   labs(x= "", y= "") + 
@@ -136,9 +132,10 @@ scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= name , y= percent)) +
   scale_y_continuous(limits= c(0,100)) + 
   scale_fill_manual(values = birdpalette4) +
   bigtheme +
-  theme_legend3
+  theme_legend6 +
+  guides(fill = guide_legend(nrow = 2))
 
-bird.scaleplot<- scale.plot + labs(fill= "Urban Scale") 
+bird.scaleplot<- scale.plot + labs(fill= "") 
 bird.scaleplot
 
 #FOREST#
@@ -183,7 +180,6 @@ Urban$name <- factor(Urban$name, levels = c("Composition", "Land use type", "Can
                                             "Forested area", "Native species", "Exotic/invasive species", "Connectivity",
                                             "Diversity metric", "Fragmentation"))
 
-
 scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= name, y= percent)) +
   geom_bar(stat= 'identity') + 
   labs(x= "", y= "") + 
@@ -191,9 +187,10 @@ scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= name, y= percent)) +
   scale_y_continuous(limits= c(0,100)) + 
   scale_fill_manual(values= forestpalette4) +
   bigtheme +
-  theme_legend3
+  theme_legend6 +
+  guides(fill = guide_legend(nrow = 2))
 
-forest.scaleplot<- scale.plot + labs(fill= "Urban Scale") 
+forest.scaleplot<- scale.plot + labs(fill= "") 
 
 forest.scaleplot
 
@@ -234,10 +231,10 @@ rec.plot <- ggplot(recs, aes(fill= Rec.1, x= value , y= percent)) +
   labs(x= "", y= "Percent of Studies") +
   coord_flip() + 
   scale_y_continuous(limits= c(0,100)) + 
-  scale_fill_manual(values = birdpalette4s, name =  "Recommendation 
-Type") + 
-  theme_legend3 + 
-  bigtheme
+  scale_fill_manual(values = birdpalette4s, name =  "") + 
+  theme_legend6 +
+  bigtheme +
+  guides(fill = guide_legend(nrow = 2))
 
 birdrecoplot <- rec.plot
 
@@ -271,19 +268,24 @@ recs$value <- factor(recs$value, levels = c("Composition", "Land use type", "Can
 recs$Rec1 <- factor(recs$Rec1, levels= c("Restoration", "Management", "Conservation", "None"))
 
 
-
 rec.plot <- ggplot(recs, aes(fill= Rec1, x= value , y= percent)) +
   geom_bar(stat= 'identity') + labs(x= "", y= "Percent of Studies") +
   coord_flip() + 
   bigtheme +
   scale_y_continuous(limits= c(0,100)) + 
-  theme_legend3 +
-  scale_fill_manual(values = forestpalette4s, 
-                    name =  "Recommendation 
-Type")
+  theme_legend6 +
+  scale_fill_manual(values = forestpalette4s, name =  "") +
+  guides(fill = guide_legend(nrow = 2))
 
 forestrecoplot <- rec.plot
 forestrecoplot
+
+#COMBINE IN ONE PLOT
+
+all.recoplot<- ggarrange(birdrecoplot, forestrecoplot,
+                         font.label = list(color= "black"),
+                         ncol = 2, nrow = 1)
+all.recoplot
 
 #COMBINE IN ONE PLOT
 
@@ -304,4 +306,5 @@ embeddedfig<- ggarrange(birdtopic.plot, foresttopic.plot,
 
 embeddedfig
 
-ggsave(filename ="graphics/Figure6.png", width = 120, height = 95, dpi=100, limitsize = FALSE)  
+ggsave(filename ="graphics/Figure6.png", width = 145, height = 121, dpi=100, limitsize = FALSE)  
+

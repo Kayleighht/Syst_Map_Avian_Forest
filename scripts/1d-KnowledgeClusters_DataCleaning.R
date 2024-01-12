@@ -112,11 +112,11 @@ urb.allf <- t(rowsum(t(urb.allf), group = colnames(urb.allf), na.rm = F))
 #############################################################
 
 #separate forest comp column into new columns based on comma (carbon)
-forest.carb <-separate(data = forest.data, col = Carbon.metric, into = c("carbon1", "carbon2", "carbon3", "carbon4"), sep = ",")
+forest.carb <-separate(data = forest.meta, col = Carbon.metric, into = c("carbon1", "carbon2", "carbon3", "carbon4"), sep = ",")
 
 #subset only carbon metrics
-carbon<- subset(forest.carb,select = c('carbon1','carbon2', 'carbon3', 'carbon4','forest1', 'forest2', 
-                                       'forest3', 'forest4', 'forest5'))
+carbon<- subset(forest.carb,select = c('carbon1','carbon2', 'carbon3', 'carbon4','forestcomp1', 'forestcomp2', 
+                                       'forestcomp3', 'forestcomp4', 'forestcomp5'))
 
 carbon2 <- as.data.frame(carbon %>%
   pivot_longer(carbon1:carbon4))
@@ -125,48 +125,40 @@ colnames(carbon2)
 #COUNT TABLE
 #create count table including all bird domain columns grouped by Indicator TYPE (first only)
 # FIRST INDICATOR
-forest1 <- carbon2 %>% count(forest1, value, sort = TRUE)
+forest1 <- carbon2 %>% count(forestcomp1, value, sort = TRUE)
 #clean duplicates and NAs
 forest1<- forest1 %>% drop_na(value)
 colnames(forest1)[1] = "forest"
 
-forest2 <- carbon2 %>% count(forest2, value, sort = TRUE)
+forest2 <- carbon2 %>% count(forestcomp2, value, sort = TRUE)
 #clean duplicates and NAs
 forest2<- forest2 %>% drop_na(value)
-forest2<- forest2 %>% drop_na(forest2)
+forest2<- forest2 %>% drop_na(forestcomp2)
 colnames(forest2)[1] = "forest"
 
 
-forest3<- carbon2 %>% count(forest3, value, sort=TRUE)
+forest3<- carbon2 %>% count(forestcomp3, value, sort=TRUE)
 #clean duplicates and NAs
 forest3<- forest3 %>% drop_na(value)
-forest3<- forest3 %>% drop_na(forest3)
+forest3<- forest3 %>% drop_na(forestcomp3)
 colnames(forest3)[1] = "forest"
 
 
-forest4<- carbon2 %>% count(forest4, value, sort=TRUE)
+forest4<- carbon2 %>% count(forestcomp4, value, sort=TRUE)
 #clean duplicates and NAs
 forest4<- forest4 %>% drop_na(value)
-forest4<- forest4 %>% drop_na(forest4)
+forest4<- forest4 %>% drop_na(forestcomp4)
 colnames(forest4)[1] = "forest"
 
 
-forest5<- carbon2 %>% count(forest5, value, sort=TRUE)
+forest5<- carbon2 %>% count(forestcomp5, value, sort=TRUE)
 #clean duplicates and NAs
 forest5<- forest5 %>% drop_na(value)
-forest5<- forest5 %>% drop_na(forest5)
+forest5<- forest5 %>% drop_na(forestcomp5)
 colnames(forest5)[1] = "forest"
 
 
 forestmerged<- rbind(forest1, forest2, forest3, forest4, forest5)
-
-#make forest columns the same name for merge
-carbon3<- carbon2 %>% gather("forest1", "forest2", "forest3", "forest4", "forest5")
-# urban scale by forest component
-carb.counts <-forest.carb %>%
-  pivot_longer(cols = c(forest1:forest5)) %>% 
-  dplyr::count(carbon1:carbon4, value)
-urb.countsf <- as.data.frame(urb.countsf)
 
 #################################################################################################################################
 ##############################################################################################################################

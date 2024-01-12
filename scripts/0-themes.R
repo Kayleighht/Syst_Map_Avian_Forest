@@ -61,9 +61,17 @@ theme_legend5<- theme(
   legend.text = element_text(size=15),
   legend.box.background =  element_rect(colour = "black"), legend.box.margin = margin(5,5,5,5))
 
+theme_legend6<- theme(
+  legend.title = element_text(colour = "black", size = 120, face= "bold"),
+  legend.text = element_text(colour = "black", size = 110),
+  legend.position = c("top"),
+  legend.key.size = unit(3.5, "cm"),
+  legend.box.margin = margin(5,5,2,2),
+  legend.box.background =  element_rect(colour = "white", size = 3))
+
 
 forestcol<- ("#DCE319FF")
-birdcol<- ("#440154FF")
+birdcol<- ("#39568CFF")
 
 birdpalette2<- c("#481567FF","#404788FF")
 forestpalette2<- c("#B8DE29FF", "#55C667FF")
@@ -73,3 +81,4 @@ forestpalette5 <- c("#1F968BFF", "#29AF7FFF", "#55C667FF", "#B8DE29FF", "#FDE725
 
 birdpalette4s <- c("#2D708EFF", "#481567FF", "#404788FF", "#787276")
 forestpalette4s <- c("#B8DE29FF","#29AF7FFF","#FDE725FF", "#787276")
+
