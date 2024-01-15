@@ -49,7 +49,7 @@ ind.plotall <- ggplot(indicatorall, aes(x= number_topics, y=percent, fill=compon
   labs(x= "Indicators measured", y= "Percent of Studies") +
   
   scale_y_continuous(breaks = c(0, 20, 40, 60, 80, 100), limits = c(0,100)) +
-  scale_fill_manual(values=c(birdcol, forestcol)) + alltheme + theme_legend +
+  scale_fill_manual(values=c(birdcol, forestcol)) + alltheme + theme_legend5 +
   labs(fill = "Topic") + scale_x_discrete(labels=c("One Indicator" = "One", "Two Indicators" = "Two",
                                                    "Three Indicators" = "Three", "Four Indicators" = "Four", "Five Indicators" = "Five"))
 

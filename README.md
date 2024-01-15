@@ -12,6 +12,4 @@ Add DOI from Zenodo
 
 This repository has all the data and code to support our paper in Environmental Evidence. To access data only, raw data can be found in the `in/` folder. Code can be found in the `scripts/` folder.
 
-NOTE: some figures were too large to store on this repository. However, all figures can be reproduced using the code in this repository.
-
 ## Metadata?

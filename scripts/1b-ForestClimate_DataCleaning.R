@@ -11,7 +11,7 @@ forest.data<- read.csv("in/Metadata_ForestComponent.csv")
 #cut down to only necessary columns for figures (so far..)
 forest.meta <- forest.data[,c("Title","Year", "Journal", "Publication.Type.", "Country.of.First.Author","Study.Country", "Urb.scale", 
                       "Year.start", "Year.end", "Comparator", "Forest.comp", "Rec.included",                    
-                      "Rec1", "Rec2", "Rec3")]
+                      "Rec1", "Rec2", "Rec3", "Carbon.metric")]
 
 #separate forest component column into multiple columns with one indicator each
 forest.meta <- separate_wider_delim(forest.meta, cols = Forest.comp, delim = ",", names = c("forestcomp1", "forestcomp2", "forestcomp3", "forestcomp4",
@@ -51,12 +51,24 @@ forest.meta$Journal[forest.meta$Journal == 'Urban Foresty & Urban Greening'] <- 
 #cut down to only necessary columns for figures (so far..)
 for.meta <- forest.meta[,c(3:5)]
 
-# Journal and Country -----------------------------------------------------
 
+# Journal and Country -----------------------------------------------------
 
 country.count <- forest.meta %>%
   group_by(COUNTRY, Journal) %>%
   dplyr::mutate(journal.count= n())
+
+#raw ncounts per country
+authcountry <- forest.meta %>%
+  group_by(COUNTRY) %>%
+  dplyr::mutate(author.count= n())
+
+#calculate average publication count from 2012 to 2022
+authoravg<- authcountry[c("COUNTRY", "author.count")]
+authoravg <- authoravg[order(-authoravg$author.count),]
+#cut to relevant years
+authoravg$percent <- (authoravg$author.count/169)*100
+authoravg
 
 country.count <- country.count %>%
   group_by(Journal) %>%
@@ -149,6 +161,12 @@ forestyearcount <- fyear.count[!duplicated(fyear.count$Year), ]
 #PUSH OUT CSV
 write.csv(forestyearcount, "out/FYear.count.csv", row.names = FALSE)
 
+#calculate average publication count from 2012 to 2022
+year.average<- fyear.count[c("Year", "Year_count")]
+year.average <- year.average[order(year.average$Year),]
+#cut to relevant years
+year.average<- year.average[c(12:22),]
+mean(year.average$Year_count)
 
 # Study Duration ----------------------------------------------------------
 
@@ -479,3 +497,62 @@ fnorec
 
 #PUSH OUT CSV
 write.csv(fnorec, "out/FNorec.count.csv", row.names = FALSE)
+
+
+#MULTIPLE INDICATORS COUNTS
+#create data frame to sort # publications with multiple indicators
+
+FIndicators <- forest.meta[,c("forestcomp1", "forestcomp2", "forestcomp3", "forestcomp4",
+                              "forestcomp5")]
+
+#create count table including all bird domain columns grouped by RECOMMENDATION TYPE (first only)
+fInd1 <- fjournal.rec<- FIndicators %>%
+  group_by(forestcomp1) %>%
+  dplyr::mutate(indicator1.count=n())
+fInd1 <- fInd1[!duplicated(fInd1),]
+#remove N/A columns
+fInd1<- fInd1 %>% drop_na(forestcomp1)
+#remove remaining irrelevant rows
+fInd1 <- fInd1[-c(2,3,5,11:28,30:52),]
+sum(fInd1$indicator1.count)
+
+fInd2 <- fjournal.rec<- FIndicators %>%
+  group_by(forestcomp2) %>%
+  dplyr::mutate(indicator2.count=n())
+fInd2 <- fInd2[!duplicated(fInd2), ]
+fInd2<- fInd2 %>% drop_na(forestcomp2)
+#remove remaining irrelevant rows
+fInd2 <- fInd2[-c(1,4,6:12,14,16:24,26:52),]
+sum(fInd2$indicator2.count)
+
+fInd3 <- fjournal.rec<- FIndicators %>%
+  group_by(forestcomp3) %>%
+  dplyr::mutate(indicator3.count=n())
+fInd3 <- fInd3[!duplicated(fInd3), ]
+fInd3<- fInd3 %>% drop_na(forestcomp3)
+fInd3 <- fInd3[-c(1,3:8,11:19, 22:23, 25:27,29:51),]
+sum(fInd3$indicator3.count)
+
+fInd4 <- fjournal.rec<- FIndicators %>%
+  group_by(forestcomp4) %>%
+  dplyr::mutate(indicator4.count=n())
+fInd4 <- fInd4[!duplicated(fInd4), ]
+fInd4<- fInd4 %>% drop_na(forestcomp4)
+fInd4 <- fInd4[-c(1:9, 11,12, 14:16, 18:45, 46:52),]
+sum(fInd4$indicator4.count)
+
+fInd5 <- fjournal.rec<- FIndicators %>%
+  group_by(forestcomp5) %>%
+  dplyr::mutate(indicator5.count=n())
+fInd5 <- fInd5[!duplicated(fInd5), ]
+fInd5<- fInd5 %>% drop_na(forestcomp5)
+fInd5 <- fInd5[-c(1:16, 18:21, 23:34, 36:52),]
+sum(fInd5$indicator5.count)
+
+#create data frame to sort # publications with multiple indicators
+number_topics <- c("One Indicator", "Two Indicators", "Three Indicators", "Four Indicators", "Five Indicators")
+number_publications <- c("156","67", "41", "11", "3")
+
+fallindicators<- data.frame(number_topics, number_publications)  
+write.csv(fallindicators, "out/FAllind.count.csv", row.names = FALSE)
+
