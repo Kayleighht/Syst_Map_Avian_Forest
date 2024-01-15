@@ -48,3 +48,4 @@ av_for_maps<- plot_grid(av.plot, for.plot, align = "v", nrow = 2, ncol= 1)
 av_for_maps
 
 ggsave(filename ="graphics/Figure3.png", width = 350, units="mm", height = 260 , device='tiff', dpi=300)  
+
