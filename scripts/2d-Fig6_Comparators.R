@@ -7,6 +7,7 @@ source('scripts/0-themes.R')
 
 # Figure 6 ----------------------------------------------------------------
 # topics only
+bird<-readPNG("graphics/bird.1.png", native = T)
 
 #AVIAN
 birdtopics<- read.csv("out/bird.component.csv")
@@ -20,12 +21,19 @@ birdtopics<- birdtopics[-8,]
 birdtopic.plot <- ggplot(birdtopics, aes(x= reorder(Component, -percent) , y= percent)) +
   geom_bar(stat= 'identity', position = 'dodge', fill= birdcol, width = 0.8)  + 
   bigtheme + 
-  labs(x= "", y= "") + 
+  labs(x= "Indicator", y= "") + 
   scale_y_continuous(limits = c(0,72), breaks = c(10,20, 30,40,50,60,70)) +
-  coord_flip()
+  coord_flip() +
+  annotation_custom(grid::rasterGrob(bird,
+                                     width=ggplot2::unit(1,"npc"),
+                                     height=ggplot2::unit(1,"npc")),
+                    ymin = 1, ymax = 1, xmin = 2, xmax = 2) 
 
 birdtopic.plot
+
 #FOREST 
+tree<-readPNG("graphics/tree.1.png", native = T)
+
 foresttopics<- read.csv("out/forest.component.csv")
 
 foresttopic.plot <- ggplot(foresttopics, aes(x= reorder(Component, -percent) , y= percent)) +
@@ -33,7 +41,11 @@ foresttopic.plot <- ggplot(foresttopics, aes(x= reorder(Component, -percent) , y
   bigtheme + 
   labs(x= "", y= "") + 
   scale_y_continuous(limits = c(0,70), breaks = c(10, 20, 30 ,40 ,50, 60, 70)) +
-  coord_flip()
+  coord_flip() +
+  annotation_custom(grid::rasterGrob(tree,
+                                     width=ggplot2::unit(1,"npc"),
+                                     height=ggplot2::unit(1,"npc")),
+                    ymin = -7.7, ymax = -8.7, xmin = 12.0, xmax = 13.5)
 
 foresttopic.plot
 
@@ -42,6 +54,7 @@ componentall<- ggarrange(birdtopic.plot, foresttopic.plot,
                          hjust = -1)
 
 componentall
+
 
 ###################################### FIGURE __ ######################################################################
 ######################### BIRD SUCCESS COMPONENT BY COMPARATOR #################################################
@@ -55,7 +68,7 @@ Compmeta$value <- factor(Compmeta$value, levels = c("Biodiversity", "Survival", 
 comparator.plot<- ggplot(Compmeta, aes(fill = comp, x= value, y= comparator)) +
   geom_bar(stat= 'identity') +
   bigtheme + 
-  labs(x= "", y= "") + 
+  labs(x= "Comparator", y= "") + 
   scale_y_continuous(limits = c(0,100), breaks = c(0, 20, 40, 60, 80, 100)) +
   scale_fill_manual(labels= c("No", "Yes"), values = birdpalette2) + 
   coord_flip() + 
@@ -127,7 +140,7 @@ Urban$percent <- (Urban$value/Urban$Totals)*100
 
 scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= name , y= percent)) +
   geom_bar(stat= 'identity') + 
-  labs(x= "", y= "") + 
+  labs(x= "Urban Scale", y= "") + 
   coord_flip() + 
   scale_y_continuous(limits= c(0,100)) + 
   scale_fill_manual(values = birdpalette4) +
@@ -228,7 +241,7 @@ recs$Rec.1 <- factor(recs$Rec.1, levels= c("Restoration", "Management", "Conserv
 
 rec.plot <- ggplot(recs, aes(fill= Rec.1, x= value , y= percent)) +
   geom_bar(stat= 'identity') + 
-  labs(x= "", y= "Percent of Studies") +
+  labs(x= "Recommendation Type", y= "Percent of Studies") +
   coord_flip() + 
   scale_y_continuous(limits= c(0,100)) + 
   scale_fill_manual(values = birdpalette4s, name =  "") + 
@@ -306,5 +319,5 @@ embeddedfig<- ggarrange(birdtopic.plot, foresttopic.plot,
 
 embeddedfig
 
-ggsave(filename ="graphics/Figure6.png", width = 145, height = 121, dpi=100, limitsize = FALSE)  
+ggsave(filename ="graphics/Figure6.png", width = 160, height = 121, dpi=100, limitsize = FALSE)  
 
