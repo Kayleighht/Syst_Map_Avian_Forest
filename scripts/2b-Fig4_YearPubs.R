@@ -38,3 +38,4 @@ publication.years
 
 #### SAVE FILE
 ggsave(filename ="graphics/Figure4.png", width = 16, height = 13, dpi=300)  
+
