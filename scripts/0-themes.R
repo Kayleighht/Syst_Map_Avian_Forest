@@ -19,7 +19,7 @@ bigtheme <- theme(
   plot.background = element_rect(fill = "white", color = NA),
   panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"),
   text = element_text(family = "serif"),
-  axis.title.y = element_text(colour = "black",face = "bold", size = '200', vjust = +1),
+  axis.title.y = element_text(colour = "black",face = "bold", size = '200', vjust = +1, margin =margin(t= 20, r= 0, b= 10, l= 0)),
   axis.title.x = element_text(colour = "black", face = "bold", size= '200', vjust= 0),
   axis.ticks = element_line(size = 0.7),
   axis.text = element_text(size = 170, colour = "black"),

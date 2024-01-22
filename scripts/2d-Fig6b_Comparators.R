@@ -21,8 +21,8 @@ birdtopics<- birdtopics[-8,]
 birdtopic.plot <- ggplot(birdtopics, aes(x= reorder(Component, -percent) , y= percent)) +
   geom_bar(stat= 'identity', position = 'dodge', fill= birdcol, width = 0.8)  + 
   bigtheme + 
-  labs(x= "Indicator", y= "") + 
-  scale_y_continuous(limits = c(0,72), breaks = c(10,20, 30,40,50,60,70)) +
+  labs(x= "", y= "") + 
+  scale_y_continuous(limits = c(0,100), breaks = c(20, 40, 60, 80 ,100)) +
   coord_flip() +
   annotation_custom(grid::rasterGrob(bird,
                                      width=ggplot2::unit(1,"npc"),
@@ -34,13 +34,13 @@ birdtopic.plot
 #FOREST 
 tree<-readPNG("graphics/tree.1.png", native = T)
 
-foresttopics<- read.csv("out/forest.component.csv")
+foresttopics<- read.csv("out/forest.carbon.csv")
 
-foresttopic.plot <- ggplot(foresttopics, aes(x= reorder(Component, -percent) , y= percent)) +
+foresttopic.plot <- ggplot(foresttopics, aes(x= reorder(carbon, -percent) , y= percent)) +
   geom_bar(stat= 'identity', position = 'dodge', fill= forestcol, width = 0.8) +
   bigtheme + 
   labs(x= "", y= "") + 
-  scale_y_continuous(limits = c(0,70), breaks = c(10, 20, 30 ,40 ,50, 60, 70)) +
+  scale_y_continuous(limits = c(0,100), breaks = c(20, 40, 60, 80 ,100)) +
   coord_flip() +
   annotation_custom(grid::rasterGrob(tree,
                                      width=ggplot2::unit(1,"npc"),
@@ -68,7 +68,7 @@ Compmeta$value <- factor(Compmeta$value, levels = c("Biodiversity", "Survival", 
 comparator.plot<- ggplot(Compmeta, aes(fill = comp, x= value, y= comparator)) +
   geom_bar(stat= 'identity') +
   bigtheme + 
-  labs(x= "Comparator", y= "") + 
+  labs(x= "", y= "") + 
   scale_y_continuous(limits = c(0,100), breaks = c(0, 20, 40, 60, 80, 100)) +
   scale_fill_manual(labels= c("No", "Yes"), values = birdpalette2) + 
   coord_flip() + 
@@ -79,14 +79,12 @@ bird.comparatorplot
 
 #PLOTTING
 
-Forestcompmeta<- read.csv("out/FComp.count.csv")
+Forestcompmeta<- read.csv("out/CarbComp.count.csv")
 
 
-Forestcompmeta$value <- factor(Forestcompmeta$value, levels = c("Composition", "Land use type", "Canopy cover", "Individual tree management", 
-                                                                "Forested area", "Native species", "Exotic/invasive species", "Connectivity",
-                                                                "Diversity metric", "Fragmentation"))
+Forestcompmeta$value <- factor(Forestcompmeta$value, levels = c("Above-ground biomass", "Below-ground biomass", "Soil", "Dead wood/organic matter", "Infrastructure (timber buildings)"))
 
-comparator.plot<- ggplot(Forestcompmeta, aes(fill = comp, x= value, y= comparator)) +
+comparator.plot<- ggplot(Forestcompmeta, aes(fill = Comparator, x= value, y= percent)) +
   geom_bar(stat= 'identity') +
   bigtheme + 
   labs(x= "", y= "") + 
@@ -129,18 +127,20 @@ Urban <- Urban %>% pivot_longer(., cols = c(`Behaviour`, `Biodiversity`, Breedin
 Urban <- as.data.frame(Urban)
 #sort
 Urban <- Urban[order(Urban[,2]), ]
-Totals<- c(29,29,29,29,189,189,189,189,49,49,49,49,46,46,46,46,1,1,1,1,7,7,7,7,28,28,28,28)
+Totals<- c(29,29,29,29,189,189,189,189,50,50,50,50,46,46,46,46,1,1,1,1,8,8,8,8,28,28,28,28)
 
 Urban <-cbind(Urban, Totals)
 
 #now add column of percentages 
 Urban$percent <- (Urban$value/Urban$Totals)*100
 
+Urban$name <- factor(Urban$name, levels = c("Biodiversity", "Survival", "Demographics/Patterns", "Breeding", "Behaviour", "Resources", "Foraging"))
+
 #PLOTTING ####################################################################
 
 scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= name , y= percent)) +
   geom_bar(stat= 'identity') + 
-  labs(x= "Urban Scale", y= "") + 
+  labs(x= "", y= "") + 
   coord_flip() + 
   scale_y_continuous(limits= c(0,100)) + 
   scale_fill_manual(values = birdpalette4) +
@@ -151,36 +151,32 @@ scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= name , y= percent)) +
 bird.scaleplot<- scale.plot + labs(fill= "") 
 bird.scaleplot
 
-#FOREST#
-Urban <- read.csv("out/FUrb.count.csv")
+#FOREST###########################################################
+
+Urban <- read.csv("out/CarbUrb.count.csv")
 #remove n/a's created from empty rows
 Urban <- Urban %>% drop_na(value)
 
-
-#drop additional N/A
-Urban <-Urban[!grepl('N/A', Urban$value),]
-
 #sort alphabetically to create percentages
-Urban <- Urban[order(Urban[,"value"]), ]
+Urban <- Urban[order(Urban[,"Urb.scale"]), ]
+unique(Urban$value)
+unique(Urban$Urb.scale)
 #get total for totals
 sum(Urban$n)
 
 #spread rows so that we can create percent bars that reach 100%
 Urban<- Urban %>% spread(value, n)
-
 #replace NA with 0
 Urban[is.na(Urban)] <- 0
 
 #pivot table
-Urban <- Urban %>% pivot_longer(., cols = c(`Canopy cover`,`Composition`, `Connectivity`, `Diversity metric`, `Exotic/invasive species`, 
-                                            `Forested area`, `Fragmentation`, `Individual tree management`, `Land use type`, `Native species`))
+Urban <- Urban %>% pivot_longer(., cols = c(`Above-ground biomass`,`Below-ground biomass`, `Dead wood/organic matter`, `Infrastructure (timber buildings)`, Soil))
 
 colnames(Urban)
 Urban <- as.data.frame(Urban)
 #sort
 Urban <- Urban[order(Urban[,2]), ]
-Totals<- c(33,33,33,33,120,120,120,120,3,3,3,3,4,4,4,4,10,10,10,10,
-           29,29,29,29,2,2,2,2,27,27,27,27,101,101,101,101,16,16,16,16)
+Totals<- c(164,164,164,164,58,58,58,58,15,15,15,15,3,3,3,3,30,30,30,30)
 
 Urban <-cbind(Urban, Totals)
 
@@ -189,9 +185,7 @@ Urban$percent <- (Urban$value/Urban$Totals)*100
 
 ## PLOT #############################################################################################
 
-Urban$name <- factor(Urban$name, levels = c("Composition", "Land use type", "Canopy cover", "Individual tree management", 
-                                            "Forested area", "Native species", "Exotic/invasive species", "Connectivity",
-                                            "Diversity metric", "Fragmentation"))
+Urban$name <- factor(Urban$name, levels = c("Above-ground biomass", "Below-ground biomass", "Soil", "Dead wood/organic matter", "Infrastructure (timber buildings)"))
 
 scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= name, y= percent)) +
   geom_bar(stat= 'identity') + 
@@ -225,7 +219,7 @@ recs<- read.csv("out/Allrecraw.count.csv")
 recs <- recs[order(recs[,2]), ]
 #manually add a column of totals
 totals<- c(31,31,31,31,31,224,224,224,224,224,224,224,224,53,53,53,53,53,53,
-           50,50,50,50,50,50,50,1,7,7,7,29,29,29,29,29)
+           50,50,50,50,50,50,50,1,8,8,8,29,29,29,29,29)
 #bind
 recs<- cbind(recs, totals)
 
@@ -241,7 +235,7 @@ recs$Rec.1 <- factor(recs$Rec.1, levels= c("Restoration", "Management", "Conserv
 
 rec.plot <- ggplot(recs, aes(fill= Rec.1, x= value , y= percent)) +
   geom_bar(stat= 'identity') + 
-  labs(x= "Recommendation Type", y= "Percent of Studies") +
+  labs(x= "", y= "Percent of Studies") +
   coord_flip() + 
   scale_y_continuous(limits= c(0,100)) + 
   scale_fill_manual(values = birdpalette4s, name =  "") + 
@@ -256,7 +250,7 @@ birdrecoplot
 #theme(axis.text.x = element_text(colour= "black", size= 150), axis.text.y = element_text(size = 150, colour= "black", angle = 0)) 
 
 ##### FOREST
-recs<- read.csv("out/FAllrec.count.csv")
+recs<- read.csv("out/CarbAllrec.count.csv")
 #remove leading and trailing zeros
 recs<- recs %>% 
   mutate(across(where(is.character), str_trim))
@@ -265,9 +259,7 @@ recs<- recs %>%
 recs <- recs[order(recs[,"value"]), ]
 
 #manually add a column of totals
-totals<- c(36,36,36,36,36,139,139,139,139,139,139,139,139,6,6,6,6,5,5,5,5,11,
-           11,11,11,11,34,34,34,34,34,34,2,2,29,29,29,29,29,120,120,120,120,
-           120,120,120,120,20,20,20,20,20,20)
+totals<- c(164,164,164,164,58,58,58,58,15,15,15,15,3,30,30,30,30)
 #bind
 recs<- cbind(recs, totals)
 
@@ -275,9 +267,8 @@ recs$percent<- (recs$n/recs$totals)*100
 recs$Rec1[recs$Rec1 == 'No Recommendations'] <- 'None'
 
 ##### PLOT
-recs$value <- factor(recs$value, levels = c("Composition", "Land use type", "Canopy cover", "Individual tree management", 
-                                            "Forested area", "Native species", "Exotic/invasive species", "Connectivity",
-                                            "Diversity metric", "Fragmentation"))
+recs$value <- factor(recs$value, levels = c("Above-ground biomass", "Below-ground biomass", "Soil", "Dead wood/organic matter", "Infrastructure (timber buildings)"))
+
 recs$Rec1 <- factor(recs$Rec1, levels= c("Restoration", "Management", "Conservation", "None"))
 
 
@@ -319,4 +310,5 @@ embeddedfig<- ggarrange(birdtopic.plot, foresttopic.plot,
 
 embeddedfig
 
-ggsave(filename ="graphics/Figure6.png", width = 160, height = 121, dpi=100, limitsize = FALSE)  
+ggsave(filename ="graphics/Figure6b.png", width = 160, height = 121, dpi=100, limitsize = FALSE)  
+

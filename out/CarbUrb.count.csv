@@ -1,0 +1,22 @@
+"Urb.scale","value","n"
+"Multi-City","Above-ground biomass",8
+"Multi-City","Below-ground biomass",4
+"Multi-City","Soil",2
+"Multi-City",NA,22
+"Multi-Patch","Above-ground biomass",83
+"Multi-Patch","Below-ground biomass",22
+"Multi-Patch","Dead wood/organic matter",7
+"Multi-Patch","Infrastructure (timber buildings)",2
+"Multi-Patch","Soil",14
+"Multi-Patch",NA,220
+"Patch","Above-ground biomass",56
+"Patch","Below-ground biomass",23
+"Patch","Dead wood/organic matter",3
+"Patch","Soil",9
+"Patch",NA,133
+"Region","Above-ground biomass",17
+"Region","Below-ground biomass",9
+"Region","Dead wood/organic matter",5
+"Region","Infrastructure (timber buildings)",1
+"Region","Soil",5
+"Region",NA,31

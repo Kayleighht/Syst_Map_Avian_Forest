@@ -225,6 +225,7 @@ write.csv(fduration.counts2, "out/Studydurationall.csv", row.names = FALSE)
 carb1<- forest.meta %>%
   dplyr:: count(Carb1)
 sum(carb1$n)
+carb1
 
 carb2<- forest.meta %>%
   dplyr:: count(Carb2)
@@ -264,19 +265,18 @@ dfmergefinal <- rbind(dfmerge34, carbon4)
 dfmergefinal <- dfmergefinal %>%
   mutate_if(is.character, str_trim)
 
-dfmergefinal$Component <- gsub("composition", "Composition", dfmergefinal$Component)
 
 forestcarbon <- dfmergefinal %>%
-  dplyr:: count(Component)
+  dplyr:: count(carbon)
 forestcomps <- as.data.frame(forestcomps)
 
-#unique(forestcomps$Component)
+#unique(forestcomps$carbon)
 
-forestcomps$percent <- ((forestcomps$n/169)*100)
-forestcomps
+forestcarbon$percent <- ((forestcarbon$n/169)*100)
+forestcarbon
 
 #PUSH OUT CSV
-write.csv(forestcomps, "out/forest.component.csv", row.names = FALSE)
+write.csv(forestcarbon, "out/forest.carbon.csv", row.names = FALSE)
 
 # Journal -----------------------------------------------------------------
 
@@ -305,6 +305,16 @@ furb.counts <-forest.meta %>%
               pivot_longer(cols = c(forestcomp1:forestcomp5)) %>%
               dplyr::count(Urb.scale,value)
 
+#COUNT TABLE
+#create count table including all forest domain columns grouped by URBAN SCALE
+forest.meta <- forest.meta %>% 
+  mutate(across(where(is.character), str_trim))
+
+carburb.counts <-forest.meta %>%
+  pivot_longer(cols = c(Carb1:Carb4)) %>%
+  dplyr::count(Urb.scale,value)
+carburb.counts <- as.data.frame(carburb.counts)
+
 # Urban Scale -------------------------------------------------------------
 
 
@@ -315,10 +325,9 @@ urbanallcount<- forest.meta %>%
 urbanallcount
 #PUSH OUT CSV
 write.csv(furb.counts, "out/FUrb.count.csv", row.names = FALSE)
-
+write.csv(carburb.counts, "out/CarbUrb.count.csv", row.names = FALSE)
 
 # Comparator --------------------------------------------------------------
-
 
 #COUNT TABLE
 #create count table including all bird domain columns grouped by COMPARATOR USED Y/N
@@ -387,7 +396,43 @@ Compmeta
 #PUSH OUT CSV
 write.csv(Compmeta, "out/FComp.count.csv", row.names = FALSE)
 
+## FOR CARBON METRICS ########################################################################
 
+#create count table including all bird domain columns grouped by COMPARATOR USED Y/N
+#trim all leading or trailing spaces so that values match
+ForestComps <- forest.meta %>%
+  mutate_if(is.character, str_trim)
+
+fcomp.counts <-ForestComps %>%
+  pivot_longer(cols = c(Carb1:Carb4)) %>%
+  dplyr::count(Comparator,value)
+
+#convert to dataframe
+Comp<- as.data.frame(fcomp.counts)
+
+#remove n/a's created from empty rows
+Comp <-Comp %>% drop_na(value)
+sum(Comp$n)
+
+#sort alphabetically to create percentages
+Comp <- Comp[order(Comp[,2]), ]
+Comp2<- Comp
+
+#spread rows so that we can create percent bars that reach 100%
+#Comp<- Comp %>% spread(Comparator, n)
+
+#create column of totals
+Comp$total <- c(164,164,58,58,15,15,3,3,30,30)
+#create percent yes column
+Comp$percent <- (Comp$n/Comp$total)*100
+sum(Comp$total)
+#sort
+Compmeta <- Comp[order(Comp[,2]), ]
+
+Compmeta
+
+#PUSH OUT CSV
+write.csv(Compmeta, "out/CarbComp.count.csv", row.names = FALSE)
 
 # Forest Components -------------------------------------------------------
 
@@ -438,7 +483,6 @@ write.csv(forestcomps, "out/forest.component.csv", row.names = FALSE)
 
 
 # Subsetting Recommendations ----------------------------------------------
-
 
 #open forest comps that we created already with forest components divided into separate columns
 forest.meta
@@ -531,6 +575,57 @@ fnorec
 
 #PUSH OUT CSV
 write.csv(fnorec, "out/FNorec.count.csv", row.names = FALSE)
+
+#COUNT TABLE
+#create count table including all bird domain columns grouped by RECOMMENDATION TYPE (first only)
+
+#REC 1
+carbrec.counts <-as.data.frame(Forestrec %>%
+                                  pivot_longer(cols = c(Carb1:Carb4)) %>%
+                                  dplyr::count(Rec1,value))
+#remove NAs
+carbrec.counts <- carbrec.counts[!grepl("N/A", frectype.counts$Rec1),]
+carbrec.counts<- carbrec.counts %>% drop_na(value)
+sum(frectype.counts$n)
+
+#REC 2
+carbrec.counts2 <-as.data.frame(Forestrec %>%
+                                   pivot_longer(cols = c(Carb1:Carb4)) %>%
+                                   dplyr::count(Rec2,value))
+
+#remove empty cells from studies with only 1 recommendation ##CHECK CHECK DOUBLE CHECK
+carbrec.counts2 <- carbrec.counts2[!grepl("N/A", frectype.counts2$Rec2),]
+#remove NA values in value column
+carbrec.counts2 <- carbrec.counts2 %>% drop_na(value)
+
+#rename column to rec.1 to merge
+names(carbrec.counts2)[names(carbrec.counts2) == "Rec2"] <- "Rec1"
+sum(carbrec.counts2$n)
+unique(carbrec.counts2$value)
+
+#REC 3
+carbrec.counts3 <-as.data.frame(Forestrec %>%
+                                   pivot_longer(cols = c(Carb1:Carb4)) %>%
+                                   dplyr::count(Rec3,value))
+carbrec.counts3 <- carbrec.counts3[!grepl("N/A", frectype.counts3$Rec3),]
+carbrec.counts3<- carbrec.counts3 %>% drop_na(value)
+
+names(carbrec.counts3)[names(carbrec.counts3) == "Rec3"] <- "Rec1"
+sum(carbrec.counts3$n)
+
+#MERGE tables of ALL recommendations
+carbrec.all <- bind_rows(carbrec.counts, carbrec.counts2, carbrec.counts3) %>% 
+  group_by(value, n) %>% 
+  distinct(.keep_all = TRUE)
+
+#resort by category
+carbrec.all <- as.data.frame(carbrec.all)
+carbrec.all <- carbrec.all[order(carbrec.all[,2]), ]
+unique(carbrec.all$value)
+unique(carbrec.all$Rec1)
+
+#PUSH OUT CSV
+write.csv(carbrec.all, "out/CarbAllrec.count.csv", row.names = FALSE)
 
 
 #MULTIPLE INDICATORS COUNTS
