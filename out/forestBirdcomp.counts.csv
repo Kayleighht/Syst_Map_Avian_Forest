@@ -1,0 +1,27 @@
+"Comparator","value","n"
+"N","Canopy cover",42
+"N","Composition",81
+"N","Connectivity",14
+"N","Diversity metric",3
+"N","Exotic/invasive species",6
+"N","Forested area",62
+"N","Fragmentation",3
+"N","Individual tree management",6
+"N","Land use type",43
+"N","Native species",12
+"N",NA,204
+"Y","Canopy cover",51
+"Y","Composition",83
+"Y","Connectivity",10
+"Y","Diversity metric",18
+"Y","Exotic/invasive species",10
+"Y","Forested Area",1
+"Y","Forested area",63
+"Y","Fragmentation",18
+"Y","Individual tree management",12
+"Y","Land use type",53
+"Y","Native species",9
+"Y",NA,296
+NA,"Canopy cover",2
+NA,"Forested area",1
+NA,NA,5

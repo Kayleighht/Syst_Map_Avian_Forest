@@ -9,14 +9,17 @@ forest.data<- read.csv("in/Metadata_ForestComponent.csv")
 ###########################################################################################################################################
 
 #cut down to only necessary columns for figures (so far..)
-forest.meta <- forest.data[,c("Title","Year", "Journal", "Publication.Type.", "Country.of.First.Author","Study.Country", "Urb.scale", 
-                      "Year.start", "Year.end", "Comparator", "Forest.comp", "Rec.included",                    
-                      "Rec1", "Rec2", "Rec3", "Carbon.metric")]
+forest.meta <- forest.data[ ,c("Title","Year", "Journal", "Publication.Type.", "Country.of.First.Author",
+                               "Study.Country", "Urb.scale", "Year.start", "Year.end", "Comparator", 
+                               "Forest.comp", "Rec.included","Rec1", "Rec2", "Rec3", "Carbon.metric")]
 
 #separate forest component column into multiple columns with one indicator each
 forest.meta <- separate_wider_delim(forest.meta, cols = Forest.comp, delim = ",", names = c("forestcomp1", "forestcomp2", "forestcomp3", "forestcomp4",
                                                                                             "forestcomp5"),
                                     too_few = "align_start", too_many = "debug")
+
+forest.meta <- separate_wider_delim(forest.meta, cols = Carbon.metric, delim = ",", names = c("Carb1", "Carb2", "Carb3", "Carb4"),
+                               too_few = "align_start")
 
 #remove white space (leading and trailing zeros)
 forest.meta<- forest.meta %>% 
@@ -215,33 +218,65 @@ write.csv(fduration.counts2, "out/Studydurationall.csv", row.names = FALSE)
 
 # Carbon Metrics ----------------------------------------------------------
 
-
 #COUNT TABLE
 #carbon metrics considered
 #subset columns needed
-carbon<- as.data.frame(forest.data[,c("Carbon.metric")])
-colnames(carbon) <- "Carbon.metric"
-carbon <- separate_wider_delim(carbon, cols = Carbon.metric, delim = ",", names = c("Carb1", "Carb2", "Carb3", "Carb4"),
-                     too_few = "align_start")
 
-carb1<- carbon %>%
+carb1<- forest.meta %>%
   dplyr:: count(Carb1)
 sum(carb1$n)
 
-carb2<- carbon %>%
+carb2<- forest.meta %>%
   dplyr:: count(Carb2)
 carb2<- carb2 %>% filter(row_number() <= n()-1)
 
-carb3<- carbon %>%
+carb3<- forest.meta %>%
   dplyr:: count(Carb3)
 carb3<- carb3 %>% filter(row_number() <= n()-1)
 
-carb4<- carbon %>%
+carb4<- forest.meta %>%
   dplyr:: count(Carb4)
 
-#bind all together
-cbind(carb1, carb2, carb3, carb4)
+#remove columns not needed
+carbon1<- subset(forest.meta, select = c("Carb1"))
+colnames(carbon1) <- c("carbon")
 
+#remove columns not needed
+carbon2<- subset(forest.meta, select = c("Carb2"))
+carbon2<- carbon2 %>% drop_na(Carb2)
+colnames(carbon2) <- c("carbon")
+
+#remove columns not needed
+carbon3<- subset(forest.meta, select = c("Carb3"))
+carbon3<- carbon3 %>% drop_na(Carb3)
+colnames(carbon3) <- c("carbon")
+
+#remove columns not needed
+carbon4<- subset(forest.meta, select = c("Carb4"))
+carbon4<- carbon4 %>% drop_na(Carb4)
+colnames(carbon4) <- c("carbon")
+
+##MERGING
+dfmerge12 <- rbind(carbon1, carbon2) 
+dfmerge34<- rbind(dfmerge12, carbon3)
+dfmergefinal <- rbind(dfmerge34, carbon4)
+
+dfmergefinal <- dfmergefinal %>%
+  mutate_if(is.character, str_trim)
+
+dfmergefinal$Component <- gsub("composition", "Composition", dfmergefinal$Component)
+
+forestcarbon <- dfmergefinal %>%
+  dplyr:: count(Component)
+forestcomps <- as.data.frame(forestcomps)
+
+#unique(forestcomps$Component)
+
+forestcomps$percent <- ((forestcomps$n/169)*100)
+forestcomps
+
+#PUSH OUT CSV
+write.csv(forestcomps, "out/forest.component.csv", row.names = FALSE)
 
 # Journal -----------------------------------------------------------------
 
@@ -355,7 +390,6 @@ write.csv(Compmeta, "out/FComp.count.csv", row.names = FALSE)
 
 
 # Forest Components -------------------------------------------------------
-
 
 #remove columns not needed
 Comp1<- subset(forest.meta, select = c("forestcomp1"))

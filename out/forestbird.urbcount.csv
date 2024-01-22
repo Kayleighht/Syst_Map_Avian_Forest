@@ -1,0 +1,42 @@
+"Urb.scale","value","n"
+"Multi-city","Canopy cover",6
+"Multi-city","Composition",7
+"Multi-city","Diversity metric",1
+"Multi-city","Exotic/invasive species",1
+"Multi-city","Forested area",4
+"Multi-city","Fragmentation",1
+"Multi-city","Individual tree management",1
+"Multi-city","Land use type",5
+"Multi-city","Native species",1
+"Multi-city",NA,29
+"Multi-patch","Canopy cover",49
+"Multi-patch","Composition",89
+"Multi-patch","Connectivity",8
+"Multi-patch","Diversity metric",7
+"Multi-patch","Exotic/invasive species",10
+"Multi-patch","Forested area",68
+"Multi-patch","Fragmentation",13
+"Multi-patch","Individual tree management",10
+"Multi-patch","Land use type",56
+"Multi-patch","Native species",12
+"Multi-patch",NA,278
+"Patch","Canopy cover",30
+"Patch","Composition",58
+"Patch","Connectivity",14
+"Patch","Diversity metric",12
+"Patch","Exotic/invasive species",5
+"Patch","Forested area",42
+"Patch","Fragmentation",6
+"Patch","Individual tree management",5
+"Patch","Land use type",23
+"Patch","Native species",8
+"Patch",NA,157
+"Region","Canopy cover",10
+"Region","Composition",10
+"Region","Connectivity",2
+"Region","Diversity metric",1
+"Region","Forested area",13
+"Region","Fragmentation",1
+"Region","Individual tree management",2
+"Region","Land use type",12
+"Region",NA,41

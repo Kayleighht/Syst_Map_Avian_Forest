@@ -1,0 +1,60 @@
+"Rec.1","value","n"
+"Conservation","Canopy cover",14
+"Management","Canopy cover",48
+"No Recommendations","Canopy cover",29
+"Restoration","Canopy cover",4
+"Conservation","Canopy cover",4
+"Management","Canopy cover",6
+"Restoration","Canopy cover",3
+"Conservation","Composition",21
+"Management","Composition",89
+"No Recommendations","Composition",52
+"Restoration","Composition",2
+"Conservation","Composition",13
+"Management","Composition",11
+"Restoration","Composition",3
+"Conservation","Connectivity",5
+"Management","Connectivity",15
+"No Recommendations","Connectivity",4
+"Conservation","Connectivity",4
+"Management","Connectivity",1
+"Conservation","Diversity metric",7
+"Management","Diversity metric",11
+"No Recommendations","Diversity metric",3
+"Conservation","Exotic/invasive species",3
+"Management","Exotic/invasive species",7
+"No Recommendations","Exotic/invasive species",6
+"Conservation","Exotic/invasive species",2
+"Management","Exotic/invasive species",2
+"Restoration","Exotic/invasive species",1
+"Conservation","Forested area",23
+"Management","Forested area",63
+"No Recommendations","Forested area",40
+"Restoration","Forested area",1
+"Conservation","Forested area",13
+"Management","Forested area",5
+"Restoration","Forested area",5
+"Restoration","Forested area",2
+"Conservation","Fragmentation",3
+"Management","Fragmentation",7
+"No Recommendations","Fragmentation",10
+"Restoration","Fragmentation",1
+"Management","Fragmentation",2
+"Conservation","Individual tree management",1
+"Management","Individual tree management",5
+"No Recommendations","Individual tree management",11
+"Restoration","Individual tree management",1
+"Management","Individual tree management",2
+"Conservation","Land use type",12
+"Management","Land use type",46
+"No Recommendations","Land use type",37
+"Restoration","Land use type",1
+"Conservation","Land use type",8
+"Management","Land use type",5
+"Restoration","Land use type",4
+"Conservation","Native species",2
+"Management","Native species",13
+"No Recommendations","Native species",6
+"Conservation","Native species",4
+"Management","Native species",2
+"Restoration","Native species",1

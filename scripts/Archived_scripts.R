@@ -728,3 +728,73 @@ used?")
                                 font.label = list(color= "black"),
                                 ncol = 2, nrow = 1)
   all.indicatorplot
+
+  
+  ######### Categories of forest management only count ##############
+  
+  #COUNT TABLE
+  #including all bird domain columns grouped by RECOMMENDATION TYPE 
+  
+  #REC 1
+  birdforest1 <-as.data.frame(av.meta %>%
+                                pivot_longer(cols = c(birdcomp1:birdcomp4)) %>%
+                                dplyr::count(forest1, value))
+  
+  colnames(birdforest1) <- c("forest", "birdcomp", "count")
+  
+  #clean and remove N/As
+  birdforest1 <- birdforest1 %>% drop_na(birdcomp)
+  birdforest1 <- birdforest1 %>% drop_na(forest)
+  
+  #REC 2
+  birdforest2 <-as.data.frame(av.meta %>%
+                                pivot_longer(cols = c(birdcomp1:birdcomp4)) %>%
+                                dplyr::count(forest2, value))
+  colnames(birdforest2) <- c("forest", "birdcomp", "count")
+  
+  #remove empty cells from studies with only 1 recommendation ##CHECK CHECK DOUBLE CHECK
+  birdforest2 <- birdforest2 %>% drop_na(birdcomp)
+  birdforest2 <- birdforest2 %>% drop_na(forest)
+  
+  #REC 3
+  birdforest3 <-as.data.frame(av.meta %>%
+                                pivot_longer(cols = c(birdcomp1:birdcomp4)) %>%
+                                dplyr::count(forest3, value))
+  colnames(birdforest3) <- c("forest", "birdcomp", "count")
+  
+  birdforest3 <- birdforest3 %>% drop_na(birdcomp)
+  birdforest3 <- birdforest3 %>% drop_na(forest)
+  
+  #FOREST 4
+  birdforest4 <-as.data.frame(av.meta %>%
+                                pivot_longer(cols = c(birdcomp1:birdcomp4)) %>%
+                                dplyr::count(forest4, value))
+  colnames(birdforest4) <- c("forest", "birdcomp", "count")
+  
+  birdforest4 <- birdforest4 %>% drop_na(birdcomp)
+  birdforest4 <- birdforest4 %>% drop_na(forest)
+  
+  birdforestall <- bind_rows(birdforest1, birdforest2, birdforest3, birdforest4) %>% 
+    group_by(forest, count) %>% 
+    distinct(.keep_all = TRUE)
+  birdforestall<- as.data.frame(birdforestall)
+  unique(birdforestall$forest)
+  
+  #resort by category
+  #birdforestall <- as.data.frame(birdforestall)
+  birdforestall <- birdforestall[order(birdforestall[,"forest"]), ]
+  
+  #manually add a column of totals
+  totals<- c(106,106,106,106,106,106,106,106,106,106,106,106,106,106,106,206,206,206,206,206,206,206,206,206,206,206,206,206,206,206,206,206,
+             26,26,26,26,26,26,26,26,23,23,23,23,23,23,23,24,24,24,24,24,24,24,24,24,159,159,159,159,159,159,159,159,159,159,159,159,159,
+             159,159,159,19,19,19,19,19,19,19,19,19,19,22,22,22,22,22,22,22,22,22,22,22,122,122,122,122,122,122,122,122,122,122,122,122,
+             122,122,122,122,122,122,27,27,27,27,27,27,27,27,27,27)
+  #bind
+  bfall<- cbind(birdforestall, totals)
+  
+  bfall$percent<- (bfall$count/bfall$totals)*100
+  
+  #PUSHOUT
+  write.csv(bfall, "out/birdforestall.csv", row.names = FALSE)
+  
+  

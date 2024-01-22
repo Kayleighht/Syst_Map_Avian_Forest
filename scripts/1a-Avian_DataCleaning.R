@@ -11,14 +11,19 @@ av.data <- separate_wider_delim(av.data, cols = Bird.domainraw, delim = ",", nam
 av.data <- separate_wider_delim(av.data, cols = Rec.type, delim = ",", names = c("Rec.1", "Rec.2", "Rec.3"),
                                 too_few = "align_start", too_many = "debug")
 
+av.data <- separate_wider_delim(av.data, cols = Forest.comp, delim = ",", names = c("forest1", "forest2", "forest3",
+                                                                                    "forest4"),
+                                too_few = "align_start", too_many = "debug")
+
 
 # Cleaning and Organizing Data --------------------------------------------
 
 
 #cut down to only necessary columns for figures (so far..)
 av.meta <- av.data[,c("Year", "Journal", "Country.Auth", "Study.country", "Urb.scale", 
-                      "Start.year", "End.year", "Comparator", "birdcomp1", "birdcomp2", "birdcomp3", "birdcomp4", "Rec.",
-                      "Rec.1", "Rec.2", "Rec.3","Forest.comp")]
+                      "Start.year", "End.year", "Comparator", "birdcomp1", "birdcomp2", 
+                      "birdcomp3", "birdcomp4", "Rec.","Rec.1", "Rec.2", "Rec.3","forest1", 
+                      "forest2", "forest3", "forest4", "Forest.comp_pieces")]
 #remove whitespace
 av.meta<- av.meta %>% 
   mutate(across(where(is.character), str_trim))
@@ -26,6 +31,22 @@ av.meta<- av.meta %>%
 #replace empty cells with N/A
 av.meta <- replace(av.meta, av.meta=='', NA)
 print(av.meta)
+
+unique(av.meta$forest1)
+av.meta$forest1[av.meta$forest1 == 'Green space type'] <- 'Land use type'
+av.meta$forest1[av.meta$forest1 == 'Land Use Type'] <- 'Land use type'
+av.meta$forest1[av.meta$forest1 == 'Canopy Cover'] <- 'Canopy cover'
+av.meta$forest1[av.meta$forest1 == 'Forested Area'] <- 'Forested area'
+unique(av.meta$forest2)
+av.meta$forest2[av.meta$forest2 == 'Canopy Cover'] <- 'Canopy cover'
+av.meta$forest2[av.meta$forest2 == 'Forested Area'] <- 'Forested area'
+av.meta$forest2[av.meta$forest2 == 'Land-use type'] <- 'Land use type'
+unique(av.meta$forest3)
+av.meta$forest3[av.meta$forest3 == 'Forested Area'] <- 'Forested area'
+av.meta$forest3[av.meta$forest3 == 'Land-Use Type'] <- 'Land use type'
+av.meta$forest3[av.meta$forest3 == 'Canopy Cover'] <- 'Canopy cover'
+unique(av.meta$forest4)
+av.meta$forest4[av.meta$forest4 == 'Canopy Cover'] <- 'Canopy cover'
 
 #rename column in av.meta to match shape files with countries
 names(av.meta)[names(av.meta) == "Country.Auth"] <- "COUNTRY"
@@ -54,7 +75,6 @@ write.csv(av.meta, "out/av.meta.csv", row.names = FALSE)
 
 
 # Bubble Map Prep ---------------------------------------------------------
-
 
 cutoffs <- data.frame(id = 1:1, 
                       lat_1 = c(23.5, -23.5), 
@@ -124,7 +144,6 @@ write.csv(data, "out/data.csv", row.names = FALSE)
 
 # Journal and Country -----------------------------------------------------
 
-
 # journal name count by country of first author
 country.count.av. <- av.meta %>%
   group_by(COUNTRY,Journal) %>%
@@ -166,7 +185,6 @@ write.csv(journal.df.av, "out/journal.df.av.csv", row.names = FALSE)
 
 # Year --------------------------------------------------------------------
 
-
 #COUNT TABLE
 #number of publications per year
 year.count <- av.meta %>%
@@ -201,7 +219,6 @@ write.csv(country.count, "out/Country.count.csv", row.names = FALSE)
 
 # Recommendation and Journal ----------------------------------------------
 
-
 journal.rec<- av.meta %>%
   group_by(Rec., Journal) %>%
   dplyr::mutate(journal.count=n())
@@ -225,12 +242,15 @@ authcountry <- authcountry %>% distinct(COUNTRY, .keep_all = TRUE)
 
 # Urban Scale -------------------------------------------------------------
 
-
 #COUNT TABLE
 #all bird domain columns grouped by URBAN SCALE
 urb.counts <-av.meta %>%
   pivot_longer(cols = c(birdcomp1:birdcomp4)) %>%
   dplyr::count(Urb.scale,value)
+
+urb.counts2<- av.meta %>%
+  pivot_longer(cols= c(forest1:forest4)) %>%
+  dplyr::count(Urb.scale, value)
 
 #non-categorized urban count
 urbanallcount<- av.meta %>%
@@ -238,10 +258,9 @@ urbanallcount<- av.meta %>%
 
 #PUSH OUT CSV
 write.csv(urb.counts, "out/birdurb.count.csv", row.names = FALSE)
-
+write.csv(urb.counts2, "out/forestbird.urbcount.csv", row.names = FALSE)
 
 # Comparator --------------------------------------------------------------
-
 
 #COUNT TABLE
 #all bird domain columns grouped by COMPARATOR USED Y/N
@@ -249,11 +268,16 @@ comp.counts <-av.meta %>%
   pivot_longer(cols = c(birdcomp1:birdcomp4)) %>%
   dplyr::count(Comparator,value)
 
-comp.counts2 <-av.meta %>%
+comp.counts2 <- av.meta %>%
+  pivot_longer(cols = c(forest1:forest4)) %>%
+  dplyr:: count(Comparator, value)
+
+comp.counts3 <-av.meta %>%
   dplyr::count(Comparator)
 
 #PUSH OUT CSV
-write.csv(comp.counts, "out/Birdcomp.counts.csv", row.names = FALSE)
+write.csv(comp.counts, "out/birdcomp.counts.csv", row.names = FALSE)
+write.csv(comp.counts2, "out/forestbirdcomp.counts.csv", row.names = FALSE)
 
 #format for yes/100 to 100% bar graph
 Comp<- comp.counts
@@ -308,6 +332,52 @@ Birdcompmeta<- Compmeta
 #PUSH OUT CSV
 write.csv(Birdcompmeta, "out/Comp.meta.csv", row.names = FALSE)
 
+#FOREST
+#format for yes/100 to 100% bar graph
+Comp2<- comp.counts2
+Comp2 <- as.data.frame(Comp2)
+
+#remove n/a's created from empty rows
+Comp2 <- Comp2 %>% drop_na(Comparator)
+Comp2 <- Comp2 %>% drop_na(value)
+
+#sort alphabetically to create percentages
+Comp2 <- Comp2[order(Comp2[,"value"]), ]
+
+#create another version for binding later
+Comp3<- Comp2
+sum(Comp3$n)
+
+#spread rows so that we can create percent bars that reach 100%
+Comp2<- Comp2 %>% spread(Comparator, n)
+
+#replace NA with 0
+Comp2[is.na(Comp2)] <- 0
+#create column of totals
+Comp2$total <- Comp2$Y + Comp2$N
+#create percent yes column
+Comp2$yespercent <- (Comp2$Y/Comp2$total)*100
+Comp2$nopercent <- (Comp2$N/Comp2$total)*100
+sum(Comp2$total)
+
+compyes<- subset(Comp2, select = c(value, yespercent, Y))
+compyes$comp <- c("y","y","y","y","y","y","y","y","y","y")
+colnames(compyes)[2] = "comparator"
+colnames(compyes)[3] = "count"
+colnames(compyes)[4] = "yes/no"
+compno<- subset(Comp2, select = c(value, nopercent, N))
+compno$comp <- c("n","n","n","n","n","n","n","n","n","n")
+colnames(compno)[2] = "comparator"
+colnames(compno)[3] = "count"
+colnames(compno)[4] = "yes/no"
+
+forest.compmeta<- rbind(compyes, compno)
+
+#sort
+forest.compmeta <- forest.compmeta[order(forest.compmeta[,1]), ]
+
+#PUSH OUT CSV
+write.csv(forest.compmeta, "out/ForestComp.meta.csv", row.names = FALSE)
 
 # Data Subsetting and Organizing ------------------------------------------
 
@@ -459,6 +529,71 @@ norec2
 write.csv(norec, "out/Norec.count.csv", row.names = FALSE)
 write.csv(norec2, "out/Norec.count2.csv", row.names = FALSE)
 
+#FOREST METRIC#
+
+recdf<- av.meta[,c("forest1","forest2", "forest3", "forest4", "Rec.",
+                   "Rec.1", "Rec.2", "Rec.3")]
+
+#clean dataframe of whitespace
+#recdf <- recdf %>% 
+ # mutate(across(where(is.character), str_remove_all, pattern = fixed(" ")))
+
+#replace N/As with not recommendation in Rec1 column to incorporate "NO" recommendations
+recdf$Rec.1 <- recdf$Rec.1 %>% replace_na("No Recommendations")
+trimws("recdf", which = c("both"))
+
+#COUNT TABLE
+#including all bird domain columns grouped by RECOMMENDATION TYPE 
+
+#REC 1
+rectype.counts <-as.data.frame(recdf %>%
+                                 pivot_longer(cols = c(forest1:forest4)) %>%
+                                 dplyr::count(Rec.1,value))
+
+
+#clean and remove N/As
+rectype.counts <- rectype.counts %>% drop_na(value)
+rectype.counts <- rectype.counts %>% drop_na(Rec.1)
+
+#REC 2
+rectype.counts2 <-as.data.frame(recdf %>%
+                                  pivot_longer(cols = c(forest1:forest4)) %>%
+                                  dplyr::count(Rec.2,value))
+#remove empty cells from studies with only 1 recommendation ##CHECK CHECK DOUBLE CHECK
+rectype.counts2 <- rectype.counts2 %>% drop_na(Rec.2)
+rectype.counts2 <- rectype.counts2 %>% drop_na(value)
+
+#rename column to rec.1 to merge
+names(rectype.counts2)[names(rectype.counts2) == "Rec.2"] <- "Rec.1"
+sum(rectype.counts2$n)
+
+#REC 3
+rectype.counts3 <-as.data.frame(recdf %>%
+                                  pivot_longer(cols = c(forest1:forest4)) %>%
+                                  dplyr::count(Rec.3,value))
+rectype.counts3 <- rectype.counts3 %>% drop_na(Rec.3)
+rectype.counts3 <- rectype.counts3 %>% drop_na(value)
+names(rectype.counts3)[names(rectype.counts3) == "Rec.3"] <- "Rec.1"
+sum(rectype.counts3$n)
+
+#MERGE tables of ALL recommendations
+#rectype.all <- bind_rows(rectype.counts, rectype.counts2, rectype.counts3) %>% 
+# group_by(value, n) %>% 
+# distinct(.keep_all = TRUE)
+
+rectype.all <- bind_rows(rectype.counts, rectype.counts2, rectype.counts3) %>% 
+  group_by(Rec.1, n) %>% 
+  distinct(.keep_all = TRUE)
+
+#resort by category
+rectype.all <- as.data.frame(rectype.all)
+rectype.all <- rectype.all[order(rectype.all[,"value"]), ]
+
+unique(rectype.all$value)
+
+#PUSHOUT
+write.csv(rectype.all, "out/forestAllrecraw.count.csv", row.names = FALSE)
+
 # Subsetting for Multiple Indicators Counts -------------------------------
 
 
@@ -516,9 +651,7 @@ allindicators<- data.frame(number_topics, number_publications)
 write.csv(allindicators, "out/Allind.count.csv", row.names = FALSE)
 
 
-
 # Topics Only Count -------------------------------------------------------
-
 
 ######### Categories only count ##############
 #remove columns not needed
@@ -562,38 +695,49 @@ birdcomps
 #PUSH OUT CSV
 write.csv(birdcomps, "out/bird.component.csv", row.names = FALSE)
 
-######### Categories of forest management only count ##############
-#create dataframes for each indicator/topic and align column names
-av.forestmanagement <- separate_wider_delim(av.data, cols = Forest.comp, delim = ",", 
-                                names = c("fint1", "fint2", "fint3", "fint4", "fint5"),
-                                too_few = "align_start", too_many = "debug")
-av.forestmanagement <- av.forestmanagement[,c("fint1", "fint2", "fint3", "fint4", "Forest.comp_pieces")]
+# FOREST METRICS Only Count -------------------------------------------------------
 
+######### Categories only count ##############
 #remove columns not needed
-Comp1<- subset(av.forestmanagement, select = c("fint1"))
-colnames(Comp1) <- c("Component")
+forest1<- subset(av.meta, select = c("forest1"))
+colnames(forest1) <- c("forest")
 
-Comp2 <- av.forestmanagement[grep("2", av.forestmanagement$Forest.comp_pieces), ]
+forest2 <- av.meta[grep("2", av.meta$Forest.comp_pieces), ]
 #remove columns not needed
-Comp2<- subset(Comp2, select = c("fint2"))
-colnames(Comp2) <- c("Component")
+forest2<- subset(forest2, select = c("forest2"))
+colnames(forest2) <- c("forest")
 
-Comp3 <- av.forestmanagement[grep("3", av.forestmanagement$Forest.comp_pieces), ]
+forest3 <- av.meta[grep("3", av.meta$Forest.comp_pieces), ]
 #remove columns not needed
-Comp3<- subset(Comp3, select = c("fint3"))
-colnames(Comp3) <- c("Component")
+forest3<- subset(forest3, select = c("forest3"))
+colnames(forest3) <- c("forest")
 
-Comp4 <- av.forestmanagement[grep("4", av.forestmanagement$Forest.comp_pieces), ]
-Comp4<- subset(Comp4, select = c("fint4"))
-colnames(Comp4) <- c("Component")
+forest4 <- av.meta[grep("4", av.meta$Forest.comp_pieces), ]
+#remove columns not needed
+forest4<- subset(forest4, select = c("forest4"))
+colnames(forest4) <- c("forest")
 
 ##MERGING
-dfmerge12 <- rbind(Comp1, Comp2)
-dfmerge34 <- rbind(dfmerge12, Comp3)
-dfmergefinal <- rbind(dfmerge34,Comp4)
+dfmerge12 <- rbind(forest1, forest2)
+dfmerge34 <- rbind(dfmerge12, forest3)
+dfmergefinal <- rbind(dfmerge34,forest4)
 
 dfmergefinal <- dfmergefinal %>%
   mutate_if(is.character, str_trim)
+unique(dfmergefinal$forest)
+
+#clean and remove N/As
+birdforestall <- dfmergefinal %>% drop_na(forest)
+
+birdforestallcount <- birdforestall %>%
+  dplyr:: count(forest)
+birdforestallcount <- as.data.frame(birdforestallcount)
+
+birdforestallcount$percent <- ((birdforestallcount$n/277)*100)
+birdforestallcount
+
+#PUSH OUT CSV
+write.csv(birdforestallcount, "out/birdforestall.csv", row.names = FALSE)
 
 #MULTIPLE INDICATORS COUNTS
 #create data frame to sort # publications with multiple indicators
