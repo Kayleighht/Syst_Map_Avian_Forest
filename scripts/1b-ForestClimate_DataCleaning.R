@@ -34,6 +34,11 @@ names(forest.meta)[names(forest.meta) == "Country.of.First.Author"] <- "COUNTRY"
 #replace empty cells with N/A
 forest.meta <- replace(forest.meta, forest.meta=='', NA) 
 
+forest.meta$Carb1[forest.meta$Carb1 == 'Infrastructure (timber buildings)'] <- 'Infrastructure'
+forest.meta$Carb2[forest.meta$Carb2 == 'Infrastructure (timber buildings)'] <- 'Infrastructure'
+forest.meta$Carb3[forest.meta$Carb3 == 'Infrastructure (timber buildings)'] <- 'Infrastructure'
+forest.meta$Carb4[forest.meta$Carb4 == 'Infrastructure (timber buildings)'] <- 'Infrastructure'
+
 unique(forest.meta$COUNTRY)
 
 forest.meta$COUNTRY[forest.meta$COUNTRY == 'United States'] <- 'USA'

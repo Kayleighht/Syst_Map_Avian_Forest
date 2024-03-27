@@ -116,7 +116,7 @@ merged_df <- merge(meta_df1,latlong,by="COUNTRY", all.x=TRUE)
 
 merged_df1<-merged_df %>% distinct(COUNTRY, .keep_all = TRUE)
 
-merged_df1<-merged_df1 %>% select(1,18:20)
+merged_df1<-merged_df1 %>% select(1,22:24)
 unique(merged_df1$COUNTRY)
 
 data <- merged_df1<- arrange(merged_df1, count)
@@ -785,3 +785,4 @@ number_publications <- c("274","60", "11", "2")
 
 allindicators<- data.frame(number_topics, number_publications)  
 write.csv(allindicators, "out/Allind.count.csv", row.names = FALSE)
+

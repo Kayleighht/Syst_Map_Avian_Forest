@@ -65,11 +65,11 @@ Compmeta$value <- factor(Compmeta$value, levels = c("Composition", "Forested are
 
 
 comparator.plot<- ggplot(Compmeta, aes(fill = yes.no, x= value, y= comparator)) +
-  geom_bar(stat= 'identity') +
+  geom_bar(stat= 'identity') + 
   bigtheme + 
   labs(x= "", y= "") + 
   scale_y_continuous(limits = c(0,100), breaks = c(0, 20, 40, 60, 80, 100)) +
-  scale_fill_manual(labels= c("No", "Yes"), values = birdpalette2) + 
+  scale_fill_manual(labels= c("Yes", "No"),values = birdpalette2) + 
   coord_flip() + 
   theme_legend6
 
@@ -90,9 +90,11 @@ comparator.plot<- ggplot(Forestcompmeta, aes(fill = comp, x= value, y= comparato
   bigtheme + 
   labs(x= "", y= "") + 
   scale_y_continuous(limits = c(0,100), breaks = c(0, 20, 40, 60, 80, 100)) +
-  scale_fill_manual(values= forestpalette2, labels= c("No", "Yes")) + 
+  scale_fill_manual(values= forestpalette2, labels= c("Yes", "No")) + 
   coord_flip() +
   theme_legend6
+
+??scale_fill_manual
 
 forest.comparatorplot<- comparator.plot + labs(fill= "Comparator used?")
 
@@ -323,7 +325,8 @@ embeddedfigforest<- ggarrange(birdtopic.plot, foresttopic.plot,
                         bird.comparatorplot, forest.comparatorplot,
                         bird.scaleplot, forest.scaleplot,
                         birdrecoplot, forestrecoplot,
-                        font.label = list(color= "black"),
+                        labels= c("1", "", "2", "", "3", "", "4", ""),
+                        font.label = list(color= "black", size = 200, family = "serif"),
                         ncol = 2, nrow = 4)
 embeddedfigforest
 
