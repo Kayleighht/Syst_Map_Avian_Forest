@@ -70,9 +70,10 @@ comparator.plot<- ggplot(Compmeta, aes(fill = comp, x= value, y= comparator)) +
   bigtheme + 
   labs(x= "", y= "") + 
   scale_y_continuous(limits = c(0,100), breaks = c(0, 20, 40, 60, 80, 100)) +
-  scale_fill_manual(labels= c("No", "Yes"), values = birdpalette2) + 
+  scale_fill_viridis_d(option= "viridis", labels = c("Yes", "No")) +
+  #scale_fill_manual(labels= c("No", "Yes"), values = birdpalette2) + 
   coord_flip() + 
-  theme_legend6
+  theme_legend7
 
 bird.comparatorplot<- comparator.plot + labs(fill= "Comparator used?")
 bird.comparatorplot
@@ -89,9 +90,10 @@ comparator.plot<- ggplot(Forestcompmeta, aes(fill = Comparator, x= value, y= per
   bigtheme + 
   labs(x= "", y= "") + 
   scale_y_continuous(limits = c(0,100), breaks = c(0, 20, 40, 60, 80, 100)) +
-  scale_fill_manual(values= forestpalette2, labels= c("No", "Yes")) + 
+  scale_fill_viridis_d(option= "viridis", labels = c("Yes", "No")) +
+  #scale_fill_manual(values= forestpalette2, labels= c("No", "Yes")) + 
   coord_flip() +
-  theme_legend6
+  theme_legend7
 
 forest.comparatorplot<- comparator.plot + labs(fill= "Comparator used?")
 
@@ -230,12 +232,13 @@ recs<- cbind(recs, totals)
 recs$percent<- (recs$n/recs$totals)*100
 recs$Rec.1[recs$Rec.1 == 'No Recommendations'] <- 'None'
 
-recs <- as.data.frame(recs %>% group_by(Rec.1, value)) %>% 
-        summarise(n / sum(n))
+recsbirds <-recs %>%
+  group_by(Rec.1, value) %>%
+  summarise(percent = sum(percent), count = first(n)) 
 
 #factor columns to correct order
-recs$value <- factor(recs$value, levels = c("Biodiversity", "Survival", "Demographics/Patterns", "Breeding", "Behaviour", "Resources", "Foraging"))
-recs$Rec.1 <- factor(recs$Rec.1, levels= c("Restoration", "Management", "Conservation", "None"))
+recsbirds$value <- factor(recsbirds$value, levels = c("Biodiversity", "Survival", "Demographics/Patterns", "Breeding", "Behaviour", "Resources", "Foraging"))
+recsbirds$Rec.1 <- factor(recsbirds$Rec.1, levels= c("Restoration", "Management", "Conservation", "None"))
 
 
 rec.plot <- ggplot(recs, aes(fill= Rec.1, x= value , y= percent)) +
@@ -272,10 +275,12 @@ recs<- cbind(recs, totals)
 recs$percent<- (recs$n/recs$totals)*100
 recs$Rec1[recs$Rec1 == 'No Recommendations'] <- 'None'
 
+recs <-recs %>%
+  group_by(Rec1, value) %>%
+  summarise(percent = sum(percent), count = first(n)) 
+
 ##### PLOT
 recs$value <- factor(recs$value, levels = c("Above-ground biomass", "Below-ground biomass", "Soil", "Dead wood/organic matter", "Infrastructure"))
-
-
 recs$Rec1 <- factor(recs$Rec1, levels= c("Restoration", "Management", "Conservation", "None"))
 
 
@@ -319,5 +324,5 @@ embeddedfig<- ggarrange(birdtopic.plot, foresttopic.plot,
 
 embeddedfig
 
-ggsave(filename ="graphics/Figure6b.png", width = 160, height = 121, dpi=100, limitsize = FALSE)  
+ggsave(filename ="graphics/Figure7.png", width = 160, height = 121, dpi=100, limitsize = FALSE)  
 

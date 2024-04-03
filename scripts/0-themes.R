@@ -33,7 +33,7 @@ bigtheme <- theme(
   axis.title.y = element_text(colour = "black",face = "bold", size = '200', vjust = +1, margin =margin(t= 20, r= 0, b= 10, l= 0)),
   axis.title.x = element_text(colour = "black", face = "bold", size= '200', vjust= 0),
   axis.ticks = element_line(size = 0.7),
-  axis.text = element_text(size = 170, colour = "black"),
+  axis.text = element_text(size = 140, colour = "black"),
   plot.margin = unit(c(2,0,2,2), 'lines'))
 
 #LEGEND 1 THEME
@@ -76,10 +76,18 @@ theme_legend6<- theme(
   legend.title = element_text(colour = "black", size = 120, face= "bold"),
   legend.text = element_text(colour = "black", size = 120),
   legend.position = c("top"),
-  legend.key.size = unit(3.5, "cm"),
+  legend.key.size = unit(4.5, "cm"),
   legend.box.margin = margin(5,5,2,2),
   legend.box.background =  element_rect(colour = "white", size = 3))
 
+theme_legend7<- theme(
+  legend.title = element_text(colour = "black", size = 120, face= "bold"),
+  legend.text = element_text(colour = "black", size = 120),
+  legend.position = c("top"),
+  legend.key.size = unit(4.5, "cm"),
+  legend.spacing.x = unit(4.5, "cm"),
+  legend.box.margin = margin(5,5,2,2),
+  legend.box.background =  element_rect(colour = "white", size = 3))
 
 forestcol<- ("#FDE725FF")
 birdcol<- ("#481567FF")

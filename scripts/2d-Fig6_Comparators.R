@@ -5,6 +5,8 @@ source('scripts/0-packages.R')
 source('scripts/0-themes.R')
  # FOREST TO FOREST
 
+geom_col(color= "black", size= 0.30)
+
 # Figure 6 ----------------------------------------------------------------
 # topics only
 bird<-readPNG("graphics/bird.1.png", native = T)
@@ -15,7 +17,8 @@ birdforesttopics<- read.csv("out/birdforestall.csv")
 #PLOT
 
 birdtopic.plot <- ggplot(birdforesttopics, aes(x= reorder(forest, -percent) , y= percent)) +
-  geom_bar(stat= 'identity', position = 'dodge', fill= birdcol, width = 0.8)  + 
+  geom_bar(fill =  birdcol , colour= "black", size = 2.0, stat= 'identity', position = 'dodge', width = 0.8) + 
+  scale_fill_manual(values = c(birdcol)) +
   bigtheme + 
   labs(x= "", y= "") + 
   scale_y_continuous(limits = c(0,72), breaks = c(10,20, 30,40,50,60,70)) +
@@ -33,7 +36,7 @@ tree<-readPNG("graphics/tree.1.png", native = T)
 foresttopics<- read.csv("out/forest.component.csv")
 
 foresttopic.plot <- ggplot(foresttopics, aes(x= reorder(Component, -percent) , y= percent)) +
-  geom_bar(stat= 'identity', position = 'dodge', fill= forestcol, width = 0.8) +
+  geom_bar(fill = forestcol, colour = "black", size = 2.0, stat= 'identity') + #position = 'dodge') +
   bigtheme + 
   labs(x= "", y= "") + 
   scale_y_continuous(limits = c(0,70), breaks = c(10, 20, 30 ,40 ,50, 60, 70)) +
@@ -65,13 +68,14 @@ Compmeta$value <- factor(Compmeta$value, levels = c("Composition", "Forested are
 
 
 comparator.plot<- ggplot(Compmeta, aes(fill = yes.no, x= value, y= comparator)) +
-  geom_bar(stat= 'identity') + 
+  geom_bar(stat= 'identity', colour = "black", size = 2.0) + 
   bigtheme + 
   labs(x= "", y= "") + 
   scale_y_continuous(limits = c(0,100), breaks = c(0, 20, 40, 60, 80, 100)) +
-  scale_fill_manual(labels= c("Yes", "No"),values = birdpalette2) + 
+  scale_fill_viridis_d(option= "viridis", labels = c("Yes", "No")) +
+  #scale_fill_manual(labels= c("Yes", "No"),values = birdpalette2) + 
   coord_flip() + 
-  theme_legend6
+  theme_legend7
 
 bird.comparatorplot<- comparator.plot + labs(fill= "Comparator used?")
 bird.comparatorplot
@@ -86,15 +90,14 @@ Forestcompmeta$value <- factor(Forestcompmeta$value, levels = c("Composition", "
                                                                 "Diversity metric", "Fragmentation"))
 
 comparator.plot<- ggplot(Forestcompmeta, aes(fill = comp, x= value, y= comparator)) +
-  geom_bar(stat= 'identity') +
+  geom_bar(stat= 'identity', colour= "black", size = 2.0) +
   bigtheme + 
   labs(x= "", y= "") + 
   scale_y_continuous(limits = c(0,100), breaks = c(0, 20, 40, 60, 80, 100)) +
-  scale_fill_manual(values= forestpalette2, labels= c("Yes", "No")) + 
+  scale_fill_viridis_d(option= "viridis", labels = c("Yes", "No")) +
+  #scale_fill_manual(values= forestpalette2, labels= c("Yes", "No")) + 
   coord_flip() +
-  theme_legend6
-
-??scale_fill_manual
+  theme_legend7
 
 forest.comparatorplot<- comparator.plot + labs(fill= "Comparator used?")
 
@@ -146,11 +149,12 @@ Urban$name <- factor(Urban$name, levels = c("Composition", "Forested area", "Lan
 #PLOTTING ####################################################################
 
 scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= name , y= percent)) +
-  geom_bar(stat= 'identity') + 
+  geom_bar(stat= 'identity', colour= "black", size = 2.0) + 
   labs(x= "", y= "") + 
   coord_flip() + 
   scale_y_continuous(limits= c(0,101)) + 
-  scale_fill_manual(values = birdpalette4) +
+  scale_fill_viridis_d(option= "viridis") +
+  #scale_fill_manual(values = birdpalette4) +
   bigtheme +
   theme_legend6 +
   guides(fill = guide_legend(nrow = 2))
@@ -201,11 +205,12 @@ Urban$name <- factor(Urban$name, levels = c("Composition", "Land use type", "Can
                                             "Diversity metric", "Fragmentation"))
 
 scale.plot <- ggplot(Urban, aes(fill= Urb.scale, x= name, y= percent)) +
-  geom_bar(stat= 'identity') + 
+  geom_bar(stat= 'identity', colour= "black", size = 2.0) + 
   labs(x= "", y= "") + 
   coord_flip() + 
   scale_y_continuous(limits= c(0,100)) + 
-  scale_fill_manual(values= forestpalette4) +
+  scale_fill_viridis_d(option= "viridis") +
+  #scale_fill_manual(values= forestpalette4) +
   bigtheme +
   theme_legend6 +
   guides(fill = guide_legend(nrow = 2))
@@ -248,13 +253,19 @@ recs$value <- factor(recs$value , levels = c("Composition", "Forested area", "La
 
 recs$Rec.1 <- factor(recs$Rec.1, levels= c("Restoration", "Management", "Conservation", "None"))
 
+recsbird <-recs %>%
+  group_by(Rec.1, value) %>%
+  summarise(percent = sum(percent), count = first(n)) 
 
-rec.plot <- ggplot(recs, aes(fill= Rec.1, x= value , y= percent)) +
-  geom_bar(stat= 'identity') + 
+
+rec.plot <- ggplot(recsbird, aes(fill= Rec.1, x= value , y= percent)) +
+  geom_bar(stat= 'identity', colour = "black", size = 2.0) + 
   labs(x= "", y= "Percent of Studies") +
   coord_flip() + 
   scale_y_continuous(limits= c(0,100)) + 
-  scale_fill_manual(values = birdpalette4s, name =  "") + 
+  scale_fill_viridis_d(option= "viridis") +
+  labs(fill = "") +
+  #scale_fill_manual(values = birdpalette4s, name =  "") + 
   theme_legend6 +
   bigtheme +
   guides(fill = guide_legend(nrow = 2))
@@ -291,14 +302,21 @@ recs$value <- factor(recs$value, levels = c("Composition", "Land use type", "Can
 
 recs$Rec1 <- factor(recs$Rec1, levels= c("Restoration", "Management", "Conservation", "None"))
 
+recsforest <-recs %>%
+  group_by(Rec1, value) %>%
+  summarise(percent = sum(percent), count = first(n)) 
 
-rec.plot <- ggplot(recs, aes(fill= Rec1, x= value , y= percent)) +
-  geom_bar(stat= 'identity') + labs(x= "", y= "Percent of Studies") +
+
+rec.plot <- ggplot(recsforest, aes(fill= Rec1, x= value , y= percent)) +
+  geom_bar(stat= 'identity', colour= "black", size = 2.0) + 
+  labs(x= "", y= "Percent of Studies") +
   coord_flip() + 
   bigtheme +
   scale_y_continuous(limits= c(0,100)) + 
   theme_legend6 +
-  scale_fill_manual(values = forestpalette4s, name =  "") +
+  scale_fill_viridis_d(option= "viridis") +
+  labs(fill ="") +
+  #scale_fill_manual(values = forestpalette4s, name =  "") +
   guides(fill = guide_legend(nrow = 2))
 
 forestrecoplot <- rec.plot
@@ -325,10 +343,10 @@ embeddedfigforest<- ggarrange(birdtopic.plot, foresttopic.plot,
                         bird.comparatorplot, forest.comparatorplot,
                         bird.scaleplot, forest.scaleplot,
                         birdrecoplot, forestrecoplot,
-                        labels= c("1", "", "2", "", "3", "", "4", ""),
-                        font.label = list(color= "black", size = 200, family = "serif"),
+                        labels= c("A", "B", "C", "D", "E", "F", "G", "H"),
+                        font.label = list(color= "black", size = 200, family = "helvetica"),
                         ncol = 2, nrow = 4)
 embeddedfigforest
 
-ggsave(filename ="graphics/Figure6a.png", width = 160, height = 121, dpi=100, limitsize = FALSE)  
+ggsave(filename ="graphics/Figure6.png", width = 160, height = 121, dpi=100, limitsize = FALSE)  
 
